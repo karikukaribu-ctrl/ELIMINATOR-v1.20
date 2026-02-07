@@ -7,28 +7,29 @@
 
   <style>
     :root{
-      /* ===== THEME CORE ===== */
+      /* ===== THEME CORE (monochrome + accent glow) ===== */
       --bg: #f4f6fb;
       --fg: #0d1321;
       --muted: rgba(13,19,33,.62);
 
-      --glass: rgba(255,255,255,.60);
-      --glass2: rgba(255,255,255,.38);
+      --glass: rgba(255,255,255,.58);
+      --glass2: rgba(255,255,255,.34);
       --lineA: rgba(13,19,33,.14);
       --shadow: 0 18px 60px rgba(0,0,0,.10);
       --blur: 18px;
 
-      /* ===== ACCENT (surbrillance) ===== */
-      --accent: rgba(0,140,255,.16);   /* default light */
-      --accent2: rgba(0,140,255,.30);
+      /* ===== ACCENT ===== */
+      --accent: rgba(0,140,255,.16);
+      --accent2: rgba(0,140,255,.32);
 
-      /* ===== APPEARANCE KNOBS ===== */
-      --radius: 12px;     /* moins arrondi */
-      --radius2: 10px;
-      --barH: 34px;       /* + grand */
+      /* ===== APPEARANCE KNOBS (default: sober, less rounded) ===== */
+      --radius: 6px;    /* user asked: less rounded */
+      --radius2: 4px;
+      --barH: 38px;
       --chipH: 18px;
 
-      --appW: min(1240px, 96vw);
+      /* layout */
+      --appW: min(1320px, 96vw);
       --vpad: clamp(10px, 2.2vh, 18px);
       --hpad: clamp(10px, 2.2vw, 18px);
 
@@ -37,17 +38,23 @@
       --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 
       /* size scales */
-      --uiScale: 1.00;     /* buttons/pills */
-      --titleScale: 1.00;  /* ELIMINATOR title */
-      --taskScale: 1.22;   /* task name -> BIG */
+      --uiScale: 1.00;
+      --titleScale: 1.18;   /* bigger title */
+      --taskScale: 1.50;    /* much bigger task name */
 
-      /* border toggles */
+      /* borders toggle */
       --line: var(--lineA);
-      --btnFill: 0;        /* 0 ghost, 1 filled */
 
-      /* right panel width */
-      --rightW: 420px;
-      --drawerW: 440px;
+      /* button fill toggle (ghost by default) */
+      --btnFill: 0;
+
+      /* panels width */
+      --drawerW: 460px;
+      --rightW: 520px;
+
+      /* progress color override (user asked) */
+      --barAccent: var(--accent);
+      --barAccent2: var(--accent2);
     }
 
     [data-theme="dark"]{
@@ -56,13 +63,16 @@
       --muted: rgba(234,240,255,.62);
 
       --glass: rgba(18,24,38,.60);
-      --glass2: rgba(18,24,38,.38);
+      --glass2: rgba(18,24,38,.36);
       --lineA: rgba(234,240,255,.14);
       --shadow: 0 18px 80px rgba(0,0,0,.36);
       --blur: 20px;
 
-      --accent: rgba(0,255,140,.14);  /* default dark */
-      --accent2: rgba(0,255,140,.26);
+      --accent: rgba(0,255,140,.14);
+      --accent2: rgba(0,255,140,.28);
+
+      --barAccent: var(--accent);
+      --barAccent2: var(--accent2);
     }
 
     *{ box-sizing:border-box; }
@@ -71,7 +81,7 @@
       margin:0;
       font-family: var(--font);
       background:
-        radial-gradient(1200px 700px at 25% 15%, rgba(255,255,255,.42), transparent 60%),
+        radial-gradient(1200px 700px at 25% 15%, rgba(255,255,255,.45), transparent 60%),
         radial-gradient(1000px 680px at 80% 30%, rgba(0,0,0,.06), transparent 60%),
         var(--bg);
       color: var(--fg);
@@ -84,7 +94,7 @@
         var(--bg);
     }
 
-    /* ===== APP ===== */
+    /* ===== APP WRAP ===== */
     .wrap{
       min-height:100%;
       display:flex;
@@ -125,7 +135,7 @@
       border:1px solid var(--line);
       background: transparent;
       color:var(--fg);
-      border-radius: 10px;
+      border-radius: var(--radius2);
       padding: calc(8px * var(--uiScale)) calc(10px * var(--uiScale));
       font-size: calc(12px * var(--uiScale));
       letter-spacing:.08em;
@@ -169,7 +179,7 @@
 
     .pill{
       padding: calc(6px * var(--uiScale)) calc(10px * var(--uiScale));
-      border-radius:999px;
+      border-radius: 999px;
       border:1px solid var(--line);
       background: rgba(0,0,0,.03);
       color: var(--muted);
@@ -179,7 +189,6 @@
       user-select:none;
     }
     [data-theme="dark"] .pill{ background: rgba(255,255,255,.04); }
-
     .pill.hidden{ display:none; }
 
     /* ===== HERO ===== */
@@ -192,12 +201,12 @@
       padding: 2px 8px 0;
     }
     .title{
-      font-size: calc(clamp(46px, 5.4vw, 72px) * var(--titleScale));
-      letter-spacing: .20em;
+      font-size: calc(clamp(54px, 5.8vw, 92px) * var(--titleScale));
+      letter-spacing: .22em;
       text-transform:uppercase;
       margin: 6px 0 0;
-      font-weight: 720;
-      line-height:1.05;
+      font-weight: 820;
+      line-height:1.02;
       text-align:center;
     }
     .tag{
@@ -217,7 +226,7 @@
       gap: clamp(12px, 2.2vh, 18px);
       align-items:center;
       flex:1;
-      justify-content:flex-start;
+      justify-content:center; /* user asked: centered, not stuck at top */
     }
 
     /* ===== PROGRESS (isolée + dominante) ===== */
@@ -226,7 +235,7 @@
       display:flex;
       flex-direction:column;
       gap:10px;
-      padding: 16px 14px 16px;
+      padding: 18px 16px 18px;
       border:1px solid var(--line);
       border-radius: var(--radius);
       background: var(--glass);
@@ -260,7 +269,9 @@
     .barFill{
       position:absolute; inset:0;
       width:100%;
-      background: linear-gradient(90deg, var(--accent), transparent);
+      background:
+        radial-gradient(800px 140px at 20% 50%, var(--barAccent2), transparent 55%),
+        linear-gradient(90deg, var(--barAccent), transparent 70%);
       transition: width 260ms ease;
     }
     .barPct{
@@ -277,7 +288,7 @@
     /* ===== CURRENT TASK ===== */
     .current{
       width:100%;
-      padding: 14px 14px 14px;
+      padding: 16px 16px 14px;
       border:1px solid var(--line);
       border-radius: var(--radius);
       background: var(--glass);
@@ -288,11 +299,11 @@
       gap: 14px;
     }
     .taskName{
-      font-size: calc(clamp(30px, 3.7vw, 52px) * var(--taskScale));
-      font-weight: 780;
+      font-size: calc(clamp(38px, 4.8vw, 76px) * var(--taskScale));
+      font-weight: 860;
       letter-spacing:.01em;
       text-align:center;
-      line-height:1.10;
+      line-height:1.06;
       padding: 4px 6px;
       word-break: break-word;
     }
@@ -307,12 +318,12 @@
     .chip{
       width: var(--chipH);
       height: var(--chipH);
-      border-radius: 6px;
+      border-radius: 2px;
       border:1px solid var(--line);
       background: rgba(0,0,0,.03);
     }
     [data-theme="dark"] .chip{ background: rgba(255,255,255,.04); }
-    .chip.on{ background: var(--accent2); }
+    .chip.on{ background: var(--barAccent2); }
 
     /* ===== Actions ===== */
     .actions{
@@ -324,8 +335,8 @@
     }
 
     .roulette{
-      width: clamp(100px, 12vw, 140px);
-      height: clamp(100px, 12vw, 140px);
+      width: clamp(110px, 14vw, 170px);
+      height: clamp(110px, 14vw, 170px);
       border-radius: 999px;
       border:1px solid var(--line);
       background:
@@ -339,6 +350,7 @@
       user-select:none;
       transition: transform 140ms ease;
       position:relative;
+      overflow:hidden;
     }
     .roulette:active{ transform: translateY(1px) scale(.99); }
     .rouletteText{
@@ -347,28 +359,42 @@
       text-transform:uppercase;
       color: var(--fg);
       opacity:.92;
-      font-weight:780;
+      font-weight:820;
       font-family: var(--mono);
     }
     .rouletteRing{
       position:absolute;
-      inset:8px;
+      inset:10px;
       border-radius:999px;
       border:1px dashed var(--line);
       opacity:.85;
     }
+    .rouletteNeedle{
+      position:absolute;
+      top: 10px;
+      left: 50%;
+      width: 0; height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-bottom: 14px solid rgba(0,0,0,.18);
+      transform: translateX(-50%);
+      opacity:.9;
+    }
+    [data-theme="dark"] .rouletteNeedle{
+      border-bottom-color: rgba(255,255,255,.18);
+    }
     .rouletteSpin{
-      animation: spin 740ms cubic-bezier(.08,.92,.22,1) 1;
+      animation: spin 860ms cubic-bezier(.08,.92,.20,1) 1;
     }
     @keyframes spin{
       0%{ transform: rotate(0deg); }
-      100%{ transform: rotate(820deg); }
+      100%{ transform: rotate(1080deg); }
     }
 
     .bomb{
-      min-width: clamp(170px, 24vw, 260px);
+      min-width: clamp(180px, 26vw, 300px);
       padding: 14px 16px;
-      border-radius: 12px;
+      border-radius: var(--radius2);
       border:1px solid var(--line);
       background: linear-gradient(180deg, var(--glass2), transparent);
       cursor:pointer;
@@ -386,8 +412,8 @@
     .bomb:hover{ background: rgba(0,0,0,.03); }
     [data-theme="dark"] .bomb:hover{ background: rgba(255,255,255,.04); }
     .bomb:active{ transform: translateY(1px) scale(.99); }
-    .bomb .em{ font-family: var(--mono); font-size: 15px; opacity:.92; }
-    .bomb .label{ display:flex; flex-direction:column; line-height:1.12; align-items:center; }
+    .bomb .em{ font-family: var(--mono); font-size: 16px; opacity:.92; }
+    .bomb .label{ display:flex; flex-direction:column; line-height:1.10; align-items:center; }
     .bomb .label span{ font-size: 12px; font-family: var(--mono); }
     .bomb .label small{
       font-size: 10px;
@@ -397,9 +423,17 @@
       font-family: var(--mono);
     }
 
+    /* bottom minimal icons (undo/notes/focus grouped) */
+    .miniRow{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+    }
     .miniIcon{
-      width:52px; height:52px;
-      border-radius: 12px;
+      width:56px; height:56px;
+      border-radius: var(--radius2);
       border:1px solid var(--line);
       display:grid;
       place-items:center;
@@ -410,11 +444,19 @@
       font-size: 15px;
       user-select:none;
       transition: transform 140ms ease, background 120ms ease;
+      letter-spacing:.06em;
     }
     .miniIcon:hover{ background: rgba(0,0,0,.03); }
     [data-theme="dark"] .miniIcon:hover{ background: rgba(255,255,255,.04); }
     .miniIcon:active{ transform: translateY(1px) scale(.99); }
+    .miniLabel{
+      width:auto;
+      padding: 0 12px;
+      font-size: 12px;
+      text-transform:uppercase;
+    }
 
+    /* ===== BELOW LIST (toggle on main) ===== */
     .belowList{
       width:100%;
       border:1px solid var(--line);
@@ -470,7 +512,7 @@
     }
     .toolBtn{
       width:36px; height:32px;
-      border-radius: 10px;
+      border-radius: var(--radius2);
       border:1px solid var(--line);
       display:grid;
       place-items:center;
@@ -489,7 +531,9 @@
       font-family: var(--mono);
     }
 
-    /* ===== FOCUS MODE ===== */
+    /* ===== FOCUS MODE =====
+       Strict: keep only focus toggle + (optional) counters + (optional) below list
+    */
     .focusOn .topbar .btn:not(.keepFocus),
     .focusOn .topbar .right{ display:none !important; }
     .focusOn .topbar{ justify-content:center; }
@@ -555,7 +599,7 @@
     }
     .tab{
       padding: 7px 9px;
-      border-radius: 10px;
+      border-radius: var(--radius2);
       border:1px solid var(--line);
       cursor:pointer;
       font-size: 11px;
@@ -589,7 +633,7 @@
       text-transform:uppercase;
       color: var(--muted);
       font-family: var(--mono);
-      font-weight:780;
+      font-weight:820;
     }
 
     textarea, input, select{
@@ -597,7 +641,7 @@
       border:1px solid var(--line);
       background: transparent;
       color: var(--fg);
-      border-radius: 10px;
+      border-radius: var(--radius2);
       padding: 10px;
       outline:none;
       font-family: var(--font);
@@ -630,7 +674,7 @@
       justify-content:center;
     }
     .modalCard{
-      width:min(900px, 96vw);
+      width:min(980px, 96vw);
       border:1px solid var(--line);
       border-radius: var(--radius);
       background: var(--glass);
@@ -639,6 +683,8 @@
       padding: 12px;
       position:relative;
       overflow:hidden;
+      max-height: 86vh;
+      overflow:auto;
     }
     .modalHead{
       display:flex;
@@ -656,8 +702,8 @@
 
     /* ===== CELEBRATION: GIANT ===== */
     .celeCard{
-      width:min(980px, 97vw);
-      min-height: min(72vh, 740px);
+      width:min(1040px, 97vw);
+      min-height: min(74vh, 780px);
       display:flex;
       flex-direction:column;
       justify-content:center;
@@ -667,10 +713,10 @@
       position:absolute;
       inset:-40%;
       background:
-        radial-gradient(circle at 30% 30%, var(--accent2), transparent 55%),
-        radial-gradient(circle at 70% 40%, var(--accent), transparent 55%),
+        radial-gradient(circle at 30% 30%, var(--barAccent2), transparent 55%),
+        radial-gradient(circle at 70% 40%, var(--barAccent), transparent 55%),
         radial-gradient(circle at 50% 70%, rgba(255,255,255,.10), transparent 55%);
-      opacity:.55;
+      opacity:.58;
       filter: blur(2px);
       transform: rotate(8deg);
       pointer-events:none;
@@ -678,22 +724,22 @@
     }
     @keyframes halo{
       0%{ transform: rotate(6deg) scale(1.02); opacity:.50; }
-      100%{ transform: rotate(10deg) scale(1.08); opacity:.68; }
+      100%{ transform: rotate(10deg) scale(1.08); opacity:.72; }
     }
     .celeTitle{
-      font-size: clamp(28px, 4.2vw, 56px);
-      font-weight: 860;
-      letter-spacing:.14em;
+      font-size: clamp(30px, 4.6vw, 62px);
+      font-weight: 900;
+      letter-spacing:.16em;
       text-transform:uppercase;
       text-align:center;
       margin: 10px 0 10px;
     }
     .celeMsg{
-      font-size: clamp(14px, 1.8vw, 22px);
+      font-size: clamp(14px, 1.9vw, 24px);
       text-align:center;
       line-height:1.55;
       margin: 0 auto 12px;
-      max-width: 72ch;
+      max-width: 78ch;
       opacity:.95;
     }
     .celeSub{
@@ -722,7 +768,7 @@
       z-index:140;
     }
 
-    /* ===== RIGHT PANEL (tabs: SETS/HABITS/EMOTIONS) ===== */
+    /* ===== RIGHT PANEL ===== */
     .rightBack{
       position:fixed; inset:0;
       background: rgba(0,0,0,.12);
@@ -783,12 +829,12 @@
       overflow:auto;
     }
 
-    /* ===== Simple inline charts (monochrome + accent) ===== */
+    /* mini charts */
     .spark{
       width:100%;
       height: 34px;
       border:1px solid var(--line);
-      border-radius: 10px;
+      border-radius: var(--radius2);
       background: rgba(0,0,0,.02);
       position:relative;
       overflow:hidden;
@@ -797,7 +843,10 @@
     .sparkFill{
       position:absolute; inset:0;
       width:50%;
-      background: linear-gradient(90deg, var(--accent), transparent);
+      background:
+        radial-gradient(600px 80px at 20% 50%, var(--barAccent2), transparent 55%),
+        linear-gradient(90deg, var(--barAccent), transparent);
+      opacity:.95;
     }
 
     .gridCal{
@@ -807,7 +856,7 @@
     }
     .calCell{
       height:28px;
-      border-radius:10px;
+      border-radius: var(--radius2);
       border:1px solid var(--line);
       background: rgba(0,0,0,.02);
       position:relative;
@@ -817,8 +866,14 @@
     [data-theme="dark"] .calCell{ background: rgba(255,255,255,.03); }
     .calInk{
       position:absolute; inset:0;
-      background: var(--accent);
+      background: var(--barAccent);
       opacity:.10;
+    }
+    .calInk2{
+      position:absolute; inset:0;
+      background: var(--barAccent2);
+      opacity:.00;
+      mix-blend-mode: multiply;
     }
     .calTxt{
       position:absolute; inset:0;
@@ -829,13 +884,18 @@
     }
 
     /* ===== Minimal mode: remove borders if desired ===== */
-    [data-borders="off"]{
-      --line: rgba(0,0,0,0);
-    }
+    [data-borders="off"]{ --line: rgba(0,0,0,0); }
 
     /* ===== Button style: filled ===== */
-    [data-buttons="filled"]{
-      --btnFill: 1;
+    [data-buttons="filled"]{ --btnFill: 1; }
+
+    /* ===== Responsive: avoid overlap in topbar ===== */
+    @media (max-width: 560px){
+      .btn{ font-size: 11px; padding: 8px 9px; }
+      .btn.icon{ width: 38px; height: 34px; }
+      .pill{ font-size: 11px; }
+      .bomb{ min-width: 170px; }
+      .miniIcon{ width: 52px; height: 52px; }
     }
   </style>
 </head>
@@ -860,7 +920,7 @@
   <div class="rightPanel" id="rightPanel">
     <div class="rightResizer" id="rightResizer" title="Agrandir/réduire"></div>
     <div class="rightTop">
-      <div class="rightTitle">PANNEAU</div>
+      <div class="rightTitle">PANNEAU DROIT</div>
       <button class="btn" id="rightClose">FERMER</button>
     </div>
     <div class="rightTabs" id="rightTabs"></div>
@@ -908,7 +968,7 @@
         <div class="mh">CONSEIL FLOW</div>
         <div class="small">Clique n’importe où pour fermer</div>
       </div>
-      <div class="celeTitle" style="font-size:clamp(18px,2.4vw,26px); letter-spacing:.08em" id="tipsTitle"></div>
+      <div class="celeTitle" style="font-size:clamp(18px,2.4vw,28px); letter-spacing:.08em" id="tipsTitle"></div>
       <div class="celeMsg" style="font-size:clamp(13px,1.6vw,18px)" id="tipsMsg"></div>
       <div class="celeSub" id="tipsSub"></div>
     </div>
@@ -926,34 +986,65 @@
     </div>
   </div>
 
+  <div class="modal" id="biasModal">
+    <div class="modalCard">
+      <div class="modalHead">
+        <div class="mh">BIAIS / DISTORSIONS</div>
+        <div class="small">Clique n’importe où pour fermer</div>
+      </div>
+      <div id="biasList" class="small"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="setEditModal">
+    <div class="modalCard">
+      <div class="modalHead">
+        <div class="mh">ÉDITION SET</div>
+        <div class="small">Clique n’importe où pour fermer</div>
+      </div>
+      <div id="setEditBody"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="exportModal">
+    <div class="modalCard">
+      <div class="modalHead">
+        <div class="mh">EXPORT</div>
+        <div class="small">Clique n’importe où pour fermer</div>
+      </div>
+      <div class="section">
+        <h3>Texte / JSON / CSV</h3>
+        <div class="row" style="margin-bottom:8px">
+          <button class="btn primary" id="expText">TEXTE</button>
+          <button class="btn" id="expJSON">JSON</button>
+          <button class="btn" id="expCSV">CSV</button>
+          <button class="btn" id="expCopy">COPIER</button>
+        </div>
+        <textarea id="expOut" style="min-height:260px"></textarea>
+        <div class="small" style="margin-top:8px">Ne met pas les notes dans le rapport. (Tu l’avais demandé.)</div>
+      </div>
+    </div>
+  </div>
+
   <div class="wrap" id="app">
     <!-- TOPBAR -->
     <div class="topbar">
       <div class="left">
         <button class="btn icon keepFocus" id="btnMenu" title="Menu gauche">≡</button>
 
-        <!-- Toggle counters (hidden by default) -->
-        <button class="btn keepFocus" id="btnCounters">COMPTEURS</button>
+        <button class="btn keepFocus" id="btnTheme" title="Thème"><span id="themeLabel">THÈME CLAIR</span></button>
 
+        <button class="btn keepFocus" id="btnCounters" title="Afficher/masquer compteurs">COMPTEURS</button>
         <span class="pill hidden" id="pillTasks">0/0 tâches</span>
         <span class="pill hidden" id="pillEto">0/0 étorions</span>
         <span class="pill hidden" id="pillDone">0 faites</span>
         <span class="pill hidden" id="pillTimer">00:00</span>
 
-        <!-- quick theme -->
-        <button class="btn primary keepFocus" id="btnTheme" title="Thème"><span id="themeLabel">THÈME CLAIR</span></button>
-
-        <!-- show/hide below list on main -->
-        <button class="btn keepFocus" id="btnListToggle">LISTE</button>
-
-        <!-- undo -->
-        <button class="btn keepFocus" id="btnUndo" title="Annuler la dernière action">UNDO</button>
-
-        <button class="btn keepFocus" id="btnFocus">FOCUS</button>
+        <button class="btn keepFocus" id="btnListToggle" title="Afficher/masquer la liste sur l'écran">LISTE</button>
+        <button class="btn keepFocus" id="btnFocus" title="Mode focus (flow)">FOCUS</button>
       </div>
 
       <div class="right">
-        <!-- open right panel -->
         <button class="btn icon keepFocus" id="btnRight" title="Panneau droit">▦</button>
       </div>
     </div>
@@ -972,7 +1063,7 @@
           <div class="barLabel">progression tâches</div>
           <div class="barLabel" id="barInfo">—</div>
         </div>
-        <div class="bar">
+        <div class="bar" title="La barre commence à 100% et diminue">
           <div class="barFill" id="taskBarFill" style="width:100%"></div>
           <div class="barPct" id="taskBarPct">100%</div>
         </div>
@@ -986,6 +1077,7 @@
         <div class="actions">
           <div class="roulette" id="btnRoulette" title="Roulette">
             <div class="rouletteRing" aria-hidden="true"></div>
+            <div class="rouletteNeedle" aria-hidden="true"></div>
             <div class="rouletteText">ROULETTE</div>
           </div>
 
@@ -996,10 +1088,14 @@
               <small>1 ÉTORION</small>
             </div>
           </div>
+        </div>
 
-          <div class="miniIcon" id="btnNotes" title="Notes">✎</div>
+        <div class="miniRow">
+          <div class="miniIcon" id="btnUndo" title="Annuler (undo)">↶</div>
+          <div class="miniIcon miniLabel" id="btnNotes" title="Notes">NOTES</div>
           <div class="miniIcon" id="btnDoneTask" title="Tâche dégommée">✓</div>
           <div class="miniIcon" id="btnEditTask" title="Éditer">≋</div>
+          <div class="miniIcon" id="btnPause" title="Pause compteur / Pomodoro">⏸</div>
         </div>
 
         <div class="belowList" id="belowList">
@@ -1011,7 +1107,7 @@
         </div>
 
         <div class="small" id="hintLine" style="text-align:center">
-          Flow = une cible, une action, zéro tribunal intérieur.
+          Une cible. Une action. Zéro tribunal intérieur.
         </div>
       </div>
     </div>
@@ -1019,19 +1115,29 @@
 
   <script>
 /* =========================================================
-   ELIMINATOR — Left menu + Right panel + Appearance + Undo
+   ELIMINATOR — unified (no emojis UI except bomb)
+   - monochrome glass, accent glow
+   - tasks + categories parsing
+   - adaptive celebration (not on habits/emotions/import/notes)
+   - focus mode strict
+   - undo
+   - pause timer + pomodoro adjustable
+   - right panel: sets / habits / emotions
+   - sets fully editable (title, unit, count, items, categories, order)
+   - export 1 click text/json/csv
    ========================================================= */
 
 const $ = (id)=>document.getElementById(id);
 const clamp = (n,a,b)=>Math.max(a, Math.min(b,n));
 const uid = ()=>Math.random().toString(36).slice(2,10)+"_"+Date.now().toString(36);
 const nowISO = ()=>new Date().toISOString();
-const dayKey = (d=new Date())=>{
+
+function dayKey(d=new Date()){
   const y=d.getFullYear();
   const m=String(d.getMonth()+1).padStart(2,"0");
   const da=String(d.getDate()).padStart(2,"0");
   return `${y}-${m}-${da}`;
-};
+}
 function fmtMMSS(ms){
   const s = Math.floor(ms/1000);
   const mm = String(Math.floor(s/60)).padStart(2,"0");
@@ -1047,58 +1153,89 @@ function escapeHTML(s){
 /* -------------------------
    Storage
 ------------------------- */
-const LS_KEY = "eliminator_v5_right_appearance_undo";
+const LS_KEY = "eliminator_unified_2026_02_07";
+
+const ACCENTS = {
+  cyan:   { a:"rgba(0,140,255,.16)", a2:"rgba(0,140,255,.32)" },
+  violet: { a:"rgba(140,80,255,.16)", a2:"rgba(140,80,255,.32)" },
+  lime:   { a:"rgba(0,255,140,.14)", a2:"rgba(0,255,140,.30)" },
+  amber:  { a:"rgba(255,180,0,.14)", a2:"rgba(255,180,0,.28)" },
+  steel:  { a:"rgba(180,200,255,.12)", a2:"rgba(180,200,255,.24)" },
+  rose:   { a:"rgba(255,120,180,.12)", a2:"rgba(255,120,180,.24)" },
+  ice:    { a:"rgba(120,220,255,.12)", a2:"rgba(120,220,255,.24)" }
+};
+const FONT_FAMILIES = {
+  system: 'ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial',
+  elegant: '"SF Pro Display", -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial',
+  neutral: 'system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial',
+  serif: 'ui-serif, "New York", "Iowan Old Style", Georgia, serif'
+};
+
 const defaultState = {
   theme: "light",
   focus: false,
 
   // visibility
   showBelowList: false,
-  showCounters: false,      // pills hidden by default
-  countersAutoHideSec: 10,  // auto-hide after showing
+  showCounters: false,
+  countersAutoHideSec: 10,
 
   // panels
-  drawerW: 440,
-  rightW: 420,
+  drawerW: 460,
+  rightW: 520,
   activeTab: "inbox",
   rightTab: "sets",
 
   // appearance
   appearance: {
-    accentLight: "cyan",   // options below
+    accentLight: "cyan",
     accentDark: "lime",
-    fontFamily: "system",
+    barColorLight: "cyan",
+    barColorDark: "lime",
+    fontFamily: "elegant",
     uiScale: 1.00,
-    titleScale: 1.00,
-    taskScale: 1.22,
-    borders: "on",         // on/off
-    buttons: "ghost",      // ghost/filled
-    radius: 12,
-    barH: 34,
+    titleScale: 1.18,
+    taskScale: 1.50,
+    borders: "on",
+    buttons: "ghost",
+    radius: 6,
+    barH: 38,
     chipH: 18
   },
 
+  // flow / coaching
   settings: {
-    etorionMin: 5,
-    fatigue: 2, motivation: 2,
-
-    celebrationChance: 0.28,
+    fatigue: 2, motivation: 2, // 0..4
+    celebrationBase: 0.18,
     celebrationAutoCloseSec: 11,
-
-    tipsChance: 0.16,
+    tipsChance: 0.14,
     tipsMinGapMin: 6,
-
     nudgeChance: 0.10,
     nudgeMinGapMin: 10,
 
+    // adaptive celebrations
+    streakMilestone: 3,
+    longGapMin: 10,          // if no celebration for X min, bonus
+    megaOnMilestones: true,  // 25/50/75/100 or streak
     keepListInFocus: true,
-    listSort: "roulette",
-    includedCats: [],
 
+    // kiffance coaching cadence
     autoSuggestKiffance: true,
     kiffanceSuggestEveryEto: 6
   },
 
+  // timer
+  timer: {
+    running: true,
+    startedAt: null,   // epoch ms
+    pausedAt: null,    // epoch ms when paused
+    pausedTotal: 0,    // ms
+    pomodoroMin: 25,
+    pomodoroRunning: false,
+    pomodoroEndsAt: null
+  },
+
+  // tasks
   tasks: [],
   baseline: { totalTasks:0, totalEtorions:0 },
   currentTaskId: null,
@@ -1108,25 +1245,28 @@ const defaultState = {
   habits: [],
   history: [],
 
+  // kiffance bank (4 buckets)
   kiffance: { bank: {"5":[], "10":[], "15":[], "25":[]} },
 
+  // Sets (fully editable, multiple)
   sets: {
-    hospital: { enabled:true, patients: 4, itemsPerPatient:["Voir patient","Note","Traitement","Dossier"], checks:{} },
-    consult:  { enabled:true, patients: 6, itemsPerPatient:["Voir patient","Note","Ordonnance","Dossier"], checks:{} }
+    list: [],
+    selectedId: null
   },
 
+  // emotion journal
   emotions: { entries: [] },
 
+  // stats
+  stats: { etorionsDone: 0, tasksDone: 0 },
+  streak: { tasksInARow: 0, lastTaskDoneAt: null },
+  lastCelebrationAt: null,
   lastTipAt: null,
   lastNudgeAt: null,
 
-  stats: { etorionsDone: 0, tasksDone: 0 },
-
-  // undo stack: store compact snapshots of task-related state
+  // undo stack
   undo: []
 };
-
-let state = loadState();
 
 function deepAssign(target, src){
   for(const k in src){
@@ -1137,8 +1277,9 @@ function deepAssign(target, src){
     }
   }
 }
+
 function seedState(s){
-  // seed kiffance bank
+  // seed kiffance
   const bank = s.kiffance?.bank || (s.kiffance={bank:{"5":[], "10":[], "15":[], "25":[]}}).bank;
   const emptyAll = ["5","10","15","25"].every(k => Array.isArray(bank[k]) && bank[k].length===0);
   if(emptyAll){
@@ -1148,7 +1289,7 @@ function seedState(s){
       "Regarde au loin 20 secondes. Reviens.",
       "Micro-marche 60 secondes. Retour immédiat.",
       "Étire nuque/épaules 45 secondes. Stop.",
-      "Nettoie une surface (30 secondes). Fin."
+      "Nettoie une surface 30 secondes. Terminé."
     ];
     bank["10"] = [
       "Mini-reset: eau + toilette + retour.",
@@ -1161,19 +1302,56 @@ function seedState(s){
       "Pause active: marche 10 + eau 5.",
       "Snack simple sans écran + reprise.",
       "Étirements 7 + respiration 8.",
-      "Mini-douche/visage + retour."
+      "Visage / mains + retour propre."
     ];
     bank["25"] = [
       "Vraie pause: 20 min hors écran + 5 min reprise douce.",
       "Petite marche + retour avec une seule priorité.",
       "Micro-sieste 15–20 min + eau + reprise.",
-      "Respiration + musique sans scroll."
+      "Musique calme, pas de scroll. Puis reprise."
     ];
   }
 
+  // seed sets (2 defaults) if none
+  if(!s.sets || !Array.isArray(s.sets.list)) s.sets = { list:[], selectedId:null };
+  if(s.sets.list.length===0){
+    const mkSet = (title, unitName, unitCount, items, categories=[]) => ({
+      id: uid(),
+      title,
+      unitName,
+      unitCount,
+      items,          // array of strings
+      categories,     // optional categories it belongs to (info only)
+      checks: {},     // dayKey -> { "u1_i0": true }
+      pinned: false,
+      order: Date.now() + Math.random()
+    });
+    const hosp = mkSet(
+      "HOSPITALIER",
+      "Patient",
+      4,
+      ["Voir patient","Note","Traitement","Dossier"],
+      ["HÔPITAL"]
+    );
+    const consult = mkSet(
+      "CONSULTATION",
+      "Patient",
+      6,
+      ["Voir patient","Note","Ordonnance","Dossier"],
+      ["CONSULT"]
+    );
+    s.sets.list = [hosp, consult];
+    s.sets.selectedId = hosp.id;
+  }else{
+    if(!s.sets.selectedId) s.sets.selectedId = s.sets.list[0]?.id || null;
+  }
+
   if(!s.undo) s.undo = [];
+  if(!s.timer) s.timer = structuredClone(defaultState.timer);
+
   return s;
 }
+
 function loadState(){
   try{
     const raw = localStorage.getItem(LS_KEY);
@@ -1186,97 +1364,124 @@ function loadState(){
     return seedState(structuredClone(defaultState));
   }
 }
-function saveState(){
-  localStorage.setItem(LS_KEY, JSON.stringify(state));
-}
+let state = loadState();
+function saveState(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
 
 /* -------------------------
-   Appearance mappings
+   Appearance
 ------------------------- */
-const ACCENTS = {
-  cyan:   { a:"rgba(0,140,255,.16)", a2:"rgba(0,140,255,.30)" },
-  violet: { a:"rgba(140,80,255,.16)", a2:"rgba(140,80,255,.30)" },
-  lime:   { a:"rgba(0,255,140,.14)", a2:"rgba(0,255,140,.26)" },
-  amber:  { a:"rgba(255,180,0,.14)", a2:"rgba(255,180,0,.26)" },
-  steel:  { a:"rgba(180,200,255,.12)", a2:"rgba(180,200,255,.22)" }
-};
-const FONT_FAMILIES = {
-  system: 'ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial',
-  elegant: '"SF Pro Display", -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial',
-  neutral: 'system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial',
-  monoish: 'ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial'
-};
-
 function applyAppearance(){
-  // theme
   document.body.setAttribute("data-theme", state.theme);
-
-  // borders / buttons
   document.body.setAttribute("data-borders", state.appearance.borders || "on");
   document.body.setAttribute("data-buttons", state.appearance.buttons || "ghost");
 
-  // sizes
   document.documentElement.style.setProperty("--uiScale", String(state.appearance.uiScale ?? 1.0));
-  document.documentElement.style.setProperty("--titleScale", String(state.appearance.titleScale ?? 1.0));
-  document.documentElement.style.setProperty("--taskScale", String(state.appearance.taskScale ?? 1.22));
+  document.documentElement.style.setProperty("--titleScale", String(state.appearance.titleScale ?? 1.18));
+  document.documentElement.style.setProperty("--taskScale", String(state.appearance.taskScale ?? 1.5));
 
-  document.documentElement.style.setProperty("--radius", `${clamp(state.appearance.radius ?? 12, 6, 18)}px`);
-  document.documentElement.style.setProperty("--barH", `${clamp(state.appearance.barH ?? 34, 24, 46)}px`);
-  document.documentElement.style.setProperty("--chipH", `${clamp(state.appearance.chipH ?? 18, 14, 26)}px`);
+  document.documentElement.style.setProperty("--radius", `${clamp(state.appearance.radius ?? 6, 0, 14)}px`);
+  document.documentElement.style.setProperty("--barH", `${clamp(state.appearance.barH ?? 38, 26, 52)}px`);
+  document.documentElement.style.setProperty("--chipH", `${clamp(state.appearance.chipH ?? 18, 12, 28)}px`);
 
-  // widths
-  document.documentElement.style.setProperty("--drawerW", `${clamp(state.drawerW||440, 340, 860)}px`);
-  document.documentElement.style.setProperty("--rightW", `${clamp(state.rightW||420, 320, 860)}px`);
+  document.documentElement.style.setProperty("--drawerW", `${clamp(state.drawerW||460, 340, 920)}px`);
+  document.documentElement.style.setProperty("--rightW", `${clamp(state.rightW||520, 340, 980)}px`);
 
-  // font
-  const ff = FONT_FAMILIES[state.appearance.fontFamily] || FONT_FAMILIES.system;
+  const ff = FONT_FAMILIES[state.appearance.fontFamily] || FONT_FAMILIES.elegant;
   document.documentElement.style.setProperty("--font", ff);
 
-  // accent per theme
-  const key = (state.theme==="light") ? (state.appearance.accentLight||"cyan") : (state.appearance.accentDark||"lime");
-  const m = ACCENTS[key] || ACCENTS.cyan;
-  document.documentElement.style.setProperty("--accent", m.a);
-  document.documentElement.style.setProperty("--accent2", m.a2);
+  // accent
+  const accentKey = (state.theme==="light") ? (state.appearance.accentLight||"cyan") : (state.appearance.accentDark||"lime");
+  const a = ACCENTS[accentKey] || ACCENTS.cyan;
+  document.documentElement.style.setProperty("--accent", a.a);
+  document.documentElement.style.setProperty("--accent2", a.a2);
 
-  // theme label
+  // progress bar color (separate)
+  const barKey = (state.theme==="light") ? (state.appearance.barColorLight||accentKey) : (state.appearance.barColorDark||accentKey);
+  const b = ACCENTS[barKey] || a;
+  document.documentElement.style.setProperty("--barAccent", b.a);
+  document.documentElement.style.setProperty("--barAccent2", b.a2);
+
   $("themeLabel").textContent = state.theme==="light" ? "THÈME CLAIR" : "THÈME SOMBRE";
 }
 
 /* -------------------------
-   Pools
+   Pools (tagline + celebrations + tips)
+   Inspirations: LOTR / Inception / Frieren / medieval conquest / ninja / medical / videogame
 ------------------------- */
 const TAGLINE_POOL = [
-  "Dégomme toutes les tâches. Réécris la réalité.",
-  "Objectif: flow. Résultat: domination calme.",
-  "Une tâche à la fois. Sort ancien: neutralisé.",
-  "Mode quête principale: activé. PNJ intérieur: rassuré.",
-  "Une micro-action = une faille dans l’empire du bazar.",
-  "Le chaos a une armée. Toi, tu as une stratégie."
+  "Quête principale: active. Quêtes secondaires: muselées.",
+  "Le chaos a une armée. Toi, tu as une tactique clinique.",
+  "Un étorion. Une incision nette. Hémostase du bazar.",
+  "Bienvenue dans le donjon administratif. Tu as la clé.",
+  "Inception, mais pour les to-do: implantation de flow réussie.",
+  "Frieren dirait: « Encore une petite action, et le monde change. »",
+  "Mode ninja: silencieux. Précis. Irréprochable.",
+  "Tu poses des balises dans le temps. Le temps obéit."
 ];
-const CELE_POOL = [
-  {t:"CHANT DE VICTOIRE", m:"Une tâche est tombée. Les montagnes administratives ont légèrement tremblé."},
-  {t:"BANNIÈRE PLANTÉE", m:"Territoire reconquis. La frontière du chaos recule d’un pas."},
-  {t:"ARCHITECTE DU RÉEL", m:"Tu viens de plier le temps en origami. Réalité: stabilisée."},
-  {t:"TECHNIQUE INTERDITE", m:"Coup précis. La tâche est KO avant d’avoir compris."},
-  {t:"GESTE CLINIQUE NET", m:"Incision propre dans le chaos. Hémostase parfaite. Fermeture: impeccable."},
-  {t:"QUÊTE VALIDÉE", m:"Objectif atteint. Butin: paix intérieure + points de dignité."},
-  {t:"PORTAIL REFERMÉ", m:"Tu viens de fermer une boucle mentale. Silence sacré."}
+
+const CELE_POOL_SMALL = [
+  {t:"BANNIÈRE PLANTÉE", m:"Territoire reconquis. Le chaos recule d’un pas."},
+  {t:"TECHNIQUE INTERDITE", m:"Coup net. La tâche n’a pas eu le temps de protester."},
+  {t:"INCISION PROPRE", m:"Acte clinique: précis. Fermeture: impeccable."},
+  {t:"PORTAIL REFERMÉ", m:"Boucle mentale scellée. Silence sacré."},
+  {t:"QUÊTE VALIDÉE", m:"Objectif atteint. Butin: clarté + points de dignité."},
+  {t:"NINJUTSU ADMINISTRATIF", m:"Tu as éliminé la cible sans bruit. Personne n’a rien vu."},
+  {t:"TOTEM STABLE", m:"Réalité stabilisée. Ton totem ne vacille pas."}
 ];
+
+const CELE_POOL_MEGA = [
+  {t:"SEIGNEUR DES LISTES", m:"Les ombres du chaos s’effacent. Tu marches avec la lumière du flow."},
+  {t:"ARCHITECTE DU RÉEL", m:"Tu plies le temps en origami. La journée se met au garde-à-vous."},
+  {t:"ROI·REINE CONQUISTADOR·A", m:"Tu plantes ton étendard sur la montagne des obligations. Victoire absolue."},
+  {t:"RAID FINAL BOSS", m:"Le boss « procrastination » vient de prendre un critique. Écran de victoire."},
+  {t:"DÉPLOIEMENT CLINIQUE", m:"Symptôme: chaos. Traitement: toi. Réponse: spectaculaire."},
+  {t:"DREAM WITHIN DREAM", m:"Tu termines une tâche dans une tâche… et tu reviens avec du flow dans les poches."}
+];
+
 const TIPS_POOL = [
   {t:"RÈGLE DU LASER", m:"Une seule cible. Pas de multi-onglets. Exécution."},
-  {t:"CORPS = INTERRUPTEUR", m:"Épaules basses, mâchoire relâchée. Ton cerveau suit ton corps."},
-  {t:"ANTI-FRICTION", m:"Enlève un obstacle matériel maintenant (câble, dossier, onglet)."},
-  {t:"MICRO-CONTRAT", m:"Fais juste 1 étorion. Après, tu renégocies. (Spoiler: non.)"}
+  {t:"ANTI-FRICTION", m:"Enlève un obstacle matériel maintenant (dossier, onglet, câble)."},
+  {t:"MICRO-CONTRAT", m:"Fais juste 1 étorion. Après, tu renégocies. (Spoiler: non.)"},
+  {t:"CORPS = INTERRUPTEUR", m:"Épaules basses. Mâchoire relâchée. Le cerveau suit."}
 ];
+
 const EMO_NUDGES = [
-  {t:"STOP (30s)", m:"Nommer l’émotion: « Je remarque ___ ». Puis 3 respirations lentes."},
-  {t:"ANCRAGE 5-4-3-2-1", m:"5 choses vues, 4 touchées, 3 entendues, 2 senties, 1 goûtée."},
-  {t:"DÉFUSION", m:"Remplace « je suis nul·le » par « j’ai la pensée que… »."},
-  {t:"MICRO-CHOIX", m:"Quel est le prochain geste de 30 secondes qui va dans ton sens ?"}
+  {t:"STOP (30s)", m:"Je remarque l’émotion: « ___ ». 3 respirations lentes. Puis reprise."},
+  {t:"ANCRAGE 5-4-3-2-1", m:"5 vues, 4 touchées, 3 entendues, 2 senties, 1 goûtée."},
+  {t:"DÉFUSION", m:"Remplace « je suis X » par « j’ai la pensée que… »."},
+  {t:"ACTION OPPOSÉE (micro)", m:"Choisis un geste de 30 secondes à l’opposé de l’évitement."}
+];
+
+const DISTORTIONS = [
+  {k:"Tout ou rien", d:"Noir/blanc: « si ce n’est pas parfait, c’est nul »."},
+  {k:"Surgénéralisation", d:"Un événement → « c’est toujours comme ça »."},
+  {k:"Filtre négatif", d:"Tu zoomes sur le défaut, tu ignores le reste."},
+  {k:"Disqualification du positif", d:"Tu annules ce qui va bien (« c’est rien »)."},
+  {k:"Lecture de pensée", d:"Tu crois savoir ce que l’autre pense (sans preuve)."},
+  {k:"Catastrophisme", d:"Tu projettes le pire scénario comme certitude."},
+  {k:"Doit / Il faut", d:"Règles rigides qui écrasent la flexibilité."},
+  {k:"Personnalisation", d:"Tu t’attribues la cause de tout."},
+  {k:"Raisonnement émotionnel", d:"« Je le sens donc c’est vrai »."},
+  {k:"Étiquetage", d:"Tu te colles une étiquette globale (« je suis X »)."}
+];
+
+const EMOTIONS = ["Anxiété","Colère","Tristesse","Honte","Culpabilité","Stress","Frustration","Soulagement","Joie","Fatigue","Solitude","Dégoût","Peur","Irritabilité"];
+const NEEDS = ["Sécurité","Repos","Clarté","Lien","Contrôle","Reconnaissance","Compétence","Autonomie","Sens","Protection"];
+const BLOCKS = ["Surcharge","Flou des priorités","Peur de mal faire","Fatigue","Distraction","Évitement","Perfectionnisme","Trop de décisions","Conflit","Manque d’info"];
+const SKILLS = [
+  "Respiration 4-6 (2 min)",
+  "Ancrage 5-4-3-2-1 (1 min)",
+  "Défusion: « j’ai la pensée que… »",
+  "STOP (TCC/DBT) (30s)",
+  "Action opposée (micro)",
+  "Plan 1 étorion (micro-action)",
+  "Réévaluation (3 lignes)",
+  "Auto-compassion brève",
+  "Hydratation + posture + reprise"
 ];
 
 /* -------------------------
-   Parsing tasks
+   Task parsing
 ------------------------- */
 function isAllCapsLine(line){
   const t = line.trim();
@@ -1330,30 +1535,20 @@ function importFromInbox(text){
 }
 
 /* -------------------------
-   Tasks
+   Tasks core
 ------------------------- */
 function activeTasks(){
-  const inc = state.settings.includedCats;
-  return state.tasks.filter(t=>!t.done).filter(t=>{
-    if(!inc || inc.length===0) return true;
-    return inc.includes(t.cat);
-  });
+  return state.tasks.filter(t=>!t.done);
 }
-function getTaskById(id){
-  return state.tasks.find(t=>t.id===id) || null;
-}
+function getTaskById(id){ return state.tasks.find(t=>t.id===id) || null; }
 function setCurrentTask(id){
   state.currentTaskId = id;
   state.currentTaskStart = Date.now();
+  // also start global timer if not started
+  if(!state.timer.startedAt) state.timer.startedAt = Date.now();
 }
 function sortTasks(list){
-  const mode = state.settings.listSort || "roulette";
-  if(mode==="alpha") return [...list].sort((a,b)=>a.title.localeCompare(b.title,"fr"));
-  if(mode==="cat") return [...list].sort((a,b)=>{
-    const c = a.cat.localeCompare(b.cat,"fr");
-    return c!==0 ? c : a.title.localeCompare(b.title,"fr");
-  });
-  if(mode==="ordre") return [...list].sort((a,b)=> (a.createdAt||"").localeCompare(b.createdAt||""));
+  // pinned then createdAt
   return [...list].sort((a,b)=>{
     if(a.pinned && !b.pinned) return -1;
     if(!a.pinned && b.pinned) return 1;
@@ -1382,7 +1577,8 @@ function ensureCurrentTask(){
 }
 
 /* -------------------------
-   Progress
+   Baseline + progress (remaining%)
+   bar should start 100 and decrease => remaining/base * 100
 ------------------------- */
 function recomputeBaselineIfNeeded(){
   if(state.baseline.totalTasks===0 && state.baseline.totalEtorions===0 && state.tasks.length>0){
@@ -1397,15 +1593,15 @@ function computeProgress(){
   const remaining = activeTasks();
   const remT = remaining.length;
   const remE = remaining.reduce((a,t)=>a+(t.etorionsLeft||0),0);
+
   const pct = (baseT<=0) ? 100 : clamp(Math.round((remT/baseT)*100), 0, 100);
   return { baseT, baseE, remT, remE, pct };
 }
 
 /* -------------------------
-   Undo (task-related snapshots)
+   Undo snapshots
 ------------------------- */
 function pushUndo(label){
-  // store compact snapshot of task-run state
   const snap = {
     label,
     at: Date.now(),
@@ -1413,7 +1609,9 @@ function pushUndo(label){
     baseline: structuredClone(state.baseline),
     currentTaskId: state.currentTaskId,
     currentTaskStart: state.currentTaskStart,
-    stats: structuredClone(state.stats)
+    stats: structuredClone(state.stats),
+    streak: structuredClone(state.streak),
+    lastCelebrationAt: state.lastCelebrationAt
   };
   state.undo.unshift(snap);
   state.undo = state.undo.slice(0, 12);
@@ -1426,6 +1624,8 @@ function undo(){
   state.currentTaskId = snap.currentTaskId;
   state.currentTaskStart = snap.currentTaskStart;
   state.stats = snap.stats;
+  state.streak = snap.streak;
+  state.lastCelebrationAt = snap.lastCelebrationAt;
   saveState();
   renderAll();
 }
@@ -1455,7 +1655,7 @@ function renderNotes(){
 }
 
 /* -------------------------
-   Habits + mini-charts
+   Habits
 ------------------------- */
 function addHabit(name, slots){
   const nm = (name||"").trim();
@@ -1476,80 +1676,109 @@ function toggleHabitCheck(hId, idx){
 }
 
 /* -------------------------
-   Sets
+   Sets (editable, multiple)
 ------------------------- */
-function initSetsChecksForToday(){
-  const dk = dayKey();
-  for(const key of ["hospital","consult"]){
-    const s = state.sets[key];
-    if(!s.checks) s.checks = {};
-    if(!s.checks[dk]) s.checks[dk] = {};
+function getSetById(id){ return state.sets.list.find(s=>s.id===id) || null; }
+function selectedSet(){
+  return getSetById(state.sets.selectedId) || state.sets.list[0] || null;
+}
+function ensureSelectedSet(){
+  if(state.sets.list.length===0) return;
+  if(!state.sets.selectedId || !getSetById(state.sets.selectedId)){
+    state.sets.selectedId = state.sets.list[0].id;
   }
 }
-function setKeyItem(setName, pIndex, itemIndex){
-  return `${setName}|p${pIndex}|i${itemIndex}`;
-}
-function toggleSetCheck(setName, pIndex, itemIndex){
-  initSetsChecksForToday();
+function initSetChecksForToday(set){
   const dk = dayKey();
-  const set = state.sets[setName];
-  const k = setKeyItem(setName,pIndex,itemIndex);
+  if(!set.checks) set.checks = {};
+  if(!set.checks[dk]) set.checks[dk] = {};
+}
+function setCheckKey(uIndex, iIndex){ return `u${uIndex}_i${iIndex}`; }
+function toggleSetCheck(setId, uIndex, iIndex){
+  const set = getSetById(setId);
+  if(!set) return;
+  initSetChecksForToday(set);
+  const dk = dayKey();
+  const k = setCheckKey(uIndex, iIndex);
   set.checks[dk][k] = !set.checks[dk][k];
 }
-function resetSetToday(setName){
-  initSetsChecksForToday();
-  const dk = dayKey();
-  const set = state.sets[setName];
-  set.checks[dk] = {};
+function resetSetToday(setId){
+  const set = getSetById(setId);
+  if(!set) return;
+  initSetChecksForToday(set);
+  set.checks[dayKey()] = {};
 }
-function summarizeSetsToday(){
-  initSetsChecksForToday();
+function summarizeSetToday(setId){
+  const set = getSetById(setId);
+  if(!set) return {done:0,total:0};
+  initSetChecksForToday(set);
   const dk = dayKey();
-  const out = {};
-  for(const key of ["hospital","consult"]){
-    const set = state.sets[key];
-    const checks = set.checks?.[dk] || {};
-    const total = set.patients * set.itemsPerPatient.length;
-    const done = Object.values(checks).filter(Boolean).length;
-    out[key] = { done, total };
-  }
-  return out;
+  const checks = set.checks[dk] || {};
+  const total = (set.unitCount||0) * (set.items?.length||0);
+  const done = Object.values(checks).filter(Boolean).length;
+  return {done,total};
+}
+function addSet(){
+  const s = {
+    id: uid(),
+    title: "NOUVEAU SET",
+    unitName: "Item",
+    unitCount: 3,
+    items: ["Étape 1","Étape 2","Étape 3"],
+    categories: [],
+    checks: {},
+    pinned: false,
+    order: Date.now()
+  };
+  state.sets.list.push(s);
+  state.sets.selectedId = s.id;
+}
+function deleteSet(id){
+  state.sets.list = state.sets.list.filter(s=>s.id!==id);
+  ensureSelectedSet();
+}
+function moveSet(id, delta){
+  const idx = state.sets.list.findIndex(s=>s.id===id);
+  if(idx<0) return;
+  const j = clamp(idx+delta, 0, state.sets.list.length-1);
+  const [it] = state.sets.list.splice(idx,1);
+  state.sets.list.splice(j,0,it);
 }
 
 /* -------------------------
-   Emotion Journal + charts
+   Emotion Journal (TOP clicky)
 ------------------------- */
-const DISTORTIONS = [
-  "Tout ou rien","Surgénéralisation","Filtre négatif","Disqualification du positif",
-  "Lecture de pensée","Catastrophisme","Doit / Il faut","Personnalisation",
-  "Raisonnement émotionnel","Étiquetage"
-];
-const EMOTIONS = ["Anxiété","Colère","Tristesse","Honte","Culpabilité","Stress","Frustration","Soulagement","Joie","Fatigue","Solitude","Dégoût","Peur","Irritabilité"];
-const SKILLS = [
-  "Respiration 4-6 (2 min)",
-  "Ancrage 5-4-3-2-1 (1 min)",
-  "Défusion: « j’ai la pensée que… »",
-  "Opposite action (micro)",
-  "Pause + eau + reprise",
-  "Plan 1 étorion (micro-action)",
-  "Réévaluation écrite (3 lignes)",
-  "Auto-compassion brève"
-];
-function addEmotionEntry(entry){
-  state.emotions.entries.unshift(entry);
-}
+function addEmotionEntry(e){ state.emotions.entries.unshift(e); }
 function emotionsToday(){
   const dk = dayKey();
   return (state.emotions.entries||[]).filter(e=>e.day===dk);
 }
+function avgIntensity(list){
+  if(!list || list.length===0) return 0;
+  const vals = list.map(e=>Number(e.intensity)||0);
+  return Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+}
+function topEmotion(list){
+  if(!list || list.length===0) return null;
+  const map = new Map();
+  list.forEach(e=>{
+    map.set(e.emotion, (map.get(e.emotion)||0) + 1);
+  });
+  let best=null, bestv=-1;
+  for(const [k,v] of map.entries()){
+    if(v>bestv){ bestv=v; best=k; }
+  }
+  return best;
+}
 
 /* -------------------------
-   History snapshot + calendar
+   History snapshots + heatmap layers
 ------------------------- */
 function snapshotDay(){
   const dk = dayKey();
   const doneToday = state.tasks.filter(t=>t.done && t.doneAt && t.doneAt.startsWith(dk));
   const active = activeTasks();
+
   const baseE = state.baseline.totalEtorions || 0;
   const doneE = (state.stats.etorionsDone||0);
 
@@ -1557,9 +1786,14 @@ function snapshotDay(){
     const p = habitProgress(h);
     return { name:h.name, done:p.done, total:p.tot };
   });
-  const sets = summarizeSetsToday();
+
+  const setSummary = (state.sets.list||[]).map(s=>{
+    const sum = summarizeSetToday(s.id);
+    return { id:s.id, title:s.title, done:sum.done, total:sum.total };
+  });
+
   const emoToday = emotionsToday();
-  const emoSummary = { count: emoToday.length, avg: avgIntensity(emoToday) };
+  const emoSummary = { count: emoToday.length, avg: avgIntensity(emoToday), top: topEmotion(emoToday) };
 
   const entry = {
     day: dk,
@@ -1570,18 +1804,13 @@ function snapshotDay(){
     doneEtorions: doneE,
     baselineEtorions: baseE,
     habits: habitsSummary,
-    sets,
+    sets: setSummary,
     emotions: emoSummary
   };
 
   const idx = state.history.findIndex(x=>x.day===dk);
   if(idx>=0) state.history[idx] = entry;
   else state.history.unshift(entry);
-}
-function avgIntensity(list){
-  if(!list || list.length===0) return 0;
-  const vals = list.map(e=>Number(e.intensity)||0);
-  return Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
 }
 
 /* -------------------------
@@ -1604,7 +1833,7 @@ let confettiRAF = null;
 function confettiBurst(strength=1){
   const w = window.innerWidth;
   const h = window.innerHeight;
-  const n = Math.floor(170*strength);
+  const n = Math.floor(190*strength);
   const centerX = w/2;
   const centerY = h/3;
 
@@ -1613,10 +1842,10 @@ function confettiBurst(strength=1){
       x:centerX,
       y:centerY,
       vx:(Math.random()-0.5)*12*strength,
-      vy:(Math.random()-0.8)*14*strength,
+      vy:(Math.random()-0.85)*16*strength,
       g: (0.33 + Math.random()*0.25) * (0.9 + strength*0.2),
       r: 2 + Math.random()*4*strength,
-      life: 85 + Math.random()*60,
+      life: 90 + Math.random()*70,
       rot: Math.random()*Math.PI,
       vr: (Math.random()-0.5)*0.35
     });
@@ -1638,7 +1867,7 @@ function animateConfetti(){
       ctx.save();
       ctx.translate(p.x,p.y);
       ctx.rotate(p.rot);
-      ctx.globalAlpha = 0.86;
+      ctx.globalAlpha = 0.84;
       ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--fg");
       ctx.fillRect(-p.r, -p.r, p.r*2, p.r*2);
       ctx.restore();
@@ -1664,47 +1893,90 @@ function openModal(id){
   $(id).style.display = "flex";
 }
 function closeAllModals(){
-  ["notesModal","celeModal","tipsModal","emoNudgeModal"].forEach(id=>{
-    $(id).style.display = "none";
+  ["notesModal","celeModal","tipsModal","emoNudgeModal","biasModal","setEditModal","exportModal"].forEach(id=>{
+    const el = $(id);
+    if(el) el.style.display = "none";
   });
   $("modalBack").style.display = "none";
 }
 $("modalBack").addEventListener("click", closeAllModals);
-["notesModal","celeModal","tipsModal","emoNudgeModal"].forEach(id=>{
-  $(id).addEventListener("click", closeAllModals);
+["notesModal","celeModal","tipsModal","emoNudgeModal","biasModal","setEditModal","exportModal"].forEach(id=>{
+  const el = $(id);
+  el.addEventListener("click", closeAllModals);
 });
 
-function showCelebration(forceStrength=1){
-  const pick = CELE_POOL[rand(CELE_POOL.length)];
+function setRandomTagline(force=false){
+  const el = $("tagline");
+  if(force || Math.random()<0.20 || !el.textContent.trim()){
+    el.textContent = TAGLINE_POOL[rand(TAGLINE_POOL.length)];
+  }
+}
+
+/* -------------------------
+   Adaptive celebrations (NOT on import/habit/emotion/note)
+   Rules requested:
+   chance = base + bonus if 3 tasks in a row + bonus if long time no celebration
+   mega only on milestone 25/50/75/100 or streak
+------------------------- */
+function minutesSince(ts){
+  if(!ts) return 9999;
+  return (Date.now() - ts) / 60000;
+}
+function showCelebration(mega=false){
+  const pool = mega ? CELE_POOL_MEGA : CELE_POOL_SMALL;
+  const pick = pool[rand(pool.length)];
   $("celeTitle").textContent = pick.t;
   $("celeMsg").textContent = pick.m;
 
   const p = computeProgress();
   const done = (p.baseT - p.remT);
-  $("celeSub").textContent = `${done} ${plural(done,"tâche","tâches")} dégommée${done===1?"":"s"} · continue`;
+  $("celeSub").textContent = `${done} ${plural(done,"tâche","tâches")} ${plural(done,"dégommée","dégommées")} · continue`;
 
-  confettiBurst(1.45 * forceStrength);
+  confettiBurst(mega ? 1.75 : 1.15);
   openModal("celeModal");
+
+  state.lastCelebrationAt = Date.now();
+  saveState();
 
   const sec = clamp(parseInt(state.settings.celebrationAutoCloseSec,10)||11, 5, 20);
   if(celeTimer) clearTimeout(celeTimer);
   celeTimer = setTimeout(()=>closeAllModals(), sec*1000);
 }
-function maybeShowCelebration(){
-  const chance = clamp(Number(state.settings.celebrationChance)||0.28, 0, 1);
+function shouldMegaCelebrate(){
   const p = computeProgress();
   const done = (p.baseT - p.remT);
-  const boost = (done>0 && done%3===0) ? 0.20 : 0;
-  if(Math.random() < clamp(chance + boost, 0, 0.80)){
-    showCelebration(1);
+  if(done<=0) return false;
+  // milestones on done (25%,50%,75%,100%) OR streak
+  const milestones = [0.25,0.50,0.75,1.00].map(x=>Math.round((p.baseT||0)*x));
+  const isMilestone = milestones.includes(done) || (p.remT===0 && p.baseT>0);
+  const isStreak = (state.streak.tasksInARow||0) >= (state.settings.streakMilestone||3);
+  return !!(state.settings.megaOnMilestones && (isMilestone || isStreak));
+}
+function maybeShowCelebration(){
+  const base = clamp(Number(state.settings.celebrationBase)||0.18, 0, 1);
+  const streak = (state.streak.tasksInARow||0);
+  const bonusStreak = (streak>=3) ? 0.18 : 0;
+  const gapMin = minutesSince(state.lastCelebrationAt);
+  const bonusGap = (gapMin >= (state.settings.longGapMin||10)) ? 0.12 : 0;
+  const chance = clamp(base + bonusStreak + bonusGap, 0, 0.85);
+
+  if(Math.random() < chance){
+    const mega = shouldMegaCelebrate();
+    showCelebration(mega);
   }
 }
+
+/* -------------------------
+   Tips / nudges (punctual)
+------------------------- */
 function showTip(){
   const pick = TIPS_POOL[rand(TIPS_POOL.length)];
   $("tipsTitle").textContent = pick.t;
   $("tipsMsg").textContent = pick.m;
   $("tipsSub").textContent = "Conseil bref → retour au flow.";
   openModal("tipsModal");
+  state.lastTipAt = Date.now();
+  saveState();
   if(tipsTimer) clearTimeout(tipsTimer);
   tipsTimer = setTimeout(()=>closeAllModals(), 9000);
 }
@@ -1714,12 +1986,78 @@ function showNudge(){
   $("emoNudgeMsg").textContent = pick.m;
   $("emoNudgeSub").textContent = "Micro-régulation → puis reprise.";
   openModal("emoNudgeModal");
+  state.lastNudgeAt = Date.now();
+  saveState();
   if(nudgeTimer) clearTimeout(nudgeTimer);
   nudgeTimer = setTimeout(()=>closeAllModals(), 9000);
 }
+function maybeTip(){
+  const chance = clamp(Number(state.settings.tipsChance)||0.14, 0, 1);
+  const gap = minutesSince(state.lastTipAt);
+  if(gap < (state.settings.tipsMinGapMin||6)) return;
+  if(Math.random() < chance) showTip();
+}
+function maybeNudge(){
+  const chance = clamp(Number(state.settings.nudgeChance)||0.10, 0, 1);
+  const gap = minutesSince(state.lastNudgeAt);
+  if(gap < (state.settings.nudgeMinGapMin||10)) return;
+  if(Math.random() < chance) showNudge();
+}
 
 /* -------------------------
-   Etorion + complete
+   Timer / pause / pomodoro
+------------------------- */
+function timerNowMs(){
+  if(!state.timer.startedAt) return 0;
+  const now = Date.now();
+  const paused = state.timer.pausedTotal || 0;
+  const extraPaused = state.timer.pausedAt ? (now - state.timer.pausedAt) : 0;
+  return Math.max(0, now - state.timer.startedAt - paused - extraPaused);
+}
+function togglePause(){
+  // pause affects timer only (not tasks)
+  if(!state.timer.startedAt) state.timer.startedAt = Date.now();
+  if(state.timer.pausedAt){
+    // resume
+    state.timer.pausedTotal = (state.timer.pausedTotal||0) + (Date.now() - state.timer.pausedAt);
+    state.timer.pausedAt = null;
+    state.timer.running = true;
+  }else{
+    state.timer.pausedAt = Date.now();
+    state.timer.running = false;
+  }
+  saveState();
+  renderAll();
+}
+function startPomodoro(){
+  const min = clamp(parseInt(state.timer.pomodoroMin,10)||25, 5, 90);
+  state.timer.pomodoroMin = min;
+  state.timer.pomodoroRunning = true;
+  state.timer.pomodoroEndsAt = Date.now() + min*60*1000;
+  saveState();
+}
+function stopPomodoro(){
+  state.timer.pomodoroRunning = false;
+  state.timer.pomodoroEndsAt = null;
+  saveState();
+}
+function pomodoroLeft(){
+  if(!state.timer.pomodoroRunning || !state.timer.pomodoroEndsAt) return null;
+  const ms = state.timer.pomodoroEndsAt - Date.now();
+  return Math.max(0, ms);
+}
+function tickPomodoro(){
+  const left = pomodoroLeft();
+  if(left===null) return;
+  if(left<=0){
+    stopPomodoro();
+    // nudge: suggest kiffance (not celebration)
+    showNudge();
+  }
+}
+
+/* -------------------------
+   Etorions + completing tasks
 ------------------------- */
 function degommeEtorion(){
   const t = getTaskById(state.currentTaskId);
@@ -1731,13 +2069,13 @@ function degommeEtorion(){
   t.etorionsLeft = clamp(t.etorionsLeft - 1, 0, 99);
   state.stats.etorionsDone = (state.stats.etorionsDone||0) + 1;
 
-  // optional micro-coach cadence
+  // coaching cadence (tips/nudge)
   if(state.settings.autoSuggestKiffance){
     const every = clamp(parseInt(state.settings.kiffanceSuggestEveryEto,10)||6, 3, 20);
     if(state.stats.etorionsDone>0 && state.stats.etorionsDone % every === 0){
       const r = Math.random();
-      if(r<0.38) showTip();
-      else if(r<0.56) showNudge();
+      if(r<0.40) showTip();
+      else if(r<0.58) showNudge();
     }
   }
 
@@ -1750,6 +2088,7 @@ function degommeEtorion(){
   saveState();
   renderAll();
 }
+
 function completeTask(taskId){
   const t = getTaskById(taskId);
   if(!t || t.done) return;
@@ -1760,17 +2099,32 @@ function completeTask(taskId){
   t.doneAt = nowISO();
   state.stats.tasksDone = (state.stats.tasksDone||0) + 1;
 
-  confettiBurst(1.1);
+  // streak tracking
+  const now = Date.now();
+  const last = state.streak.lastTaskDoneAt;
+  // if last task done within 20 min => continue streak; else reset
+  if(last && (now - last) <= 20*60*1000) state.streak.tasksInARow = (state.streak.tasksInARow||0) + 1;
+  else state.streak.tasksInARow = 1;
+  state.streak.lastTaskDoneAt = now;
+
+  // always confetti after task
+  confettiBurst(1.15);
+
+  // adaptive celebration (random but smart)
   maybeShowCelebration();
 
   snapshotDay();
   ensureCurrentTask();
   saveState();
   renderAll();
+
+  // occasional flow coaching (separate from celebration)
+  maybeTip();
+  maybeNudge();
 }
 
 /* -------------------------
-   Counters show/hide
+   Counters show/hide (auto-hide)
 ------------------------- */
 function setCountersVisible(on, autoHide=true){
   state.showCounters = !!on;
@@ -1789,7 +2143,7 @@ function setCountersVisible(on, autoHide=true){
 }
 
 /* -------------------------
-   UI: theme / focus / panels
+   UI toggles
 ------------------------- */
 function toggleTheme(){
   state.theme = (state.theme==="light") ? "dark" : "light";
@@ -1807,7 +2161,9 @@ function toggleFocus(){
   renderAll();
 }
 
-/* Left drawer */
+/* -------------------------
+   Panels + resizers
+------------------------- */
 function openDrawer(){
   $("drawerBack").classList.add("show");
   $("drawer").classList.add("open");
@@ -1817,8 +2173,6 @@ function closeDrawer(){
   $("drawerBack").classList.remove("show");
   $("drawer").classList.remove("open");
 }
-
-/* Right panel */
 function openRight(){
   $("rightBack").classList.add("show");
   $("rightPanel").classList.add("open");
@@ -1829,24 +2183,22 @@ function closeRight(){
   $("rightPanel").classList.remove("open");
 }
 
-/* Resizers */
 function initResizer(resId, which){
   const res = $(resId);
   let dragging=false, startX=0, startW=0;
   res.addEventListener("mousedown",(e)=>{
     dragging=true;
     startX=e.clientX;
-    startW=clamp(which==="left" ? (state.drawerW||440) : (state.rightW||420), 320, 860);
+    startW=clamp(which==="left" ? (state.drawerW||460) : (state.rightW||520), 340, 980);
     e.preventDefault();
   });
   window.addEventListener("mousemove",(e)=>{
     if(!dragging) return;
     const dx = e.clientX - startX;
     if(which==="left"){
-      state.drawerW = clamp(startW + dx, 320, 860);
+      state.drawerW = clamp(startW + dx, 340, 980);
     }else{
-      // dragging handle on left edge of right panel, so width grows opposite
-      state.rightW = clamp(startW - dx, 320, 860);
+      state.rightW = clamp(startW - dx, 340, 980);
     }
     applyAppearance();
   });
@@ -1856,18 +2208,17 @@ function initResizer(resId, which){
     saveState();
   });
 
-  // touch
   res.addEventListener("touchstart",(e)=>{
     dragging=true;
     startX=e.touches[0].clientX;
-    startW=clamp(which==="left" ? (state.drawerW||440) : (state.rightW||420), 320, 860);
+    startW=clamp(which==="left" ? (state.drawerW||460) : (state.rightW||520), 340, 980);
     e.preventDefault();
   }, {passive:false});
   window.addEventListener("touchmove",(e)=>{
     if(!dragging) return;
     const dx = e.touches[0].clientX - startX;
-    if(which==="left") state.drawerW = clamp(startW + dx, 320, 860);
-    else state.rightW = clamp(startW - dx, 320, 860);
+    if(which==="left") state.drawerW = clamp(startW + dx, 340, 980);
+    else state.rightW = clamp(startW - dx, 340, 980);
     applyAppearance();
   }, {passive:true});
   window.addEventListener("touchend",()=>{
@@ -1880,14 +2231,8 @@ initResizer("drawerResizer","left");
 initResizer("rightResizer","right");
 
 /* -------------------------
-   HUD / timer
+   Render HUD / timer
 ------------------------- */
-function setRandomTagline(force=false){
-  const el = $("tagline");
-  if(force || Math.random()<0.22 || !el.textContent.trim()){
-    el.textContent = TAGLINE_POOL[rand(TAGLINE_POOL.length)];
-  }
-}
 function renderHUD(){
   recomputeBaselineIfNeeded();
   const p = computeProgress();
@@ -1898,20 +2243,22 @@ function renderHUD(){
 }
 function renderTimer(){
   const el = $("pillTimer");
-  if(!state.currentTaskStart){
-    el.textContent = "00:00";
-    return;
-  }
-  el.textContent = fmtMMSS(Date.now() - state.currentTaskStart);
+  const ms = timerNowMs();
+  el.textContent = fmtMMSS(ms);
 }
 let timerInterval=null;
 function startTimerLoop(){
   if(timerInterval) clearInterval(timerInterval);
-  timerInterval = setInterval(()=>{ if(state.showCounters) renderTimer(); }, 500);
+  timerInterval = setInterval(()=>{
+    tickPomodoro();
+    if(state.showCounters) renderTimer();
+    // update pause icon
+    $("btnPause").textContent = state.timer.pausedAt ? "▶" : "⏸";
+  }, 500);
 }
 
 /* -------------------------
-   Render main
+   Render main blocks
 ------------------------- */
 function renderProgress(){
   const p = computeProgress();
@@ -1942,6 +2289,7 @@ function renderCurrent(){
   }
   $("chips").innerHTML = chips.join("");
   if(!state.currentTaskStart) state.currentTaskStart = Date.now();
+  if(!state.timer.startedAt) state.timer.startedAt = Date.now();
 }
 function applyListVisible(){
   const el = $("belowList");
@@ -1962,12 +2310,12 @@ function renderBelowList(){
     box.innerHTML = `<div class="small">Aucune tâche.</div>`;
     return;
   }
-  box.innerHTML = list.slice(0,50).map(t=>{
+  box.innerHTML = list.slice(0,80).map(t=>{
     const et = t.etorionsTotal||1;
     const left = t.etorionsLeft??et;
     const isCur = t.id===state.currentTaskId;
     return `
-      <div class="taskRow" style="${isCur?"background:linear-gradient(180deg,var(--glass2),transparent); border-radius:10px; border:1px solid var(--line)":""}">
+      <div class="taskRow" style="${isCur?"background:linear-gradient(180deg,var(--glass2),transparent); border-radius:var(--radius2); border:1px solid var(--line)":""}">
         <div class="t">${escapeHTML(t.title)}</div>
         <div class="meta">${left}/${et}</div>
         <div class="tools">
@@ -2003,6 +2351,7 @@ function renderBelowList(){
 }
 
 function renderAll(){
+  ensureSelectedSet();
   applyAppearance();
   applyFocus();
   setRandomTagline();
@@ -2015,16 +2364,19 @@ function renderAll(){
   renderBelowList();
   applyListVisible();
 
-  // counters visibility
-  setCountersVisible(state.showCounters, false); // don't restart timer here
+  // counters visibility without restarting autohide
+  setCountersVisible(state.showCounters, false);
 
-  // enable/disable undo button
+  // undo button
   $("btnUndo").style.opacity = state.undo.length ? 1 : 0.45;
   $("btnUndo").style.pointerEvents = state.undo.length ? "auto" : "none";
+
+  // pause icon
+  $("btnPause").textContent = state.timer.pausedAt ? "▶" : "⏸";
 }
 
 /* -------------------------
-   Drawer (left) tabs
+   Left drawer tabs (reduced, no redundancy)
 ------------------------- */
 const TAB_DEFS = [
   { key:"inbox", label:"INBOX" },
@@ -2059,7 +2411,7 @@ function renderDrawer(){
 }
 
 /* -------------------------
-   Right panel tabs (SETS / HABITS / EMOTIONS)
+   Right panel tabs
 ------------------------- */
 const RIGHT_TABS = [
   { key:"sets", label:"SETS" },
@@ -2088,939 +2440,1266 @@ function renderRight(){
 }
 
 /* -------------------------
-   Views — Left
+   Left views
 ------------------------- */
+function mkSection(title){
+  const s = document.createElement("div");
+  s.className = "section";
+  const h = document.createElement("h3");
+  h.textContent = title;
+  s.appendChild(h);
+  return s;
+}
+
 function viewInbox(){
   const wrap = document.createElement("div");
-  wrap.className = "section";
-  wrap.innerHTML = `
-    <h3>Importer des tâches</h3>
-    <div class="small" style="margin-bottom:8px">
-      Catégorie en MAJUSCULE + tâches dessous. Chiffre final = étorions.<br/>
-      Exemple: <span style="font-family:var(--mono)">APPELS / Appeler X - 2</span>
-    </div>
-    <textarea id="inboxArea" placeholder="Colle ta liste ici"></textarea>
-    <div class="row" style="margin-top:8px">
-      <button class="btn primary" id="btnImport">IMPORTER</button>
-      <button class="btn" id="btnClearInbox">VIDER</button>
-      <button class="btn" id="btnOpenRight">PANNEAU DROIT</button>
-    </div>
-    <div class="small" id="importMsg" style="margin-top:8px"></div>
-  `;
-  setTimeout(()=>{
-    const area = $("inboxArea");
-    $("btnClearInbox").onclick = ()=> area.value="";
-    $("btnOpenRight").onclick = ()=>{ openRight(); };
-    $("btnImport").onclick = ()=>{
-      const imported = importFromInbox(area.value||"");
-      const msg = $("importMsg");
-      if(imported.length===0){
-        msg.textContent = "Rien importé. Vérifie le format.";
-        return;
-      }
 
-      pushUndo("import");
+  const s1 = mkSection("Importer des tâches");
+  const ta = document.createElement("textarea");
+  ta.placeholder = "COLLE ICI.\n\nExemple:\nADMIN\n- Mail ordre 2\n- Appeler X 1\n\nCLINIQUE\n- Rapport Y 6\n\n(les titres en MAJUSCULES deviennent des catégories)";
+  ta.value = "";
+  s1.appendChild(ta);
 
-      state.tasks.push(...imported);
+  const row = document.createElement("div");
+  row.className = "row";
+  row.style.marginTop = "8px";
 
-      // update baseline so progress starts at 100% and decreases
-      if(state.baseline.totalTasks===0 && state.baseline.totalEtorions===0){
-        const act = activeTasks();
-        state.baseline.totalTasks = act.length;
-        state.baseline.totalEtorions = act.reduce((a,t)=>a+(t.etorionsTotal||0),0);
-      }else{
-        state.baseline.totalTasks += imported.length;
-        state.baseline.totalEtorions += imported.reduce((a,t)=>a+(t.etorionsTotal||0),0);
-      }
+  const btnAdd = document.createElement("button");
+  btnAdd.className = "btn primary";
+  btnAdd.textContent = "IMPORTER";
+  btnAdd.onclick = ()=>{
+    const items = importFromInbox(ta.value||"");
+    if(items.length===0) return;
+    pushUndo("import");
+    // add
+    state.tasks.push(...items);
+    // reset baseline to reflect new run
+    state.baseline.totalTasks = activeTasks().length;
+    state.baseline.totalEtorions = activeTasks().reduce((a,t)=>a+(t.etorionsTotal||0),0);
+    ensureCurrentTask();
+    snapshotDay();
+    saveState();
+    renderAll();
+    ta.value = "";
+    closeDrawer();
+  };
 
-      snapshotDay();
-      saveState();
-      renderAll();
-      msg.textContent = `${imported.length} ${plural(imported.length,"tâche importée","tâches importées")}.`;
-    };
-  },0);
+  const btnAppend = document.createElement("button");
+  btnAppend.className = "btn";
+  btnAppend.textContent = "AJOUTER SANS RESET";
+  btnAppend.onclick = ()=>{
+    const items = importFromInbox(ta.value||"");
+    if(items.length===0) return;
+    pushUndo("appendImport");
+    state.tasks.push(...items);
+    // keep baseline untouched (but if empty, compute)
+    recomputeBaselineIfNeeded();
+    ensureCurrentTask();
+    snapshotDay();
+    saveState();
+    renderAll();
+    ta.value = "";
+  };
+
+  const btnDemo = document.createElement("button");
+  btnDemo.className = "btn";
+  btnDemo.textContent = "EXEMPLE";
+  btnDemo.onclick = ()=>{
+    ta.value =
+`ADMIN
+- Répondre à X 2
+- Téléphoner à Y 1
+
+CLINIQUE
+- Rapport Z 6
+- Appeler médecin traitant 1
+
+PERSO
+- Lessive 2
+- Ranger sac 2`;
+  };
+
+  row.appendChild(btnAdd);
+  row.appendChild(btnAppend);
+  row.appendChild(btnDemo);
+  s1.appendChild(row);
+
+  const s2 = mkSection("Gestion rapide");
+  const r2 = document.createElement("div");
+  r2.className = "row";
+
+  const btnResetBaseline = document.createElement("button");
+  btnResetBaseline.className = "btn";
+  btnResetBaseline.textContent = "RESET BASELINE";
+  btnResetBaseline.onclick = ()=>{
+    pushUndo("resetBaseline");
+    state.baseline.totalTasks = activeTasks().length;
+    state.baseline.totalEtorions = activeTasks().reduce((a,t)=>a+(t.etorionsTotal||0),0);
+    snapshotDay();
+    saveState();
+    renderAll();
+  };
+
+  const btnClearDone = document.createElement("button");
+  btnClearDone.className = "btn";
+  btnClearDone.textContent = "SUPPRIMER FINIES";
+  btnClearDone.onclick = ()=>{
+    pushUndo("clearDone");
+    state.tasks = state.tasks.filter(t=>!t.done);
+    // keep baseline? (pragmatic: do not inflate)
+    state.baseline.totalTasks = activeTasks().length;
+    state.baseline.totalEtorions = activeTasks().reduce((a,t)=>a+(t.etorionsTotal||0),0);
+    ensureCurrentTask();
+    snapshotDay();
+    saveState();
+    renderAll();
+  };
+
+  const btnWipe = document.createElement("button");
+  btnWipe.className = "btn";
+  btnWipe.textContent = "TOUT VIDER";
+  btnWipe.onclick = ()=>{
+    if(!confirm("Tout effacer (tâches, baseline, stats du run) ?")) return;
+    pushUndo("wipe");
+    state.tasks = [];
+    state.baseline = { totalTasks:0, totalEtorions:0 };
+    state.currentTaskId = null;
+    state.currentTaskStart = null;
+    state.stats.etorionsDone = 0;
+    state.stats.tasksDone = 0;
+    state.streak = { tasksInARow:0, lastTaskDoneAt:null };
+    snapshotDay();
+    saveState();
+    renderAll();
+  };
+
+  r2.appendChild(btnResetBaseline);
+  r2.appendChild(btnClearDone);
+  r2.appendChild(btnWipe);
+  s2.appendChild(r2);
+
+  const s3 = mkSection("Rappel format");
+  s3.appendChild(document.createElement("div")).className="small";
+  s3.lastChild.textContent =
+    "• Ligne en MAJUSCULES = catégorie\n• « titre 6 » ou « titre - 6 » = étorions\n• Sans chiffre → 1 étorion";
+
+  wrap.appendChild(s1);
+  wrap.appendChild(document.createElement("div")).style.height="10px";
+  wrap.appendChild(s2);
+  wrap.appendChild(document.createElement("div")).style.height="10px";
+  wrap.appendChild(s3);
   return wrap;
 }
 
 function viewListe(){
   const wrap = document.createElement("div");
-  wrap.className = "section";
-  const cats = Array.from(new Set(state.tasks.map(t=>t.cat))).sort((a,b)=>a.localeCompare(b,"fr"));
 
-  wrap.innerHTML = `
-    <h3>Liste</h3>
-    <div class="row" style="margin-bottom:8px">
-      <select id="sortSel">
-        <option value="roulette">roulette (pinned d’abord)</option>
-        <option value="ordre">ordre d’import</option>
-        <option value="alpha">alphabétique</option>
-        <option value="cat">par catégorie</option>
-      </select>
-      <button class="btn" id="btnToggleBelow">${state.showBelowList?"MASQUER":"AFFICHER"} LISTE (ÉCRAN)</button>
-    </div>
+  const s = mkSection("Liste (tout)");
+  const list = document.createElement("div");
 
-    <div class="section" style="margin-bottom:10px">
-      <h3>Catégories incluses</h3>
-      <div class="small" style="margin-bottom:8px">Vide = toutes. Sinon, coche celles à inclure.</div>
-      <div id="catsBox"></div>
-      <div class="row" style="margin-top:8px">
-        <button class="btn" id="catsAll">TOUTES</button>
-        <button class="btn" id="catsNone">AUCUNE</button>
-      </div>
-    </div>
+  const all = sortTasks(state.tasks.filter(t=>!t.done)).concat(
+    state.tasks.filter(t=>t.done).slice().sort((a,b)=>(b.doneAt||"").localeCompare(a.doneAt||"")).slice(0,18)
+  );
 
-    <div class="section">
-      <h3>Actions</h3>
-      <div class="row">
-        <button class="btn" id="btnResetRun">RESET SESSION (garde notes/habitudes/émotions)</button>
-        <button class="btn" id="btnPurgeDone">PURGER FAITES</button>
-      </div>
-    </div>
-  `;
-
-  setTimeout(()=>{
-    $("sortSel").value = state.settings.listSort || "roulette";
-    $("sortSel").onchange = (e)=>{
-      state.settings.listSort = e.target.value;
-      saveState(); renderAll(); renderDrawer();
-    };
-    $("btnToggleBelow").onclick = ()=>{
-      state.showBelowList = !state.showBelowList;
-      saveState(); renderAll(); renderDrawer();
-    };
-
-    // categories box
-    const inc = state.settings.includedCats || [];
-    const catsBox = $("catsBox");
-    catsBox.innerHTML = cats.map(c=>{
-      const checked = inc.length===0 ? true : inc.includes(c);
+  if(all.length===0){
+    list.innerHTML = `<div class="small">Rien ici. Menu → Inbox pour importer.</div>`;
+  }else{
+    list.innerHTML = all.slice(0,120).map(t=>{
+      const et = t.etorionsTotal||1;
+      const left = t.etorionsLeft ?? et;
+      const done = t.done;
+      const cat = (t.cat||"").trim();
       return `
-        <div class="row" style="justify-content:space-between; margin:6px 0">
-          <div style="flex:1; min-width:0; font-size:13px; color:var(--fg); overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${escapeHTML(c)}</div>
-          <div class="toolBtn" style="width:40px" data-cat="${escapeHTML(c)}">${checked?"✓":""}</div>
+      <div class="taskRow" style="opacity:${done?0.55:1}">
+        <div class="t">${escapeHTML(t.title)}${cat?` <span style="color:var(--muted); font-family:var(--mono); font-size:11px">[${escapeHTML(cat)}]</span>`:""}</div>
+        <div class="meta">${done?"✓":`${left}/${et}`}</div>
+        <div class="tools">
+          ${done?`<div class="toolBtn" data-act="revive" data-id="${t.id}" title="Réactiver">↺</div>`:`
+            <div class="toolBtn" data-act="up" data-id="${t.id}" title="Monter">↑</div>
+            <div class="toolBtn" data-act="down" data-id="${t.id}" title="Descendre">↓</div>
+            <div class="toolBtn" data-act="pin" data-id="${t.id}" title="Épingler">${t.pinned?"■":"□"}</div>
+            <div class="toolBtn" data-act="go" data-id="${t.id}" title="Cibler">◎</div>
+            <div class="toolBtn" data-act="edit" data-id="${t.id}" title="Éditer">≋</div>
+            <div class="toolBtn" data-act="done" data-id="${t.id}" title="Dégommée">✓</div>
+          `}
         </div>
-      `;
+      </div>`;
     }).join("");
+  }
 
-    catsBox.querySelectorAll(".toolBtn").forEach(el=>{
-      el.onclick = ()=>{
-        const c = el.getAttribute("data-cat");
-        let list = state.settings.includedCats || [];
-        if(list.length===0) list = [...cats];
-        if(list.includes(c)) list = list.filter(x=>x!==c);
-        else list.push(c);
-        state.settings.includedCats = (list.length===cats.length) ? [] : list;
-        saveState(); ensureCurrentTask(); renderAll(); renderDrawer();
-      };
-    });
+  s.appendChild(list);
 
-    $("catsAll").onclick = ()=>{
-      state.settings.includedCats = [];
-      saveState(); ensureCurrentTask(); renderAll(); renderDrawer();
-    };
-    $("catsNone").onclick = ()=>{
-      state.settings.includedCats = ["__NONE__"];
-      saveState(); ensureCurrentTask(); renderAll(); renderDrawer();
-    };
+  list.querySelectorAll(".toolBtn").forEach(b=>{
+    b.onclick = ()=>{
+      const id = b.getAttribute("data-id");
+      const act = b.getAttribute("data-act");
+      const t = getTaskById(id);
+      if(!t) return;
 
-    $("btnResetRun").onclick = ()=>{
-      pushUndo("resetSession");
-      state.tasks = [];
-      state.baseline = { totalTasks:0, totalEtorions:0 };
-      state.currentTaskId = null;
-      state.currentTaskStart = null;
-      state.stats = { etorionsDone:0, tasksDone:0 };
-      state.settings.includedCats = [];
+      pushUndo("listeAction");
+
+      if(act==="up") moveTask(id,-1);
+      if(act==="down") moveTask(id,1);
+      if(act==="pin") t.pinned = !t.pinned;
+      if(act==="go") setCurrentTask(id);
+      if(act==="done") completeTask(id);
+      if(act==="revive"){
+        t.done = false;
+        t.doneAt = null;
+        // if revived, reset etorionsLeft if absent
+        if(typeof t.etorionsLeft!=="number") t.etorionsLeft = t.etorionsTotal||1;
+      }
+      if(act==="edit"){
+        openTaskEditor(id);
+        return;
+      }
+
       snapshotDay();
       saveState();
       renderAll();
       renderDrawer();
     };
+  });
 
-    $("btnPurgeDone").onclick = ()=>{
-      pushUndo("purgeDone");
-      state.tasks = state.tasks.filter(t=>!t.done);
-      const act = activeTasks();
-      state.baseline.totalTasks = act.length;
-      state.baseline.totalEtorions = act.reduce((a,t)=>a+(t.etorionsTotal||0),0);
-      snapshotDay();
-      saveState();
-      ensureCurrentTask();
-      renderAll();
-      renderDrawer();
-    };
-  },0);
+  wrap.appendChild(s);
+
+  const s2 = mkSection("Outils");
+  const row = document.createElement("div");
+  row.className = "row";
+
+  const btnExport = document.createElement("button");
+  btnExport.className = "btn primary";
+  btnExport.textContent = "EXPORT";
+  btnExport.onclick = ()=>{ openModal("exportModal"); renderExport("text"); };
+
+  const btnBias = document.createElement("button");
+  btnBias.className = "btn";
+  btnBias.textContent = "BIAIS";
+  btnBias.onclick = ()=>{
+    $("biasList").innerHTML = DISTORTIONS.map(x=>`
+      <div style="padding:8px 6px; border-bottom:1px solid var(--line)">
+        <div style="font-family:var(--mono); letter-spacing:.08em; text-transform:uppercase; font-size:11px; color:var(--muted)">${escapeHTML(x.k)}</div>
+        <div style="font-size:13px">${escapeHTML(x.d)}</div>
+      </div>
+    `).join("");
+    openModal("biasModal");
+  };
+
+  const btnSetBaseline = document.createElement("button");
+  btnSetBaseline.className = "btn";
+  btnSetBaseline.textContent = "BASELINE=ACTIF";
+  btnSetBaseline.onclick = ()=>{
+    pushUndo("baselineActive");
+    state.baseline.totalTasks = activeTasks().length;
+    state.baseline.totalEtorions = activeTasks().reduce((a,t)=>a+(t.etorionsTotal||0),0);
+    snapshotDay();
+    saveState();
+    renderAll();
+    renderDrawer();
+  };
+
+  row.appendChild(btnExport);
+  row.appendChild(btnBias);
+  row.appendChild(btnSetBaseline);
+  s2.appendChild(row);
+  wrap.appendChild(document.createElement("div")).style.height="10px";
+  wrap.appendChild(s2);
 
   return wrap;
 }
 
 function viewKiffance(){
   const wrap = document.createElement("div");
-  wrap.className = "section";
-  wrap.innerHTML = `
-    <h3>Kiffance</h3>
-    <div class="small" style="margin-bottom:8px">
-      Banque visible + ajout. (Le coaching flow vient aussi du panneau droit.)
-    </div>
-    <div class="section" style="margin-bottom:10px">
-      <h3>Suggestion</h3>
-      <div class="row">
-        <button class="btn primary" id="kPick">RAFRAÎCHIR</button>
-        <button class="btn" id="kAddToTasks">AJOUTER EN TÂCHE</button>
-      </div>
-      <div id="kOut" class="small" style="margin-top:10px; font-size:13px; color:var(--fg)"></div>
-    </div>
-    <div class="section" style="margin-bottom:10px">
-      <h3>Afficher une catégorie</h3>
-      <div class="row">
-        <select id="kBucket">
-          <option value="5">≤ 5 min</option>
-          <option value="10">≤ 10 min</option>
-          <option value="15">≤ 15 min</option>
-          <option value="25">≥ 25 min</option>
-        </select>
-        <button class="btn" id="kShow">AFFICHER</button>
-      </div>
-      <div id="kList" class="small" style="margin-top:8px"></div>
-    </div>
-    <div class="section">
-      <h3>Ajouter à la banque</h3>
-      <select id="kAddBucket">
-        <option value="5">≤ 5 min</option>
-        <option value="10">≤ 10 min</option>
-        <option value="15">≤ 15 min</option>
-        <option value="25">≥ 25 min</option>
-      </select>
-      <textarea id="kText" placeholder="Action simple, sans fioriture."></textarea>
-      <div class="row" style="margin-top:8px">
-        <button class="btn primary" id="kAdd">AJOUTER</button>
-      </div>
-    </div>
-  `;
-  setTimeout(()=>{
-    let last = pickKiffance();
-    $("kOut").textContent = last;
 
-    $("kPick").onclick = ()=>{
-      last = pickKiffance();
-      $("kOut").textContent = last;
-    };
-    $("kAddToTasks").onclick = ()=>{
-      const t = last.trim();
-      if(!t) return;
-      pushUndo("kiffToTask");
-      const et = 1;
-      state.tasks.push({
-        id: uid(),
-        title: t,
-        cat: "KIFFANCE",
-        etorionsTotal: et,
-        etorionsLeft: et,
-        pinned: false,
-        done: false,
-        createdAt: nowISO(),
-        doneAt: null
-      });
-      state.baseline.totalTasks += 1;
-      state.baseline.totalEtorions += et;
-      snapshotDay();
+  const s = mkSection("Banque de Kiffance (éditable)");
+  const small = document.createElement("div");
+  small.className = "small";
+  small.textContent = "Choisis un format, édite les listes. C’est une banque de régulation, pas un festival.";
+  s.appendChild(small);
+
+  const mkBucket = (min)=>{
+    const b = mkSection(`${min} minutes`);
+    const ta = document.createElement("textarea");
+    ta.value = (state.kiffance.bank[String(min)]||[]).join("\n");
+    ta.style.minHeight = "160px";
+    b.appendChild(ta);
+
+    const r = document.createElement("div");
+    r.className = "row";
+    r.style.marginTop="8px";
+
+    const save = document.createElement("button");
+    save.className = "btn primary";
+    save.textContent = "SAUVER";
+    save.onclick = ()=>{
+      const lines = ta.value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+      state.kiffance.bank[String(min)] = lines.slice(0,80);
       saveState();
-      ensureCurrentTask();
       renderAll();
     };
 
-    $("kShow").onclick = ()=>{
-      const b = $("kBucket").value;
-      const list = state.kiffance.bank[b] || [];
-      $("kList").innerHTML = list.length===0 ? "—" : list.map((x,i)=>`
-        <div style="padding:6px 4px; border-bottom:1px solid var(--line)">
-          <span style="font-family:var(--mono); color:var(--muted); font-size:11px">${i+1}</span>
-          <span style="margin-left:8px">${escapeHTML(x)}</span>
-        </div>
-      `).join("");
+    const pick = document.createElement("button");
+    pick.className = "btn";
+    pick.textContent = "TIRER AU SORT";
+    pick.onclick = ()=>{
+      const arr = state.kiffance.bank[String(min)]||[];
+      if(arr.length===0) return;
+      $("tipsTitle").textContent = `KIFFANCE ${min} MIN`;
+      $("tipsMsg").textContent = arr[rand(arr.length)];
+      $("tipsSub").textContent = "Pause guidée → puis reprise.";
+      openModal("tipsModal");
     };
 
-    $("kAdd").onclick = ()=>{
-      const b = $("kAddBucket").value;
-      const t = ($("kText").value||"").trim();
-      if(!t) return;
-      pushUndo("kiffAdd");
-      state.kiffance.bank[b] = state.kiffance.bank[b] || [];
-      state.kiffance.bank[b].push(t);
-      $("kText").value = "";
-      saveState();
-      renderDrawer();
-    };
-  },0);
+    r.appendChild(save);
+    r.appendChild(pick);
+    b.appendChild(r);
+    return b;
+  };
+
+  wrap.appendChild(s);
+  wrap.appendChild(document.createElement("div")).style.height="10px";
+  wrap.appendChild(mkBucket(5));
+  wrap.appendChild(document.createElement("div")).style.height="10px";
+  wrap.appendChild(mkBucket(10));
+  wrap.appendChild(document.createElement("div")).style.height="10px";
+  wrap.appendChild(mkBucket(15));
+  wrap.appendChild(document.createElement("div")).style.height="10px";
+  wrap.appendChild(mkBucket(25));
   return wrap;
-}
-
-function pickKiffance(){
-  const min = state.settings.etorionMin || 5;
-  const b = (min<=5)?"5":(min<=10)?"10":(min<=15)?"15":"25";
-  const list = state.kiffance.bank[b] || [];
-  if(list.length===0) return "Respire. Puis reviens.";
-  return list[rand(list.length)];
 }
 
 function viewFlow(){
   const wrap = document.createElement("div");
-  wrap.className = "section";
-  wrap.innerHTML = `
-    <h3>Flow</h3>
-    <div class="section" style="margin-bottom:10px">
-      <h3>Surprises</h3>
-      <div class="row">
-        <div>
-          <div class="small">Célébration (0–1)</div>
-          <input id="celeChance" type="number" step="0.05" min="0" max="1" />
-        </div>
-        <div>
-          <div class="small">Auto-fermeture (sec)</div>
-          <input id="celeSec" type="number" min="5" max="20" />
-        </div>
-      </div>
-      <div class="row" style="margin-top:8px">
-        <button class="btn" id="testCele">TEST CÉLÉBRATION</button>
-        <button class="btn" id="testTip">TEST CONSEIL</button>
-        <button class="btn" id="testNudge">TEST RÉGULATION</button>
-      </div>
-    </div>
 
-    <div class="section">
-      <h3>Cadence coaching</h3>
-      <div class="row">
-        <div>
-          <div class="small">Auto-suggérer tous les X étorions</div>
-          <input id="kEvery" type="number" min="3" max="20" />
-        </div>
-        <div>
-          <div class="small">Activer auto-suggestion</div>
-          <select id="autoSugg">
-            <option value="true">oui</option>
-            <option value="false">non</option>
-          </select>
-        </div>
-      </div>
-      <div class="row" style="margin-top:8px">
-        <button class="btn primary" id="saveFlow">SAUVER</button>
-      </div>
-    </div>
-  `;
-  setTimeout(()=>{
-    $("celeChance").value = state.settings.celebrationChance;
-    $("celeSec").value = state.settings.celebrationAutoCloseSec;
-    $("kEvery").value = state.settings.kiffanceSuggestEveryEto;
-    $("autoSugg").value = String(!!state.settings.autoSuggestKiffance);
+  const s = mkSection("Flow / cadence");
+  const row = document.createElement("div");
+  row.className = "row";
 
-    $("testCele").onclick = ()=> showCelebration(1.2);
-    $("testTip").onclick = ()=> showTip();
-    $("testNudge").onclick = ()=> showNudge();
-
-    $("saveFlow").onclick = ()=>{
-      state.settings.celebrationChance = clamp(Number($("celeChance").value)||0,0,1);
-      state.settings.celebrationAutoCloseSec = clamp(parseInt($("celeSec").value,10)||11,5,20);
-      state.settings.kiffanceSuggestEveryEto = clamp(parseInt($("kEvery").value,10)||6,3,20);
-      state.settings.autoSuggestKiffance = ($("autoSugg").value==="true");
+  const mkNum = (label, key, min, max, step=1, asFloat=false)=>{
+    const box = document.createElement("div");
+    const l = document.createElement("div");
+    l.className="small";
+    l.style.marginBottom="6px";
+    l.textContent = label;
+    const inp = document.createElement("input");
+    inp.type="number";
+    inp.step=String(step);
+    inp.min=String(min); inp.max=String(max);
+    inp.value = String(state.settings[key] ?? "");
+    inp.onchange = ()=>{
+      const v = asFloat ? parseFloat(inp.value) : parseInt(inp.value,10);
+      state.settings[key] = clamp(isFinite(v)?v:min, min, max);
       saveState();
-      renderAll();
+    };
+    box.appendChild(l);
+    box.appendChild(inp);
+    return box;
+  };
+
+  row.appendChild(mkNum("Chance celebration (0-1)", "celebrationBase", 0, 1, 0.01, true));
+  row.appendChild(mkNum("Auto-close celebration (sec)", "celebrationAutoCloseSec", 5, 20, 1));
+  row.appendChild(mkNum("Streak milestone (tâches)", "streakMilestone", 2, 10, 1));
+  s.appendChild(row);
+
+  const row2 = document.createElement("div");
+  row2.className="row";
+  row2.style.marginTop="10px";
+  row2.appendChild(mkNum("Long gap bonus après (min)", "longGapMin", 3, 60, 1));
+  row2.appendChild(mkNum("Chance tips (0-1)", "tipsChance", 0, 1, 0.01, true));
+  row2.appendChild(mkNum("Min gap tips (min)", "tipsMinGapMin", 1, 60, 1));
+  s.appendChild(row2);
+
+  const row3 = document.createElement("div");
+  row3.className="row";
+  row3.style.marginTop="10px";
+  row3.appendChild(mkNum("Chance nudge (0-1)", "nudgeChance", 0, 1, 0.01, true));
+  row3.appendChild(mkNum("Min gap nudge (min)", "nudgeMinGapMin", 1, 60, 1));
+  row3.appendChild(mkNum("Suggestion Kiffance chaque X étorions", "kiffanceSuggestEveryEto", 3, 20, 1));
+  s.appendChild(row3);
+
+  const toggles = mkSection("Toggles");
+  const mkToggle = (label, key)=>{
+    const line = document.createElement("div");
+    line.style.display="flex";
+    line.style.alignItems="center";
+    line.style.justifyContent="space-between";
+    line.style.gap="10px";
+    line.style.padding="8px 6px";
+    line.style.borderBottom="1px solid var(--line)";
+    const a = document.createElement("div");
+    a.className="small";
+    a.textContent = label;
+    const b = document.createElement("button");
+    b.className="btn";
+    b.textContent = state.settings[key] ? "ON" : "OFF";
+    b.onclick = ()=>{
+      state.settings[key] = !state.settings[key];
+      saveState();
       renderDrawer();
     };
-  },0);
+    line.appendChild(a);
+    line.appendChild(b);
+    return line;
+  };
+  toggles.appendChild(mkToggle("Mega celebrations (milestones/streak)", "megaOnMilestones"));
+  toggles.appendChild(mkToggle("Garder la liste en mode focus", "keepListInFocus"));
+  toggles.appendChild(mkToggle("Auto-suggest kiffance", "autoSuggestKiffance"));
+  wrap.appendChild(s);
+  wrap.appendChild(document.createElement("div")).style.height="10px";
+  wrap.appendChild(toggles);
+
+  const pomo = mkSection("Pomodoro");
+  const r = document.createElement("div");
+  r.className="row";
+
+  const inp = document.createElement("input");
+  inp.type="number";
+  inp.min="5"; inp.max="90"; inp.step="1";
+  inp.value = String(state.timer.pomodoroMin||25);
+  inp.onchange = ()=>{
+    state.timer.pomodoroMin = clamp(parseInt(inp.value,10)||25, 5, 90);
+    saveState();
+  };
+
+  const btnStart = document.createElement("button");
+  btnStart.className="btn primary";
+  btnStart.textContent="START";
+  btnStart.onclick = ()=>{
+    startPomodoro();
+    renderDrawer();
+  };
+
+  const btnStop = document.createElement("button");
+  btnStop.className="btn";
+  btnStop.textContent="STOP";
+  btnStop.onclick = ()=>{
+    stopPomodoro();
+    renderDrawer();
+  };
+
+  r.appendChild(inp);
+  r.appendChild(btnStart);
+  r.appendChild(btnStop);
+
+  const info = document.createElement("div");
+  info.className="small";
+  info.style.marginTop="8px";
+  const left = pomodoroLeft();
+  info.textContent = state.timer.pomodoroRunning ? `Pomodoro en cours: ${fmtMMSS(left||0)} restantes` : "Pomodoro inactif.";
+
+  pomo.appendChild(r);
+  pomo.appendChild(info);
+
+  wrap.appendChild(document.createElement("div")).style.height="10px";
+  wrap.appendChild(pomo);
   return wrap;
 }
 
 function viewAppearance(){
   const wrap = document.createElement("div");
-  wrap.className = "section";
-  wrap.innerHTML = `
-    <h3>Apparence</h3>
 
-    <div class="section" style="margin-bottom:10px">
-      <h3>Surbrillance</h3>
-      <div class="row">
-        <div>
-          <div class="small">Thème clair</div>
-          <select id="accentLight">
-            <option value="cyan">cyan</option>
-            <option value="violet">violet</option>
-            <option value="steel">steel</option>
-            <option value="amber">amber</option>
-            <option value="lime">lime</option>
-          </select>
-        </div>
-        <div>
-          <div class="small">Thème sombre</div>
-          <select id="accentDark">
-            <option value="lime">lime</option>
-            <option value="cyan">cyan</option>
-            <option value="violet">violet</option>
-            <option value="amber">amber</option>
-            <option value="steel">steel</option>
-          </select>
-        </div>
-      </div>
-    </div>
+  const s = mkSection("Apparence");
 
-    <div class="section" style="margin-bottom:10px">
-      <h3>Police & tailles</h3>
-      <div class="row">
-        <div>
-          <div class="small">Police</div>
-          <select id="fontFamily">
-            <option value="system">system</option>
-            <option value="elegant">elegant</option>
-            <option value="neutral">neutral</option>
-          </select>
-        </div>
-        <div>
-          <div class="small">UI (boutons/pills)</div>
-          <input id="uiScale" type="number" min="0.85" max="1.30" step="0.05" />
-        </div>
-      </div>
-      <div class="row" style="margin-top:8px">
-        <div>
-          <div class="small">Titre ELIMINATOR</div>
-          <input id="titleScale" type="number" min="0.85" max="1.45" step="0.05" />
-        </div>
-        <div>
-          <div class="small">Nom de tâche</div>
-          <input id="taskScale" type="number" min="1.00" max="1.80" step="0.05" />
-        </div>
-      </div>
-    </div>
+  const mkSelect = (label, value, options, onChange)=>{
+    const box = document.createElement("div");
+    const l = document.createElement("div");
+    l.className="small";
+    l.style.marginBottom="6px";
+    l.textContent = label;
+    const sel = document.createElement("select");
+    options.forEach(o=>{
+      const op = document.createElement("option");
+      op.value = o.v; op.textContent = o.t;
+      if(o.v===value) op.selected=true;
+      sel.appendChild(op);
+    });
+    sel.onchange = ()=>onChange(sel.value);
+    box.appendChild(l);
+    box.appendChild(sel);
+    return box;
+  };
 
-    <div class="section" style="margin-bottom:10px">
-      <h3>Formes</h3>
-      <div class="row">
-        <div>
-          <div class="small">Arrondi</div>
-          <input id="radius" type="number" min="6" max="18" />
-        </div>
-        <div>
-          <div class="small">Barre (hauteur)</div>
-          <input id="barH" type="number" min="24" max="46" />
-        </div>
-      </div>
-      <div class="row" style="margin-top:8px">
-        <div>
-          <div class="small">Cases étorions</div>
-          <input id="chipH" type="number" min="14" max="26" />
-        </div>
-        <div>
-          <div class="small">Contours</div>
-          <select id="borders">
-            <option value="on">on</option>
-            <option value="off">off</option>
-          </select>
-        </div>
-      </div>
-      <div class="row" style="margin-top:8px">
-        <div>
-          <div class="small">Style boutons</div>
-          <select id="buttons">
-            <option value="ghost">ghost</option>
-            <option value="filled">filled</option>
-          </select>
-        </div>
-        <div>
-          <div class="small">Auto-hide compteurs (sec)</div>
-          <input id="cAuto" type="number" min="3" max="30" />
-        </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <h3>Largeur panneaux</h3>
-      <div class="row">
-        <div>
-          <div class="small">Menu gauche</div>
-          <input id="dw" type="number" min="340" max="860" />
-        </div>
-        <div>
-          <div class="small">Panneau droit</div>
-          <input id="rw" type="number" min="320" max="860" />
-        </div>
-      </div>
-      <div class="row" style="margin-top:8px">
-        <button class="btn primary" id="saveApp">APPLIQUER</button>
-      </div>
-    </div>
-  `;
-  setTimeout(()=>{
-    $("accentLight").value = state.appearance.accentLight || "cyan";
-    $("accentDark").value  = state.appearance.accentDark || "lime";
-    $("fontFamily").value  = state.appearance.fontFamily || "system";
-    $("uiScale").value     = state.appearance.uiScale ?? 1.00;
-    $("titleScale").value  = state.appearance.titleScale ?? 1.00;
-    $("taskScale").value   = state.appearance.taskScale ?? 1.22;
-    $("radius").value      = state.appearance.radius ?? 12;
-    $("barH").value        = state.appearance.barH ?? 34;
-    $("chipH").value       = state.appearance.chipH ?? 18;
-    $("borders").value     = state.appearance.borders || "on";
-    $("buttons").value     = state.appearance.buttons || "ghost";
-    $("cAuto").value       = state.countersAutoHideSec ?? 10;
-    $("dw").value          = state.drawerW || 440;
-    $("rw").value          = state.rightW || 420;
-
-    $("saveApp").onclick = ()=>{
-      state.appearance.accentLight = $("accentLight").value;
-      state.appearance.accentDark  = $("accentDark").value;
-      state.appearance.fontFamily  = $("fontFamily").value;
-
-      state.appearance.uiScale     = clamp(Number($("uiScale").value)||1.0, 0.85, 1.30);
-      state.appearance.titleScale  = clamp(Number($("titleScale").value)||1.0, 0.85, 1.45);
-      state.appearance.taskScale   = clamp(Number($("taskScale").value)||1.22, 1.00, 1.80);
-
-      state.appearance.radius      = clamp(parseInt($("radius").value,10)||12, 6, 18);
-      state.appearance.barH        = clamp(parseInt($("barH").value,10)||34, 24, 46);
-      state.appearance.chipH       = clamp(parseInt($("chipH").value,10)||18, 14, 26);
-
-      state.appearance.borders     = $("borders").value;
-      state.appearance.buttons     = $("buttons").value;
-
-      state.countersAutoHideSec    = clamp(parseInt($("cAuto").value,10)||10, 3, 30);
-
-      state.drawerW                = clamp(parseInt($("dw").value,10)||440, 340, 860);
-      state.rightW                 = clamp(parseInt($("rw").value,10)||420, 320, 860);
-
-      saveState();
-      renderAll();
-      renderDrawer();
-      renderRight();
+  const mkRange = (label, val, min, max, step, onInput)=>{
+    const box = document.createElement("div");
+    const l = document.createElement("div");
+    l.className="small";
+    l.style.marginBottom="6px";
+    l.textContent = `${label}: ${val}`;
+    const inp = document.createElement("input");
+    inp.type="range";
+    inp.min=String(min); inp.max=String(max); inp.step=String(step);
+    inp.value=String(val);
+    inp.oninput = ()=>{
+      l.textContent = `${label}: ${inp.value}`;
+      onInput(parseFloat(inp.value));
     };
-  },0);
+    box.appendChild(l);
+    box.appendChild(inp);
+    return box;
+  };
+
+  const row = document.createElement("div");
+  row.className="row";
+  row.appendChild(mkSelect("Accent (clair)", state.appearance.accentLight, Object.keys(ACCENTS).map(k=>({v:k,t:k.toUpperCase()})), (v)=>{
+    state.appearance.accentLight=v; saveState(); renderAll(); renderDrawer();
+  }));
+  row.appendChild(mkSelect("Accent (sombre)", state.appearance.accentDark, Object.keys(ACCENTS).map(k=>({v:k,t:k.toUpperCase()})), (v)=>{
+    state.appearance.accentDark=v; saveState(); renderAll(); renderDrawer();
+  }));
+  s.appendChild(row);
+
+  const row2 = document.createElement("div");
+  row2.className="row";
+  row2.style.marginTop="10px";
+  row2.appendChild(mkSelect("Barre (clair)", state.appearance.barColorLight, Object.keys(ACCENTS).map(k=>({v:k,t:k.toUpperCase()})), (v)=>{
+    state.appearance.barColorLight=v; saveState(); renderAll(); renderDrawer();
+  }));
+  row2.appendChild(mkSelect("Barre (sombre)", state.appearance.barColorDark, Object.keys(ACCENTS).map(k=>({v:k,t:k.toUpperCase()})), (v)=>{
+    state.appearance.barColorDark=v; saveState(); renderAll(); renderDrawer();
+  }));
+  row2.appendChild(mkSelect("Font", state.appearance.fontFamily, Object.keys(FONT_FAMILIES).map(k=>({v:k,t:k.toUpperCase()})), (v)=>{
+    state.appearance.fontFamily=v; saveState(); renderAll(); renderDrawer();
+  }));
+  s.appendChild(row2);
+
+  const row3 = document.createElement("div");
+  row3.className="row";
+  row3.style.marginTop="10px";
+  row3.appendChild(mkSelect("Bords", state.appearance.borders, [{v:"on",t:"ON"},{v:"off",t:"OFF"}], (v)=>{
+    state.appearance.borders=v; saveState(); renderAll(); renderDrawer();
+  }));
+  row3.appendChild(mkSelect("Boutons", state.appearance.buttons, [{v:"ghost",t:"GHOST"},{v:"filled",t:"FILLED"}], (v)=>{
+    state.appearance.buttons=v; saveState(); renderAll(); renderDrawer();
+  }));
+  s.appendChild(row3);
+
+  const scales = mkSection("Échelles");
+  const r4 = document.createElement("div");
+  r4.className="row";
+  r4.appendChild(mkRange("UI scale", state.appearance.uiScale||1, 0.80, 1.30, 0.01, (v)=>{ state.appearance.uiScale=v; applyAppearance(); saveState(); }));
+  r4.appendChild(mkRange("Title scale", state.appearance.titleScale||1.18, 0.90, 1.50, 0.01, (v)=>{ state.appearance.titleScale=v; applyAppearance(); saveState(); }));
+  r4.appendChild(mkRange("Task scale", state.appearance.taskScale||1.50, 1.10, 2.10, 0.01, (v)=>{ state.appearance.taskScale=v; applyAppearance(); saveState(); }));
+  scales.appendChild(r4);
+
+  const r5 = document.createElement("div");
+  r5.className="row";
+  r5.style.marginTop="10px";
+  r5.appendChild(mkRange("Radius", state.appearance.radius||6, 0, 14, 1, (v)=>{ state.appearance.radius=v; applyAppearance(); saveState(); }));
+  r5.appendChild(mkRange("Bar height", state.appearance.barH||38, 26, 52, 1, (v)=>{ state.appearance.barH=v; applyAppearance(); saveState(); }));
+  r5.appendChild(mkRange("Chip size", state.appearance.chipH||18, 12, 28, 1, (v)=>{ state.appearance.chipH=v; applyAppearance(); saveState(); }));
+  scales.appendChild(r5);
+
+  const counters = mkSection("Compteurs");
+  const rowc = document.createElement("div");
+  rowc.className="row";
+  const inpSec = document.createElement("input");
+  inpSec.type="number";
+  inpSec.min="3"; inpSec.max="30"; inpSec.step="1";
+  inpSec.value = String(state.countersAutoHideSec||10);
+  inpSec.onchange = ()=>{
+    state.countersAutoHideSec = clamp(parseInt(inpSec.value,10)||10, 3, 30);
+    saveState();
+  };
+  const btnShow = document.createElement("button");
+  btnShow.className="btn primary";
+  btnShow.textContent="MONTRER 10s";
+  btnShow.onclick = ()=>{ setCountersVisible(true, true); };
+  rowc.appendChild(inpSec);
+  rowc.appendChild(btnShow);
+  counters.appendChild(rowc);
+
+  wrap.appendChild(s);
+  wrap.appendChild(document.createElement("div")).style.height="10px";
+  wrap.appendChild(scales);
+  wrap.appendChild(document.createElement("div")).style.height="10px";
+  wrap.appendChild(counters);
+
   return wrap;
 }
 
 function viewHistory(){
   const wrap = document.createElement("div");
-  wrap.className = "section";
-  snapshotDay();
-  wrap.innerHTML = `
-    <h3>Historique</h3>
-    <div class="section" style="margin-bottom:10px">
-      <h3>Jours récents</h3>
-      <div id="histList"></div>
-    </div>
-    <div class="section">
-      <h3>Calendrier (30 jours)</h3>
-      <div class="gridCal" id="calGrid"></div>
-      <div class="small" style="margin-top:8px">Intensité = tâches faites · teinte = surbrillance.</div>
-    </div>
-  `;
-  setTimeout(()=>{
-    const box = $("histList");
-    const hist = (state.history||[]).slice(0,14);
-    box.innerHTML = hist.length===0 ? "—" : hist.map(h=>{
-      const emo = h.emotions?.count||0;
-      const avg = h.emotions?.avg||0;
-      return `
-        <div style="padding:8px 6px; border-bottom:1px solid var(--line)">
-          <div style="font-family:var(--mono); color:var(--muted); font-size:11px; letter-spacing:.08em">${h.day}</div>
-          <div style="font-size:13px">
-            Faites: ${h.doneTasks} · Restantes: ${h.remainingTasks} · Étorions: ${h.doneEtorions} · Émotions: ${emo}${emo?` (avg ${avg})`:""}
-          </div>
-        </div>
-      `;
-    }).join("");
 
-    const grid = $("calGrid");
-    const days = [];
-    const today = new Date();
-    for(let i=29;i>=0;i--){
-      const d = new Date(today);
-      d.setDate(today.getDate()-i);
-      days.push(dayKey(d));
-    }
-    const map = {};
-    (state.history||[]).forEach(e=>{ map[e.day] = e.doneTasks || 0; });
-    const max = Math.max(1, ...Object.values(map));
-    grid.innerHTML = days.map(dk=>{
-      const v = map[dk] || 0;
-      const intensity = clamp(v/max, 0, 1);
-      const a = 0.06 + intensity*0.34;
-      const dd = String(new Date(dk).getDate()).padStart(2,"0");
+  const s = mkSection("Historique (7 jours)");
+  snapshotDay();
+
+  const days = (state.history||[]).slice(0,7);
+
+  if(days.length===0){
+    s.innerHTML += `<div class="small">Aucun historique.</div>`;
+  }else{
+    const table = document.createElement("div");
+    table.innerHTML = days.map(d=>{
+      const pct = d.baselineEtorions ? Math.round((d.doneEtorions/d.baselineEtorions)*100) : 0;
+      const emo = d.emotions?.count ? ` · émotions:${d.emotions.count} (avg ${d.emotions.avg}/10)` : "";
       return `
-        <div class="calCell" title="${dk} — ${v} ${plural(v,"tâche","tâches")}">
-          <div class="calInk" style="opacity:${a}"></div>
-          <div class="calTxt">${dd}</div>
+      <div style="padding:10px 6px; border-bottom:1px solid var(--line)">
+        <div style="display:flex; justify-content:space-between; gap:10px; align-items:center">
+          <div style="font-family:var(--mono); letter-spacing:.10em; text-transform:uppercase; font-size:11px; color:var(--muted)">${escapeHTML(d.day)}</div>
+          <div style="font-family:var(--mono); font-size:11px; color:var(--muted)">${d.doneTasks} done · ${d.remainingTasks} left · ${pct}% eto${emo}</div>
         </div>
+        <div class="spark" style="margin-top:8px"><div class="sparkFill" style="width:${clamp(pct,0,100)}%"></div></div>
+      </div>
       `;
     }).join("");
-  },0);
+    s.appendChild(table);
+  }
+
+  const cal = mkSection("Heatmap (10x5)");
+  const grid = document.createElement("div");
+  grid.className="gridCal";
+
+  // 50 cells = last 50 days approximate
+  const map = new Map((state.history||[]).map(h=>[h.day,h]));
+  const today = new Date();
+  for(let i=49;i>=0;i--){
+    const d = new Date(today.getTime() - i*24*60*60*1000);
+    const dk = dayKey(d);
+    const entry = map.get(dk);
+    const pct = entry && entry.baselineEtorions ? clamp(Math.round((entry.doneEtorions/entry.baselineEtorions)*100),0,100) : 0;
+
+    const cell = document.createElement("div");
+    cell.className="calCell";
+    cell.title = `${dk} · ${pct}%`;
+
+    const ink = document.createElement("div");
+    ink.className="calInk";
+    ink.style.opacity = (pct/100)*0.28;
+
+    const ink2 = document.createElement("div");
+    ink2.className="calInk2";
+    ink2.style.opacity = (pct/100)*0.12;
+
+    const txt = document.createElement("div");
+    txt.className="calTxt";
+    txt.textContent = String(d.getDate()).padStart(2,"0");
+
+    cell.appendChild(ink);
+    cell.appendChild(ink2);
+    cell.appendChild(txt);
+    grid.appendChild(cell);
+  }
+  cal.appendChild(grid);
+
+  wrap.appendChild(s);
+  wrap.appendChild(document.createElement("div")).style.height="10px";
+  wrap.appendChild(cal);
   return wrap;
 }
 
 /* -------------------------
-   Right panel views
+   Right views
 ------------------------- */
 function viewRightSets(){
   const wrap = document.createElement("div");
-  wrap.className = "section";
-  initSetsChecksForToday();
+  ensureSelectedSet();
+
+  const sTop = mkSection("Sets (checklist)");
+  const row = document.createElement("div");
+  row.className="row";
+
+  const setSel = document.createElement("select");
+  state.sets.list.forEach(s=>{
+    const op = document.createElement("option");
+    op.value = s.id;
+    op.textContent = s.title;
+    if(s.id===state.sets.selectedId) op.selected = true;
+    setSel.appendChild(op);
+  });
+  setSel.onchange = ()=>{
+    state.sets.selectedId = setSel.value;
+    saveState();
+    renderRight();
+  };
+
+  const btnAdd = document.createElement("button");
+  btnAdd.className="btn primary";
+  btnAdd.textContent="NOUVEAU";
+  btnAdd.onclick = ()=>{
+    addSet();
+    saveState();
+    renderRight();
+  };
+
+  const btnEdit = document.createElement("button");
+  btnEdit.className="btn";
+  btnEdit.textContent="ÉDITER";
+  btnEdit.onclick = ()=>{
+    openSetEditor(state.sets.selectedId);
+  };
+
+  row.appendChild(setSel);
+  row.appendChild(btnAdd);
+  row.appendChild(btnEdit);
+  sTop.appendChild(row);
+
+  const set = selectedSet();
+  if(!set){
+    const emp = document.createElement("div");
+    emp.className="small";
+    emp.textContent="Aucun set.";
+    sTop.appendChild(emp);
+    wrap.appendChild(sTop);
+    return wrap;
+  }
+
+  initSetChecksForToday(set);
+
+  const meta = document.createElement("div");
+  meta.className="small";
+  meta.style.marginTop="8px";
+  const sum = summarizeSetToday(set.id);
+  meta.textContent = `${sum.done}/${sum.total} cochés aujourd’hui · ${set.unitCount} ${set.unitName} · ${set.items.length} items`;
+  sTop.appendChild(meta);
+
+  const tools = document.createElement("div");
+  tools.className="row";
+  tools.style.marginTop="10px";
+
+  const btnReset = document.createElement("button");
+  btnReset.className="btn";
+  btnReset.textContent="RESET JOUR";
+  btnReset.onclick = ()=>{
+    resetSetToday(set.id);
+    saveState();
+    renderRight();
+  };
+
+  const btnDel = document.createElement("button");
+  btnDel.className="btn";
+  btnDel.textContent="SUPPRIMER";
+  btnDel.onclick = ()=>{
+    if(!confirm("Supprimer ce set ?")) return;
+    deleteSet(set.id);
+    saveState();
+    renderRight();
+  };
+
+  tools.appendChild(btnReset);
+  tools.appendChild(btnDel);
+  sTop.appendChild(tools);
+
+  wrap.appendChild(sTop);
+  wrap.appendChild(document.createElement("div")).style.height="10px";
+
+  // Checklist grid: units stacked, each unit has item toggles
+  const sGrid = mkSection("Checklist");
   const dk = dayKey();
+  const checks = set.checks[dk] || {};
 
-  wrap.innerHTML = `
-    <h3>Sets</h3>
-    <div class="small" style="margin-bottom:10px">Checklist à droite = zéro oubli, zéro friction.</div>
+  for(let u=0; u<set.unitCount; u++){
+    const unitBox = document.createElement("div");
+    unitBox.style.border = "1px solid var(--line)";
+    unitBox.style.borderRadius = "var(--radius2)";
+    unitBox.style.padding = "10px";
+    unitBox.style.marginBottom = "10px";
+    unitBox.style.background = "rgba(0,0,0,.02)";
+    if(state.theme==="dark") unitBox.style.background = "rgba(255,255,255,.03)";
 
-    <div class="section" style="margin-bottom:10px">
-      <h3>Hospitalier</h3>
-      <div class="row" style="margin-bottom:8px">
-        <input id="hospPatients" type="number" min="1" max="20" />
-        <button class="btn" id="hospReset">RESET</button>
-      </div>
-      <div id="hospList"></div>
-    </div>
+    const head = document.createElement("div");
+    head.style.display="flex";
+    head.style.justifyContent="space-between";
+    head.style.alignItems="center";
+    head.style.gap="10px";
+    head.style.marginBottom="8px";
 
-    <div class="section">
-      <h3>Consultation</h3>
-      <div class="row" style="margin-bottom:8px">
-        <input id="consPatients" type="number" min="1" max="30" />
-        <button class="btn" id="consReset">RESET</button>
-      </div>
-      <div id="consList"></div>
-    </div>
-  `;
+    const label = document.createElement("div");
+    label.style.fontFamily="var(--mono)";
+    label.style.letterSpacing=".10em";
+    label.style.textTransform="uppercase";
+    label.style.fontSize="11px";
+    label.style.color="var(--muted)";
+    label.textContent = `${set.unitName} ${u+1}`;
 
-  setTimeout(()=>{
-    $("hospPatients").value = state.sets.hospital.patients;
-    $("consPatients").value = state.sets.consult.patients;
+    const unitDone = set.items.reduce((acc,_,i)=>{
+      const k = setCheckKey(u,i);
+      return acc + (checks[k]?1:0);
+    },0);
+    const unitMeta = document.createElement("div");
+    unitMeta.className="small";
+    unitMeta.textContent = `${unitDone}/${set.items.length}`;
 
-    $("hospPatients").onchange = (e)=>{
-      state.sets.hospital.patients = clamp(parseInt(e.target.value,10)||4,1,20);
-      saveState(); renderRight();
-    };
-    $("consPatients").onchange = (e)=>{
-      state.sets.consult.patients = clamp(parseInt(e.target.value,10)||6,1,30);
-      saveState(); renderRight();
-    };
-    $("hospReset").onclick = ()=>{ resetSetToday("hospital"); saveState(); renderRight(); snapshotDay(); };
-    $("consReset").onclick = ()=>{ resetSetToday("consult"); saveState(); renderRight(); snapshotDay(); };
+    head.appendChild(label);
+    head.appendChild(unitMeta);
+    unitBox.appendChild(head);
 
-    const buildSetList = (key, boxId)=>{
-      const set = state.sets[key];
-      const checks = set.checks?.[dk] || {};
-      const items = set.itemsPerPatient;
-      const box = $(boxId);
-      box.innerHTML = "";
-      for(let p=1;p<=set.patients;p++){
-        const head = document.createElement("div");
-        head.className = "small";
-        head.style.cssText = "font-family:var(--mono); letter-spacing:.06em; margin-top:10px";
-        head.textContent = `Patient ${p}`;
-        box.appendChild(head);
+    const itemsWrap = document.createElement("div");
+    itemsWrap.style.display="grid";
+    itemsWrap.style.gridTemplateColumns="repeat(2, minmax(0,1fr))";
+    itemsWrap.style.gap="8px";
 
-        items.forEach((it,idx)=>{
-          const k = setKeyItem(key,p,idx);
-          const on = !!checks[k];
-          const row = document.createElement("div");
-          row.style.cssText = "display:flex; align-items:center; gap:8px; margin:6px 0";
-          row.innerHTML = `
-            <div class="toolBtn" style="width:34px;height:30px" data-set="${key}" data-p="${p}" data-i="${idx}">${on?"✓":""}</div>
-            <div style="font-size:13px; color:var(--fg)">${escapeHTML(it)}</div>
-          `;
-          row.querySelector(".toolBtn").onclick = ()=>{
-            toggleSetCheck(key,p,idx);
-            saveState();
-            snapshotDay();
-            renderRight();
-          };
-          box.appendChild(row);
-        });
-      }
-    };
+    set.items.forEach((it,i)=>{
+      const k = setCheckKey(u,i);
+      const on = !!checks[k];
 
-    buildSetList("hospital","hospList");
-    buildSetList("consult","consList");
-  },0);
+      const cell = document.createElement("div");
+      cell.style.border="1px solid var(--line)";
+      cell.style.borderRadius="var(--radius2)";
+      cell.style.padding="10px";
+      cell.style.cursor="pointer";
+      cell.style.userSelect="none";
+      cell.style.background = on ? "linear-gradient(180deg,var(--glass2),transparent)" : "transparent";
 
+      const t = document.createElement("div");
+      t.style.fontSize="13px";
+      t.textContent = it;
+
+      const sub = document.createElement("div");
+      sub.style.fontFamily="var(--mono)";
+      sub.style.fontSize="11px";
+      sub.style.color="var(--muted)";
+      sub.style.marginTop="6px";
+      sub.textContent = on ? "ON" : "OFF";
+
+      cell.onclick = ()=>{
+        toggleSetCheck(set.id, u, i);
+        saveState();
+        renderRight();
+      };
+
+      cell.appendChild(t);
+      cell.appendChild(sub);
+      itemsWrap.appendChild(cell);
+    });
+
+    unitBox.appendChild(itemsWrap);
+    sGrid.appendChild(unitBox);
+  }
+
+  wrap.appendChild(sGrid);
   return wrap;
 }
 
 function viewRightHabits(){
   const wrap = document.createElement("div");
-  wrap.className = "section";
-  wrap.innerHTML = `
-    <h3>Habitudes</h3>
+  const s = mkSection("Habitudes");
 
-    <div class="section" style="margin-bottom:10px">
-      <h3>Ajouter</h3>
-      <div class="row">
-        <input id="hName" placeholder="Nom (ex: eau)" />
-        <input id="hSlots" type="number" min="3" max="12" value="8" />
-      </div>
-      <div class="row" style="margin-top:8px">
-        <button class="btn primary" id="hAdd">AJOUTER</button>
-      </div>
-    </div>
+  const addRow = document.createElement("div");
+  addRow.className="row";
+  const name = document.createElement("input");
+  name.placeholder="Nom (ex: eau, marche, lecture)";
+  const slots = document.createElement("input");
+  slots.type="number"; slots.min="3"; slots.max="12"; slots.step="1";
+  slots.value="8";
 
-    <div class="section">
-      <h3>Suivi</h3>
-      <div id="hList"></div>
-    </div>
-  `;
-  setTimeout(()=>{
-    $("hAdd").onclick = ()=>{
-      pushUndo("habitAdd");
-      addHabit($("hName").value, $("hSlots").value);
-      $("hName").value="";
-      snapshotDay();
-      saveState();
-      renderRight();
-      renderAll();
-    };
-    renderHabitsListRight();
-  },0);
-  return wrap;
-}
+  const btn = document.createElement("button");
+  btn.className="btn primary";
+  btn.textContent="AJOUTER";
+  btn.onclick = ()=>{
+    addHabit(name.value, slots.value);
+    name.value="";
+    saveState();
+    renderRight();
+  };
 
-function renderHabitsListRight(){
-  const box = $("hList");
-  if(!box) return;
-  const list = state.habits || [];
-  if(list.length===0){
-    box.innerHTML = `<div class="small">Aucune habitude.</div>`;
-    return;
+  addRow.appendChild(name);
+  addRow.appendChild(slots);
+  addRow.appendChild(btn);
+  s.appendChild(addRow);
+
+  const list = document.createElement("div");
+  list.style.marginTop="10px";
+
+  if((state.habits||[]).length===0){
+    list.innerHTML = `<div class="small">Aucune habitude.</div>`;
+  }else{
+    list.innerHTML = state.habits.slice(0,40).map(h=>{
+      const p = habitProgress(h);
+      const chips = h.checks.map((c,idx)=>`
+        <div class="chip ${c?"on":""}" data-h="${h.id}" data-i="${idx}" title="toggle"></div>
+      `).join("");
+      return `
+        <div style="border:1px solid var(--line); border-radius:var(--radius); padding:10px; margin-bottom:10px; background:rgba(0,0,0,.02)">
+          <div style="display:flex; justify-content:space-between; gap:10px; align-items:center">
+            <div style="font-weight:800">${escapeHTML(h.name)}</div>
+            <div class="small">${p.done}/${p.tot} · ${p.pct}%</div>
+          </div>
+          <div class="chips" style="justify-content:flex-start; margin-top:8px">${chips}</div>
+          <div class="row" style="margin-top:10px">
+            <button class="btn" data-act="reset" data-h="${h.id}">RESET</button>
+            <button class="btn" data-act="del" data-h="${h.id}">SUPPRIMER</button>
+          </div>
+        </div>
+      `;
+    }).join("");
   }
-  box.innerHTML = list.map(h=>{
-    const p = habitProgress(h);
-    const checks = h.checks.map((v,idx)=>`
-      <div class="toolBtn" style="width:34px;height:30px" data-h="${h.id}" data-i="${idx}">${v?"✓":""}</div>
-    `).join("");
-    return `
-      <div class="section" style="margin-bottom:10px">
-        <h3>${escapeHTML(h.name)} <span style="font-weight:400; letter-spacing:.06em">(${p.done}/${p.tot})</span></h3>
-        <div class="spark" title="${p.pct}%">
-          <div class="sparkFill" style="width:${p.pct}%"></div>
-        </div>
-        <div style="height:8px"></div>
-        <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center">${checks}</div>
-        <div class="row" style="margin-top:8px">
-          <button class="btn" data-act="resetHabit" data-h="${h.id}">RESET</button>
-          <button class="btn" data-act="delHabit" data-h="${h.id}">SUPPRIMER</button>
-        </div>
-      </div>
-    `;
-  }).join("");
+  s.appendChild(list);
 
-  box.querySelectorAll(".toolBtn[data-h]").forEach(el=>{
-    el.onclick = ()=>{
-      pushUndo("habitToggle");
-      const hId = el.getAttribute("data-h");
-      const i = parseInt(el.getAttribute("data-i"),10);
-      toggleHabitCheck(hId, i);
+  // handlers
+  s.querySelectorAll(".chip").forEach(ch=>{
+    ch.onclick = ()=>{
+      const hId = ch.getAttribute("data-h");
+      const idx = parseInt(ch.getAttribute("data-i"),10);
+      toggleHabitCheck(hId, idx);
       snapshotDay();
       saveState();
       renderRight();
-      renderAll();
     };
   });
-  box.querySelectorAll("button[data-act]").forEach(b=>{
+  s.querySelectorAll("button[data-act]").forEach(b=>{
     b.onclick = ()=>{
-      pushUndo("habitAction");
       const act = b.getAttribute("data-act");
       const hId = b.getAttribute("data-h");
       const h = state.habits.find(x=>x.id===hId);
       if(!h) return;
-      if(act==="resetHabit") h.checks = h.checks.map(()=>false);
-      if(act==="delHabit") state.habits = state.habits.filter(x=>x.id!==hId);
+      if(act==="reset") h.checks = h.checks.map(()=>false);
+      if(act==="del"){
+        if(!confirm("Supprimer cette habitude ?")) return;
+        state.habits = state.habits.filter(x=>x.id!==hId);
+      }
       snapshotDay();
       saveState();
       renderRight();
-      renderAll();
     };
   });
+
+  wrap.appendChild(s);
+  return wrap;
 }
 
 function viewRightEmotions(){
   const wrap = document.createElement("div");
-  wrap.className = "section";
-  wrap.innerHTML = `
-    <h3>Émotions (TCC)</h3>
+  const s = mkSection("Émotions (journal rapide)");
 
-    <div class="section" style="margin-bottom:10px">
-      <h3>Nouvelle entrée</h3>
-      <div class="row">
-        <select id="emoEmotion"></select>
-        <input id="emoIntensity" type="number" min="0" max="100" value="60" />
-      </div>
-      <div class="row" style="margin-top:8px">
-        <textarea id="emoSituation" placeholder="Situation (factuelle, courte)"></textarea>
-      </div>
-      <div class="row" style="margin-top:8px">
-        <textarea id="emoThoughts" placeholder="Pensées automatiques"></textarea>
-      </div>
-      <div class="row" style="margin-top:8px">
-        <select id="emoSkill"></select>
-        <input id="emoAfter" type="number" min="0" max="100" value="40" />
-      </div>
-      <div class="row" style="margin-top:8px">
-        <button class="btn primary" id="emoSave">ENREGISTRER</button>
-        <button class="btn" id="emoQuick">MICRO-RÉGULATION</button>
-      </div>
-    </div>
+  const row = document.createElement("div");
+  row.className="row";
 
-    <div class="section" style="margin-bottom:10px">
-      <h3>Aujourd'hui</h3>
-      <div id="emoToday"></div>
-      <div style="height:8px"></div>
-      <div class="small">Graph: intensité moyenne (aujourd’hui)</div>
-      <div class="spark" id="emoSpark"><div class="sparkFill" id="emoSparkFill" style="width:0%"></div></div>
-    </div>
+  const emo = document.createElement("select");
+  EMOTIONS.forEach(e=>{
+    const op = document.createElement("option");
+    op.value=e; op.textContent=e;
+    emo.appendChild(op);
+  });
 
-    <div class="section">
-      <h3>Distorsions (repères)</h3>
-      <div class="small">${escapeHTML(DISTORTIONS.join(" · "))}</div>
-    </div>
-  `;
-  setTimeout(()=>{
-    $("emoEmotion").innerHTML = EMOTIONS.map(e=>`<option value="${escapeHTML(e)}">${escapeHTML(e)}</option>`).join("");
-    $("emoSkill").innerHTML = SKILLS.map(s=>`<option value="${escapeHTML(s)}">${escapeHTML(s)}</option>`).join("");
+  const intensity = document.createElement("input");
+  intensity.type="number";
+  intensity.min="0"; intensity.max="10"; intensity.step="1";
+  intensity.value="5";
 
-    $("emoQuick").onclick = ()=> showNudge();
+  const need = document.createElement("select");
+  NEEDS.forEach(n=>{
+    const op = document.createElement("option"); op.value=n; op.textContent=n;
+    need.appendChild(op);
+  });
 
-    $("emoSave").onclick = ()=>{
-      const day = dayKey();
-      const time = new Date().toLocaleTimeString("fr-BE",{hour:"2-digit",minute:"2-digit"});
-      const situation = ($("emoSituation").value||"").trim();
-      const thoughts = ($("emoThoughts").value||"").trim();
-      const emotion = $("emoEmotion").value;
-      const intensity = clamp(parseInt($("emoIntensity").value,10)||0, 0, 100);
-      const skillUsed = $("emoSkill").value;
-      const afterIntensity = clamp(parseInt($("emoAfter").value,10)||0, 0, 100);
+  const block = document.createElement("select");
+  BLOCKS.forEach(b=>{
+    const op = document.createElement("option"); op.value=b; op.textContent=b;
+    block.appendChild(op);
+  });
 
-      if(!situation && !thoughts){
-        showNudge();
-        return;
-      }
+  row.appendChild(emo);
+  row.appendChild(intensity);
+  row.appendChild(need);
+  row.appendChild(block);
+  s.appendChild(row);
 
-      pushUndo("emoAdd");
+  const row2 = document.createElement("div");
+  row2.className="row";
+  row2.style.marginTop="10px";
 
-      addEmotionEntry({ id: uid(), day, time, situation, thoughts, emotion, intensity, skillUsed, afterIntensity });
+  const skill = document.createElement("select");
+  SKILLS.forEach(x=>{
+    const op = document.createElement("option"); op.value=x; op.textContent=x;
+    skill.appendChild(op);
+  });
 
-      $("emoSituation").value="";
-      $("emoThoughts").value="";
+  const note = document.createElement("input");
+  note.placeholder="Note (optionnel)";
 
-      snapshotDay();
-      saveState();
-      renderRight();
-      renderAll();
-
-      // a tiny tip sometimes (not celebration)
-      if(Math.random()<0.14) showTip();
+  const btn = document.createElement("button");
+  btn.className="btn primary";
+  btn.textContent="AJOUTER";
+  btn.onclick = ()=>{
+    const entry = {
+      id: uid(),
+      day: dayKey(),
+      at: nowISO(),
+      emotion: emo.value,
+      intensity: clamp(parseInt(intensity.value,10)||0, 0, 10),
+      need: need.value,
+      block: block.value,
+      skill: skill.value,
+      note: (note.value||"").trim()
     };
+    addEmotionEntry(entry);
+    snapshotDay();
+    saveState();
+    renderRight();
+    note.value="";
+  };
 
-    renderEmoTodayRight();
-  },0);
+  row2.appendChild(skill);
+  row2.appendChild(note);
+  row2.appendChild(btn);
+  s.appendChild(row2);
 
+  const today = emotionsToday();
+  const sum = mkSection("Aujourd’hui");
+  const info = document.createElement("div");
+  info.className="small";
+  info.textContent = today.length
+    ? `${today.length} entrées · top: ${topEmotion(today)} · avg: ${avgIntensity(today)}/10`
+    : "Aucune entrée.";
+  sum.appendChild(info);
+
+  if(today.length){
+    const list = document.createElement("div");
+    list.style.marginTop="10px";
+    list.innerHTML = today.slice(0,20).map(e=>{
+      const dt = new Date(e.at);
+      const stamp = dt.toLocaleTimeString("fr-BE",{hour:"2-digit",minute:"2-digit"});
+      return `
+        <div style="padding:10px 6px; border-bottom:1px solid var(--line)">
+          <div style="display:flex; justify-content:space-between; gap:10px; align-items:center">
+            <div style="font-weight:800">${escapeHTML(e.emotion)} · ${e.intensity}/10</div>
+            <div class="small">${stamp}</div>
+          </div>
+          <div class="small">besoin: ${escapeHTML(e.need)} · blocage: ${escapeHTML(e.block)} · outil: ${escapeHTML(e.skill)}</div>
+          ${e.note?`<div style="margin-top:6px; font-size:13px">${escapeHTML(e.note)}</div>`:""}
+        </div>
+      `;
+    }).join("");
+    sum.appendChild(list);
+  }
+
+  wrap.appendChild(s);
+  wrap.appendChild(document.createElement("div")).style.height="10px";
+  wrap.appendChild(sum);
   return wrap;
 }
 
-function renderEmoTodayRight(){
-  const box = $("emoToday");
-  if(!box) return;
-  const list = emotionsToday();
-  if(list.length===0){
-    box.innerHTML = `<div class="small">Aucune entrée.</div>`;
-    $("emoSparkFill").style.width = "0%";
-    return;
-  }
-  box.innerHTML = list.slice(0,10).map(e=>{
-    return `
-      <div style="padding:8px 6px; border-bottom:1px solid var(--line)">
-        <div style="font-family:var(--mono); color:var(--muted); font-size:11px; letter-spacing:.06em">
-          ${escapeHTML(e.time)} — ${escapeHTML(e.emotion)} ${e.intensity}→${e.afterIntensity} · ${escapeHTML(e.skillUsed||"")}
-        </div>
-        <div style="font-size:13px; margin-top:4px">${escapeHTML(e.situation||"—")}</div>
-      </div>
-    `;
-  }).join("");
+/* -------------------------
+   Task editor (quick, modal)
+------------------------- */
+function openTaskEditor(taskId){
+  const t = getTaskById(taskId);
+  if(!t) return;
 
-  const avg = avgIntensity(list);
-  $("emoSparkFill").style.width = `${avg}%`;
+  $("setEditBody").innerHTML = `
+    <div class="section">
+      <h3>Modifier tâche</h3>
+      <div class="row">
+        <input id="teTitle" value="${escapeHTML(t.title)}" placeholder="Titre"/>
+        <input id="teCat" value="${escapeHTML(t.cat||"")}" placeholder="Catégorie (optionnel)"/>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <input id="teEto" type="number" min="1" max="99" step="1" value="${t.etorionsTotal||1}" placeholder="Étorions total"/>
+        <input id="teLeft" type="number" min="0" max="99" step="1" value="${t.etorionsLeft ?? (t.etorionsTotal||1)}" placeholder="Étorions restants"/>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn primary" id="teSave">SAUVER</button>
+        <button class="btn" id="teCancel">ANNULER</button>
+      </div>
+    </div>
+  `;
+
+  $("teSave").onclick = ()=>{
+    pushUndo("taskEdit");
+    t.title = $("teTitle").value.trim() || t.title;
+    t.cat = $("teCat").value.trim() || t.cat;
+    t.etorionsTotal = clamp(parseInt($("teEto").value,10)||1, 1, 99);
+    t.etorionsLeft = clamp(parseInt($("teLeft").value,10)||t.etorionsTotal, 0, 99);
+    snapshotDay();
+    saveState();
+    renderAll();
+    renderDrawer();
+    closeAllModals();
+  };
+  $("teCancel").onclick = closeAllModals;
+
+  openModal("setEditModal");
 }
 
 /* -------------------------
-   Wire actions
+   Set editor (full)
 ------------------------- */
-$("btnMenu").onclick = openDrawer;
-$("drawerClose").onclick = closeDrawer;
+function openSetEditor(setId){
+  const set = getSetById(setId);
+  if(!set) return;
+
+  const catText = (set.categories||[]).join(", ");
+  const itemsText = (set.items||[]).join("\n");
+
+  $("setEditBody").innerHTML = `
+    <div class="section">
+      <h3>Paramètres</h3>
+      <div class="row">
+        <input id="seTitle" value="${escapeHTML(set.title)}" placeholder="Titre du set"/>
+        <input id="seUnitName" value="${escapeHTML(set.unitName)}" placeholder="Nom unité (ex: Patient)"/>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <input id="seUnitCount" type="number" min="1" max="30" step="1" value="${set.unitCount||3}" placeholder="Nombre d’unités"/>
+        <input id="seCats" value="${escapeHTML(catText)}" placeholder="Catégories (virgules, optionnel)"/>
+      </div>
+    </div>
+    <div style="height:10px"></div>
+    <div class="section">
+      <h3>Items (1 par ligne)</h3>
+      <textarea id="seItems" style="min-height:220px">${escapeHTML(itemsText)}</textarea>
+      <div class="small" style="margin-top:8px">Ex: Voir patient / Note / Ordonnance / Dossier</div>
+    </div>
+    <div style="height:10px"></div>
+    <div class="section">
+      <h3>Actions</h3>
+      <div class="row">
+        <button class="btn primary" id="seSave">SAUVER</button>
+        <button class="btn" id="seResetToday">RESET JOUR</button>
+        <button class="btn" id="seUp">↑</button>
+        <button class="btn" id="seDown">↓</button>
+      </div>
+    </div>
+  `;
+
+  $("seSave").onclick = ()=>{
+    pushUndo("setEdit");
+    set.title = $("seTitle").value.trim() || set.title;
+    set.unitName = $("seUnitName").value.trim() || set.unitName;
+    set.unitCount = clamp(parseInt($("seUnitCount").value,10)||set.unitCount, 1, 30);
+
+    const cats = $("seCats").value.split(",").map(x=>x.trim()).filter(Boolean);
+    set.categories = cats.slice(0,12);
+
+    const items = $("seItems").value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+    set.items = items.slice(0,40);
+
+    saveState();
+    renderRight();
+    closeAllModals();
+  };
+
+  $("seResetToday").onclick = ()=>{
+    resetSetToday(set.id);
+    saveState();
+    renderRight();
+    closeAllModals();
+  };
+
+  $("seUp").onclick = ()=>{
+    moveSet(set.id,-1);
+    saveState();
+    renderRight();
+    closeAllModals();
+  };
+  $("seDown").onclick = ()=>{
+    moveSet(set.id,1);
+    saveState();
+    renderRight();
+    closeAllModals();
+  };
+
+  openModal("setEditModal");
+}
+
+/* -------------------------
+   Export
+------------------------- */
+let exportMode = "text";
+
+function tasksAsText(){
+  const act = sortTasks(activeTasks());
+  const byCat = {};
+  act.forEach(t=>{
+    const c = (t.cat||"INBOX").trim() || "INBOX";
+    (byCat[c] ||= []).push(t);
+  });
+  const cats = Object.keys(byCat).sort((a,b)=>a.localeCompare(b));
+  const lines = [];
+  cats.forEach(c=>{
+    lines.push(c.toUpperCase());
+    byCat[c].forEach(t=>{
+      const et = t.etorionsTotal||1;
+      const left = t.etorionsLeft ?? et;
+      lines.push(`- ${t.title} — ${left}/${et}`);
+    });
+    lines.push("");
+  });
+  return lines.join("\n").trim();
+}
+
+function tasksAsCSV(){
+  const rows = [["title","cat","etorions_total","etorions_left","pinned","done","createdAt","doneAt"]];
+  state.tasks.forEach(t=>{
+    rows.push([
+      t.title||"",
+      t.cat||"",
+      String(t.etorionsTotal||1),
+      String(t.etorionsLeft ?? (t.etorionsTotal||1)),
+      t.pinned? "1":"0",
+      t.done? "1":"0",
+      t.createdAt||"",
+      t.doneAt||""
+    ]);
+  });
+  return rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(",")).join("\n");
+}
+
+function renderExport(mode){
+  exportMode = mode || exportMode;
+  let out = "";
+  if(exportMode==="text") out = tasksAsText();
+  if(exportMode==="json") out = JSON.stringify({
+    meta:{ exportedAt: nowISO(), key: LS_KEY },
+    state
+  }, null, 2);
+  if(exportMode==="csv") out = tasksAsCSV();
+  $("expOut").value = out;
+}
+
+$("expText").onclick = ()=>renderExport("text");
+$("expJSON").onclick = ()=>renderExport("json");
+$("expCSV").onclick = ()=>renderExport("csv");
+$("expCopy").onclick = async ()=>{
+  try{
+    await navigator.clipboard.writeText($("expOut").value||"");
+    $("expCopy").textContent = "COPIÉ";
+    setTimeout(()=>$("expCopy").textContent="COPIER", 1200);
+  }catch(e){
+    $("expCopy").textContent = "ECHEC";
+    setTimeout(()=>$("expCopy").textContent="COPIER", 1200);
+  }
+};
+
+/* -------------------------
+   Notes modal controls
+------------------------- */
+$("noteAdd").onclick = (e)=>{
+  e.stopPropagation();
+  addNote($("noteInput").value);
+  $("noteInput").value = "";
+  snapshotDay();
+  saveState();
+  renderNotes();
+};
+$("noteClear").onclick = (e)=>{
+  e.stopPropagation();
+  if(!confirm("Vider toutes les notes ?")) return;
+  state.notes = [];
+  snapshotDay();
+  saveState();
+  renderNotes();
+};
+
+/* -------------------------
+   Topbar + main controls
+------------------------- */
+$("btnMenu").onclick = (e)=>{ e.stopPropagation(); openDrawer(); };
+$("drawerClose").onclick = (e)=>{ e.stopPropagation(); closeDrawer(); };
 $("drawerBack").onclick = closeDrawer;
 
-$("btnRight").onclick = openRight;
-$("rightClose").onclick = closeRight;
+$("btnRight").onclick = (e)=>{ e.stopPropagation(); openRight(); };
+$("rightClose").onclick = (e)=>{ e.stopPropagation(); closeRight(); };
 $("rightBack").onclick = closeRight;
 
 $("btnTheme").onclick = toggleTheme;
 
-$("btnFocus").onclick = toggleFocus;
-
 $("btnCounters").onclick = ()=>{
-  // show now, then auto-hide
-  setCountersVisible(!state.showCounters, true);
-  if(state.showCounters) renderHUD();
+  const will = !state.showCounters;
+  setCountersVisible(will, true);
 };
 
 $("btnListToggle").onclick = ()=>{
   state.showBelowList = !state.showBelowList;
-  saveState();
-  renderAll();
-};
-
-$("btnUndo").onclick = ()=> undo();
-
-$("btnRoulette").onclick = ()=>{
-  const el = $("btnRoulette");
-  el.classList.remove("rouletteSpin");
-  void el.offsetWidth;
-  el.classList.add("rouletteSpin");
-
-  const pick = roulettePick();
-  if(!pick) return;
-  setTimeout(()=>{
-    pushUndo("roulette");
-    setCurrentTask(pick.id);
-    snapshotDay();
-    saveState();
-    renderAll();
-    if(Math.random()<0.14) showTip();
-    if(Math.random()<0.10) showNudge();
-  }, 230);
-};
-
-$("btnEtorion").onclick = degommeEtorion;
-
-$("btnNotes").onclick = ()=>{
-  renderNotes();
-  openModal("notesModal");
-};
-
-$("noteAdd").onclick = ()=>{
-  addNote($("noteInput").value);
-  $("noteInput").value="";
-  saveState();
-  renderNotes();
-};
-$("noteClear").onclick = ()=>{ $("noteInput").value=""; };
-
-$("btnDoneTask").onclick = ()=>{
-  const t = getTaskById(state.currentTaskId);
-  if(!t) return;
-  completeTask(t.id);
-};
-
-$("btnEditTask").onclick = ()=>{
-  const t = getTaskById(state.currentTaskId);
-  if(!t) return;
-  const nv = prompt("Éditer la tâche (titre)", t.title);
-  if(nv===null) return;
-  const v = nv.trim();
-  if(!v) return;
-  pushUndo("editTask");
-  t.title = v;
-  snapshotDay();
   saveState();
   renderAll();
 };
@@ -3031,38 +3710,86 @@ $("btnHideBelow").onclick = ()=>{
   renderAll();
 };
 
-/* -------------------------
-   Init
-------------------------- */
-applyAppearance();
-applyFocus();
-setRandomTagline(true);
-snapshotDay();
-renderAll();
-renderDrawer();
-startTimerLoop();
+$("btnFocus").onclick = toggleFocus;
 
-// refresh the right panel live (if open)
-document.addEventListener("visibilitychange", ()=>{
-  if(!document.hidden){
-    snapshotDay();
+$("btnRoulette").onclick = ()=>{
+  const btn = $("btnRoulette");
+  btn.classList.remove("rouletteSpin");
+  void btn.offsetWidth; // restart anim
+  btn.classList.add("rouletteSpin");
+
+  const pick = roulettePick();
+  if(!pick) return;
+  setTimeout(()=>{
+    setCurrentTask(pick.id);
+    saveState();
     renderAll();
-    if($("rightPanel").classList.contains("open")) renderRight();
+  }, 520);
+};
+
+$("btnEtorion").onclick = degommeEtorion;
+
+$("btnUndo").onclick = (e)=>{ e.stopPropagation(); undo(); };
+
+$("btnNotes").onclick = (e)=>{
+  e.stopPropagation();
+  renderNotes();
+  openModal("notesModal");
+};
+
+$("btnDoneTask").onclick = ()=>{
+  const t = getTaskById(state.currentTaskId);
+  if(!t) return;
+  completeTask(t.id);
+};
+
+$("btnEditTask").onclick = ()=>{
+  const t = getTaskById(state.currentTaskId);
+  if(!t) return;
+  openTaskEditor(t.id);
+};
+
+$("btnPause").onclick = ()=>{
+  togglePause();
+};
+
+document.addEventListener("keydown",(e)=>{
+  // safe shortcuts
+  if(e.key==="Escape"){
+    closeAllModals();
+    closeDrawer();
+    closeRight();
+  }
+  // Space = pause/resume timer if no input focused
+  const tag = (document.activeElement && document.activeElement.tagName || "").toLowerCase();
+  if(e.code==="Space" && !["input","textarea","select"].includes(tag)){
+    e.preventDefault();
+    togglePause();
   }
 });
 
-// keep right panel content in sync after renderAll
-const origRenderAll = renderAll;
-renderAll = function(){
-  origRenderAll();
-  if($("rightPanel").classList.contains("open")) renderRight();
-};
+/* -------------------------
+   Boot
+------------------------- */
+(function boot(){
+  applyAppearance();
 
-// initial right panel content (but closed)
-renderRight();
+  // counters initial state (off)
+  setCountersVisible(!!state.showCounters, false);
 
-// ensure counters match state at start
-setCountersVisible(state.showCounters, false);
+  // ensure timer baseline
+  if(state.timer.running && !state.timer.startedAt) state.timer.startedAt = Date.now();
+
+  ensureSelectedSet();
+  ensureCurrentTask();
+  setRandomTagline(true);
+  renderAll();
+  startTimerLoop();
+
+  // panel titles
+  $("rightTitle").textContent = "PANNEAU DROIT";
+})();
+
   </script>
 </body>
 </html>
