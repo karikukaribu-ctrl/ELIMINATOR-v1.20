@@ -5,88 +5,106 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>ELIMINATOR</title>
 
-  <!-- Police élégante (sans dépendance externe) -->
   <style>
     :root{
       --bg: #f4f6fb;
       --fg: #0d1321;
       --muted: rgba(13,19,33,.62);
-      --glass: rgba(255,255,255,.55);
-      --glass2: rgba(255,255,255,.35);
+
+      --glass: rgba(255,255,255,.60);
+      --glass2: rgba(255,255,255,.38);
       --line: rgba(13,19,33,.14);
       --shadow: 0 18px 60px rgba(0,0,0,.10);
-      --blur: 16px;
-      --radius: 12px;           /* moins d'arrondis */
+      --blur: 18px;
+
+      --radius: 12px;     /* moins arrondi */
       --radius2: 10px;
-      --barH: 26px;             /* barre épaisse */
+
+      --barH: 30px;       /* + grand */
       --chipH: 18px;
-      --accent: rgba(0,140,255,.22); /* mode clair : léger bleu */
-      --accent2: rgba(0,140,255,.38);
-      --danger: rgba(0,0,0,.08);
-      --ok: rgba(0,0,0,.06);
-      --mono: ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial;
-      --mono2: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+      --accent: rgba(0,140,255,.16);   /* subtil */
+      --accent2: rgba(0,140,255,.30);
+
+      --ok: rgba(0,0,0,.045);
+
+      --font: ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+      --appW: min(1180px, 96vw);   /* occupe + d’espace */
+      --vpad: clamp(10px, 2.2vh, 18px);
+      --hpad: clamp(10px, 2.2vw, 18px);
     }
     [data-theme="dark"]{
       --bg:#0b0f17;
       --fg:#eaf0ff;
       --muted: rgba(234,240,255,.62);
-      --glass: rgba(18,24,38,.55);
-      --glass2: rgba(18,24,38,.35);
+
+      --glass: rgba(18,24,38,.60);
+      --glass2: rgba(18,24,38,.38);
       --line: rgba(234,240,255,.14);
-      --shadow: 0 18px 80px rgba(0,0,0,.38);
-      --blur: 18px;
-      --accent: rgba(0,255,140,.18); /* mode sombre : léger vert */
-      --accent2: rgba(0,255,140,.34);
-      --danger: rgba(255,255,255,.08);
-      --ok: rgba(255,255,255,.06);
+      --shadow: 0 18px 80px rgba(0,0,0,.36);
+      --blur: 20px;
+
+      --accent: rgba(0,255,140,.14);
+      --accent2: rgba(0,255,140,.26);
+
+      --ok: rgba(255,255,255,.05);
     }
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
     body{
       margin:0;
-      font-family: var(--mono);
-      background: radial-gradient(1200px 700px at 30% 15%, rgba(255,255,255,.42), transparent 60%),
-                  radial-gradient(1000px 680px at 75% 30%, rgba(0,0,0,.06), transparent 60%),
-                  var(--bg);
-      color:var(--fg);
+      font-family: var(--font);
+      background:
+        radial-gradient(1200px 700px at 25% 15%, rgba(255,255,255,.42), transparent 60%),
+        radial-gradient(1000px 680px at 80% 30%, rgba(0,0,0,.06), transparent 60%),
+        var(--bg);
+      color: var(--fg);
       overflow-x:hidden;
     }
     [data-theme="dark"] body{
-      background: radial-gradient(1200px 700px at 30% 15%, rgba(0,255,140,.06), transparent 60%),
-                  radial-gradient(1100px 720px at 75% 30%, rgba(0,140,255,.05), transparent 60%),
-                  var(--bg);
+      background:
+        radial-gradient(1200px 700px at 25% 15%, rgba(0,255,140,.055), transparent 60%),
+        radial-gradient(1100px 720px at 80% 30%, rgba(0,140,255,.045), transparent 60%),
+        var(--bg);
     }
 
-    /* Layout */
+    /* ===== APP LAYOUT ===== */
     .wrap{
       min-height:100%;
       display:flex;
       flex-direction:column;
-      padding: 14px 14px 18px;
-      gap: 12px;
+      gap: clamp(10px, 1.6vh, 14px);
+      padding: var(--vpad) var(--hpad) calc(var(--vpad) + 10px);
       align-items:center;
     }
+
     .topbar{
-      width:min(980px, 100%);
+      width: var(--appW);
       display:flex;
       justify-content:space-between;
       align-items:center;
       gap:10px;
-      padding:10px 10px;
+      padding: 10px 10px;
       border:1px solid var(--line);
       border-radius: var(--radius);
       background: var(--glass);
       backdrop-filter: blur(var(--blur));
       box-shadow: var(--shadow);
+      position: sticky;
+      top: 8px;
+      z-index: 30;
     }
     .topbar .left, .topbar .right{
       display:flex;
       align-items:center;
       gap:8px;
       flex-wrap:wrap;
+      min-width:0;
     }
+    .topbar .right{ justify-content:flex-end; }
 
     /* Minimal buttons */
     .btn{
@@ -104,87 +122,80 @@
     }
     .btn:hover{ background: var(--ok); }
     .btn:active{ transform: translateY(1px); }
+
+    .btn.icon{
+      width:40px;
+      height:36px;
+      display:grid;
+      place-items:center;
+      padding:0;
+      font-family: var(--mono);
+      letter-spacing:0;
+      text-transform:none;
+      font-size:15px;
+    }
     .btn.primary{
       background: linear-gradient(180deg, var(--glass2), transparent);
       box-shadow: inset 0 0 0 1px var(--line);
     }
-    .btn.tiny{
-      padding:6px 8px;
-      font-size:11px;
-    }
-    .btn.icon{
-      width:38px;
-      height:34px;
-      display:grid;
-      place-items:center;
-      padding:0;
-      font-family: var(--mono2);
-      letter-spacing:0;
-      text-transform:none;
-      font-size:14px;
-    }
-    .btn.switch{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 10px;
-    }
+    .btn.tiny{ padding:6px 8px; font-size:11px; }
+
     .pill{
-      padding:5px 8px;
+      padding:6px 10px;
       border-radius:999px;
       border:1px solid var(--line);
       background: rgba(0,0,0,.03);
       color: var(--muted);
       font-size:12px;
-      font-family: var(--mono2);
+      font-family: var(--mono);
+      white-space:nowrap;
     }
     [data-theme="dark"] .pill{ background: rgba(255,255,255,.04); }
 
-    /* Title area */
+    /* HERO */
     .hero{
-      width:min(980px, 100%);
+      width: var(--appW);
       display:flex;
       flex-direction:column;
       align-items:center;
       gap: 8px;
-      padding: 2px 8px 6px;
+      padding: 2px 8px 0;
     }
     .title{
-      font-size: 48px;  /* plus grand */
+      font-size: clamp(42px, 5.2vw, 66px);
       letter-spacing: .18em;
       text-transform:uppercase;
       margin: 6px 0 0;
-      font-weight: 650;
-      line-height:1.1;
+      font-weight: 680;
+      line-height:1.05;
       text-align:center;
-    }
-    @media (max-width:520px){
-      .title{ font-size: 36px; letter-spacing:.14em; }
     }
     .tag{
       font-size: 13px;
       color: var(--muted);
       text-align:center;
-      max-width: 62ch;
+      max-width: 70ch;
       padding: 0 8px;
     }
 
-    /* Main center block */
+    /* MAIN */
     .main{
-      width:min(980px, 100%);
+      width: var(--appW);
       display:flex;
       flex-direction:column;
-      gap: 14px;
+      gap: clamp(12px, 2.0vh, 18px);
       align-items:center;
+      flex:1;
+      justify-content:flex-start;
     }
 
-    /* Progress bars */
+    /* PROGRESS */
     .barWrap{
       width:100%;
       display:flex;
       flex-direction:column;
       gap:10px;
-      padding: 12px 12px 14px;
+      padding: 14px 14px 16px;
       border:1px solid var(--line);
       border-radius: var(--radius);
       background: var(--glass);
@@ -203,6 +214,7 @@
       letter-spacing:.08em;
       text-transform:uppercase;
       color: var(--muted);
+      font-family: var(--mono);
     }
     .bar{
       width:100%;
@@ -225,18 +237,17 @@
       position:absolute; inset:0;
       display:grid;
       place-items:center;
-      font-family: var(--mono2);
+      font-family: var(--mono);
       font-size: 12px;
       color: var(--fg);
-      mix-blend-mode: normal;
       opacity:.92;
       pointer-events:none;
     }
 
-    /* Current task block */
+    /* CURRENT TASK */
     .current{
       width:100%;
-      padding: 14px 12px 12px;
+      padding: 16px 14px 14px;
       border:1px solid var(--line);
       border-radius: var(--radius);
       background: var(--glass);
@@ -244,18 +255,16 @@
       box-shadow: var(--shadow);
       display:flex;
       flex-direction:column;
-      gap:12px;
+      gap: 14px;
     }
     .taskName{
-      font-size: 20px;
-      font-weight: 600;
-      letter-spacing:.02em;
+      font-size: clamp(26px, 3.0vw, 40px);   /* beaucoup plus grand */
+      font-weight: 720;
+      letter-spacing:.01em;
       text-align:center;
-      line-height:1.25;
-      padding: 2px 4px;
-    }
-    @media (max-width:520px){
-      .taskName{ font-size: 18px; }
+      line-height:1.12;
+      padding: 4px 6px;
+      word-break: break-word;
     }
 
     /* Etorion chips */
@@ -276,23 +285,23 @@
     [data-theme="dark"] .chip{ background: rgba(255,255,255,.04); }
     .chip.on{ background: var(--accent2); }
 
-    /* Action row (roulette + bomb + notes + focus) */
+    /* Actions — base épurée */
     .actions{
       display:flex;
-      gap:10px;
+      gap:12px;
       justify-content:center;
       flex-wrap:wrap;
       align-items:center;
     }
 
-    /* Roulette button */
     .roulette{
-      width: 92px;
-      height: 92px;
+      width: clamp(92px, 10.5vw, 130px);
+      height: clamp(92px, 10.5vw, 130px);
       border-radius: 999px;
       border:1px solid var(--line);
-      background: radial-gradient(circle at 30% 30%, var(--glass2), transparent 60%),
-                  linear-gradient(180deg, var(--glass2), transparent);
+      background:
+        radial-gradient(circle at 30% 30%, var(--glass2), transparent 60%),
+        linear-gradient(180deg, var(--glass2), transparent);
       backdrop-filter: blur(var(--blur));
       box-shadow: var(--shadow);
       display:grid;
@@ -300,34 +309,36 @@
       cursor:pointer;
       position:relative;
       user-select:none;
+      transition: transform 140ms ease;
     }
-    .roulette:active{ transform: translateY(1px); }
+    .roulette:active{ transform: translateY(1px) scale(.99); }
     .rouletteText{
       font-size: 12px;
       letter-spacing:.14em;
       text-transform:uppercase;
       color: var(--fg);
-      opacity:.9;
-      font-weight:650;
+      opacity:.92;
+      font-weight:720;
+      font-family: var(--mono);
     }
     .rouletteRing{
       position:absolute;
-      inset:6px;
+      inset:7px;
       border-radius:999px;
       border:1px dashed var(--line);
       opacity:.85;
     }
     .rouletteSpin{
-      animation: spin 720ms cubic-bezier(.15,.9,.2,1) 1;
+      animation: spin 680ms cubic-bezier(.10,.9,.2,1) 1;
     }
     @keyframes spin{
       0%{ transform: rotate(0deg); }
-      100%{ transform: rotate(720deg); } /* 2 tours propres */
+      100%{ transform: rotate(720deg); }
     }
 
     .bomb{
-      min-width: 160px;
-      padding: 12px 14px;
+      min-width: clamp(170px, 22vw, 240px);
+      padding: 14px 16px;
       border-radius: 12px;
       border:1px solid var(--line);
       background: linear-gradient(180deg, var(--glass2), transparent);
@@ -338,33 +349,35 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      gap:10px;
+      gap:12px;
       user-select:none;
       box-shadow: var(--shadow);
+      transition: transform 140ms ease;
     }
     .bomb:hover{ background: var(--ok); }
-    .bomb:active{ transform: translateY(1px); }
+    .bomb:active{ transform: translateY(1px) scale(.99); }
     .bomb .em{
-      font-family: var(--mono2);
-      font-size: 14px;
-      opacity:.9;
+      font-family: var(--mono);
+      font-size: 15px;
+      opacity:.92;
     }
     .bomb .label{
       display:flex;
       flex-direction:column;
-      line-height:1.1;
+      line-height:1.12;
       align-items:center;
     }
-    .bomb .label span{ font-size: 12px; }
+    .bomb .label span{ font-size: 12px; font-family: var(--mono); }
     .bomb .label small{
       font-size: 10px;
       color: var(--muted);
       letter-spacing:.14em;
       text-transform:uppercase;
+      font-family: var(--mono);
     }
 
     .miniIcon{
-      width:44px; height:44px;
+      width:48px; height:48px;
       border-radius: 12px;
       border:1px solid var(--line);
       display:grid;
@@ -372,14 +385,15 @@
       cursor:pointer;
       background: transparent;
       box-shadow: var(--shadow);
-      font-family: var(--mono2);
-      font-size: 14px;
+      font-family: var(--mono);
+      font-size: 15px;
       user-select:none;
+      transition: transform 140ms ease;
     }
     .miniIcon:hover{ background: var(--ok); }
-    .miniIcon:active{ transform: translateY(1px); }
+    .miniIcon:active{ transform: translateY(1px) scale(.99); }
 
-    /* Optional active list drawer under main */
+    /* Below list */
     .belowList{
       width:100%;
       border:1px solid var(--line);
@@ -402,6 +416,7 @@
     }
     .belowHead .h{
       font-size:12px; letter-spacing:.10em; text-transform:uppercase; color:var(--muted);
+      font-family: var(--mono);
     }
     .taskRow{
       display:flex;
@@ -424,7 +439,7 @@
     .taskRow .meta{
       font-size: 11px;
       color: var(--muted);
-      font-family: var(--mono2);
+      font-family: var(--mono);
       white-space:nowrap;
     }
     .taskRow .tools{
@@ -432,48 +447,37 @@
       gap:6px;
       align-items:center;
     }
-
     .toolBtn{
-      width:34px; height:30px;
+      width:36px; height:32px;
       border-radius: 10px;
       border:1px solid var(--line);
       display:grid;
       place-items:center;
       cursor:pointer;
       background: transparent;
-      font-family: var(--mono2);
+      font-family: var(--mono);
       font-size: 12px;
       user-select:none;
     }
     .toolBtn:hover{ background: var(--ok); }
 
-    /* Focus mode */
-    .focusOn .topbar .left .btn:not(.keepFocus),
-    .focusOn .topbar .right,
-    .focusOn .belowList.show{
-      display:none !important;
-    }
-    .focusOn .topbar{
-      justify-content:center;
-    }
-    .focusOn .topbar .left{
-      width:100%;
-      justify-content:center;
-    }
-    .focusOn .topbar .left .keepFocus{
+    .small{
       font-size:12px;
-      padding:10px 14px;
+      color: var(--muted);
+      font-family: var(--mono);
     }
-    .focusOn .tag{
-      opacity:.9;
-    }
-    /* Focus should keep essential stats visible (already inside topbar pills) */
-    .focusOn .hero{ margin-top: 0; }
 
-    /* Drawer (menu lateral) */
+    /* ===== FOCUS MODE ===== */
+    .focusOn .topbar .btn:not(.keepFocus),
+    .focusOn .topbar .right{ display:none !important; }
+    .focusOn .topbar{ justify-content:center; }
+    .focusOn .topbar .left{ width:100%; justify-content:center; }
+    .focusOn .tag{ opacity:.95; }
+
+    /* ===== DRAWER (menu latéral, largeur extensible) ===== */
     .drawerBack{
       position:fixed; inset:0;
-      background: rgba(0,0,0,.25);
+      background: rgba(0,0,0,.22);
       backdrop-filter: blur(10px);
       display:none;
       z-index:50;
@@ -481,7 +485,7 @@
     .drawer{
       position:fixed;
       top:0; left:0;
-      width:min(420px, 92vw);  /* plus large */
+      width: min(var(--drawerW, 420px), 94vw);
       height:100%;
       background: var(--glass);
       border-right:1px solid var(--line);
@@ -495,20 +499,32 @@
     }
     .drawer.open{ transform: translateX(0); }
     .drawerBack.show{ display:block; }
+
     .drawerTop{
       display:flex;
       justify-content:space-between;
       align-items:center;
       padding: 10px 12px;
       border-bottom:1px solid var(--line);
+      gap:10px;
     }
     .drawerTitle{
       font-size: 12px;
-      letter-spacing:.12em;
+      letter-spacing:.14em;
       text-transform:uppercase;
       color: var(--muted);
-      font-family: var(--mono2);
+      font-family: var(--mono);
     }
+    .drawerResizer{
+      position:absolute;
+      top:0; right:-6px;
+      width:12px;
+      height:100%;
+      cursor: ew-resize;
+      opacity:0;
+    }
+    .drawer:hover .drawerResizer{ opacity:1; }
+
     .tabs{
       display:flex;
       gap:8px;
@@ -525,6 +541,7 @@
       text-transform:uppercase;
       color: var(--muted);
       user-select:none;
+      font-family: var(--mono);
     }
     .tab.active{
       color: var(--fg);
@@ -549,9 +566,10 @@
       letter-spacing:.14em;
       text-transform:uppercase;
       color: var(--muted);
-      font-family: var(--mono2);
-      font-weight:650;
+      font-family: var(--mono);
+      font-weight:720;
     }
+
     textarea, input, select{
       width:100%;
       border:1px solid var(--line);
@@ -560,10 +578,10 @@
       border-radius: 10px;
       padding: 10px;
       outline:none;
-      font-family: var(--mono);
+      font-family: var(--font);
       font-size: 13px;
     }
-    textarea{ min-height: 140px; resize:vertical; }
+    textarea{ min-height: 120px; resize:vertical; }
     .row{
       display:flex;
       gap:8px;
@@ -572,17 +590,17 @@
     }
     .row > *{ flex:1; min-width: 120px; }
 
-    /* Modals */
+    /* ===== MODALS (click anywhere to close) ===== */
     .modalBack{
       position:fixed; inset:0;
       background: rgba(0,0,0,.25);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(14px);
       display:none;
       z-index:80;
     }
     .modal{
       position:fixed;
-      inset: 0;
+      inset:0;
       display:none;
       z-index:90;
       padding: 18px;
@@ -590,13 +608,15 @@
       justify-content:center;
     }
     .modalCard{
-      width:min(720px, 96vw);
+      width:min(860px, 96vw);
       border:1px solid var(--line);
       border-radius: var(--radius);
       background: var(--glass);
       backdrop-filter: blur(var(--blur));
       box-shadow: var(--shadow);
       padding: 12px;
+      position:relative;
+      overflow:hidden;
     }
     .modalHead{
       display:flex;
@@ -608,33 +628,69 @@
       margin-bottom:10px;
     }
     .modalHead .mh{
-      font-size: 12px; letter-spacing:.12em; text-transform:uppercase; color: var(--muted);
-      font-family: var(--mono2);
+      font-size: 12px; letter-spacing:.14em; text-transform:uppercase; color: var(--muted);
+      font-family: var(--mono);
     }
 
-    /* Celebration & Tips */
-    .bigTitle{
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing:.06em;
+    /* ===== CELEBRATION: GIANT ===== */
+    .celeCard{
+      width:min(980px, 97vw);
+      min-height: min(72vh, 720px);
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      padding: 22px 16px;
+    }
+    .celeHalo{
+      position:absolute;
+      inset:-40%;
+      background:
+        radial-gradient(circle at 30% 30%, var(--accent2), transparent 55%),
+        radial-gradient(circle at 70% 40%, var(--accent), transparent 55%),
+        radial-gradient(circle at 50% 70%, rgba(255,255,255,.10), transparent 55%);
+      opacity:.55;
+      filter: blur(2px);
+      transform: rotate(8deg);
+      pointer-events:none;
+      animation: halo 2.2s ease-in-out infinite alternate;
+    }
+    @keyframes halo{
+      0%{ transform: rotate(6deg) scale(1.02); opacity:.50; }
+      100%{ transform: rotate(10deg) scale(1.08); opacity:.68; }
+    }
+    .celeTitle{
+      font-size: clamp(28px, 4.2vw, 56px);
+      font-weight: 800;
+      letter-spacing:.12em;
       text-transform:uppercase;
       text-align:center;
-      margin: 6px 0 6px;
+      margin: 10px 0 10px;
+      font-family: var(--font);
     }
-    .bigMsg{
-      font-size: 14px;
-      color: var(--fg);
-      opacity:.92;
+    .celeMsg{
+      font-size: clamp(14px, 1.8vw, 22px);
       text-align:center;
-      line-height:1.45;
-      margin: 0 0 10px;
+      line-height:1.55;
+      margin: 0 auto 12px;
+      max-width: 70ch;
+      opacity:.95;
     }
-    .subMsg{
+    .celeSub{
       font-size: 12px;
       color: var(--muted);
       text-align:center;
-      margin: 0 0 6px;
-      font-family: var(--mono2);
+      margin: 0;
+      font-family: var(--mono);
+      letter-spacing:.06em;
+    }
+    .celeHint{
+      margin-top: 14px;
+      text-align:center;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      font-family: var(--mono);
     }
 
     /* Confetti canvas */
@@ -648,10 +704,10 @@
     /* Sets panel (right overlay) */
     .setsPanel{
       position:fixed;
-      top: 70px;
+      top: 74px;
       right: 14px;
-      width: min(360px, 92vw);
-      max-height: calc(100vh - 88px);
+      width: min(380px, 94vw);
+      max-height: calc(100vh - 92px);
       border:1px solid var(--line);
       border-radius: var(--radius);
       background: var(--glass);
@@ -665,7 +721,7 @@
     .setsPanel.show{ display:block; }
     .setsPanel .h{
       font-size: 11px; letter-spacing:.14em; text-transform:uppercase; color: var(--muted);
-      font-family: var(--mono2);
+      font-family: var(--mono);
       margin: 0 0 8px;
     }
     .setCard{
@@ -680,7 +736,8 @@
       font-size: 12px; letter-spacing:.10em; text-transform:uppercase;
       margin-bottom:8px;
       color: var(--fg);
-      font-family: var(--mono2);
+      font-family: var(--mono);
+      font-weight:720;
     }
     .setItem{
       display:flex;
@@ -697,193 +754,185 @@
       cursor:pointer;
       user-select:none;
       background: transparent;
-      font-family: var(--mono2);
+      font-family: var(--mono);
       font-size:12px;
     }
     .check.on{ background: var(--accent2); }
-
-    /* Small text */
-    .small{
-      font-size:12px;
-      color: var(--muted);
-    }
   </style>
 </head>
 
 <body data-theme="light">
-<canvas id="confetti"></canvas>
+  <canvas id="confetti"></canvas>
 
-<div class="drawerBack" id="drawerBack"></div>
-<div class="drawer" id="drawer">
-  <div class="drawerTop">
-    <div class="drawerTitle">MENU</div>
-    <button class="btn tiny" id="drawerClose">FERMER</button>
-  </div>
-  <div class="tabs" id="tabs"></div>
-  <div class="drawerBody" id="drawerBody"></div>
-</div>
-
-<div class="modalBack" id="modalBack"></div>
-
-<!-- Notes modal -->
-<div class="modal" id="notesModal">
-  <div class="modalCard">
-    <div class="modalHead">
-      <div class="mh">NOTES</div>
-      <button class="btn tiny" id="notesClose">FERMER</button>
+  <div class="drawerBack" id="drawerBack"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawerResizer" id="drawerResizer" title="Agrandir/réduire"></div>
+    <div class="drawerTop">
+      <div class="drawerTitle">MENU</div>
+      <button class="btn tiny" id="drawerClose">FERMER</button>
     </div>
-    <div class="section">
-      <h3>Ajouter une note</h3>
-      <textarea id="noteInput" placeholder="Écris ici. Ce qui traverse ton cerveau a le droit d'exister."></textarea>
-      <div class="row" style="margin-top:8px">
-        <button class="btn primary" id="noteAdd">AJOUTER</button>
-        <button class="btn" id="noteClear">EFFACER LE CHAMP</button>
+    <div class="tabs" id="tabs"></div>
+    <div class="drawerBody" id="drawerBody"></div>
+  </div>
+
+  <div class="modalBack" id="modalBack"></div>
+
+  <!-- Notes modal -->
+  <div class="modal" id="notesModal">
+    <div class="modalCard">
+      <div class="modalHead">
+        <div class="mh">NOTES</div>
+        <div class="small">Clique n’importe où pour fermer</div>
       </div>
-    </div>
-    <div style="height:10px"></div>
-    <div class="section">
-      <h3>Historique</h3>
-      <div id="notesList" class="small"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Celebration modal -->
-<div class="modal" id="celeModal">
-  <div class="modalCard">
-    <div class="modalHead">
-      <div class="mh">CÉLÉBRATION</div>
-      <button class="btn tiny" id="celeClose">OK</button>
-    </div>
-    <div class="bigTitle" id="celeTitle"></div>
-    <div class="bigMsg" id="celeMsg"></div>
-    <div class="subMsg" id="celeSub"></div>
-  </div>
-</div>
-
-<!-- Tips modal -->
-<div class="modal" id="tipsModal">
-  <div class="modalCard">
-    <div class="modalHead">
-      <div class="mh">CONSEIL FLOW</div>
-      <button class="btn tiny" id="tipsClose">OK</button>
-    </div>
-    <div class="bigTitle" id="tipsTitle"></div>
-    <div class="bigMsg" id="tipsMsg"></div>
-    <div class="subMsg" id="tipsSub"></div>
-  </div>
-</div>
-
-<!-- Sets panel -->
-<div class="setsPanel" id="setsPanel">
-  <div class="h">SETS</div>
-  <div id="setsContent"></div>
-</div>
-
-<div class="wrap" id="app">
-  <!-- TOP BAR -->
-  <div class="topbar">
-    <div class="left">
-      <button class="btn icon" id="btnMenu" title="Menu">≡</button>
-
-      <!-- Essentiels (pas en boutons, mais en pills) -->
-      <span class="pill" id="pillTasks">0/0 tâches</span>
-      <span class="pill" id="pillEto">0/0 étorions</span>
-      <span class="pill" id="pillDone">0 faite</span>
-      <span class="pill" id="pillTimer">00:00</span>
-
-      <!-- Toggle clair/sombre au centre / haut (texte explicite) -->
-      <button class="btn switch primary" id="btnTheme" title="Thème">
-        <span id="themeLabel">THÈME CLAIR</span>
-      </button>
-
-      <button class="btn tiny" id="btnToggleList" title="Afficher/masquer la liste">LISTE</button>
-      <button class="btn tiny" id="btnToggleSets" title="Afficher/masquer les sets">SETS</button>
-
-      <!-- Le bouton focus doit rester en focus (keepFocus) -->
-      <button class="btn primary keepFocus" id="btnFocus">FOCUS</button>
-
-      <button class="btn tiny" id="btnReset">RESET</button>
-    </div>
-
-    <div class="right">
-      <span class="pill" id="pillMode">mode: normal</span>
-      <span class="pill" id="pillFlow">flow: stable</span>
-    </div>
-  </div>
-
-  <!-- HERO -->
-  <div class="hero">
-    <div class="title">ELIMINATOR</div>
-    <div class="tag" id="tagline"></div>
-  </div>
-
-  <!-- MAIN -->
-  <div class="main">
-    <!-- PROGRESS (isolée) -->
-    <div class="barWrap">
-      <div class="barRow">
-        <div class="barLabel">progression tâches</div>
-        <div class="barLabel" id="barInfo">—</div>
-      </div>
-      <div class="bar" aria-label="Progression">
-        <div class="barFill" id="taskBarFill" style="width:100%"></div>
-        <div class="barPct" id="taskBarPct">100%</div>
-      </div>
-    </div>
-
-    <!-- CURRENT TASK -->
-    <div class="current">
-      <div class="taskName" id="taskName">Aucune tâche</div>
-
-      <div class="chips" id="chips"></div>
-
-      <div class="actions">
-        <div class="roulette" id="btnRoulette" title="Roulette">
-          <div class="rouletteRing" aria-hidden="true"></div>
-          <div class="rouletteText">ROULETTE</div>
+      <div class="section">
+        <h3>Ajouter une note</h3>
+        <textarea id="noteInput" placeholder="Écris ici. Ça sort du cerveau, ça libère de la RAM."></textarea>
+        <div class="row" style="margin-top:8px">
+          <button class="btn primary" id="noteAdd">AJOUTER</button>
+          <button class="btn" id="noteClear">VIDER</button>
         </div>
+      </div>
+      <div style="height:10px"></div>
+      <div class="section">
+        <h3>Historique</h3>
+        <div id="notesList" class="small"></div>
+      </div>
+    </div>
+  </div>
 
-        <div class="bomb" id="btnEtorion" title="Dégommer un étorion">
-          <div class="em">💣</div>
-          <div class="label">
-            <span>DÉGOMMER</span>
-            <small>1 ÉTORION</small>
+  <!-- Celebration modal (giant) -->
+  <div class="modal" id="celeModal">
+    <div class="modalCard celeCard">
+      <div class="celeHalo" aria-hidden="true"></div>
+      <div class="celeTitle" id="celeTitle"></div>
+      <div class="celeMsg" id="celeMsg"></div>
+      <div class="celeSub" id="celeSub"></div>
+      <div class="celeHint">Clique n’importe où pour fermer</div>
+    </div>
+  </div>
+
+  <!-- Tips modal -->
+  <div class="modal" id="tipsModal">
+    <div class="modalCard">
+      <div class="modalHead">
+        <div class="mh">CONSEIL FLOW</div>
+        <div class="small">Clique n’importe où pour fermer</div>
+      </div>
+      <div class="celeTitle" style="font-size:clamp(18px,2.4vw,26px); letter-spacing:.08em" id="tipsTitle"></div>
+      <div class="celeMsg" style="font-size:clamp(13px,1.6vw,18px)" id="tipsMsg"></div>
+      <div class="celeSub" id="tipsSub"></div>
+    </div>
+  </div>
+
+  <!-- Emotion Journal modal helper (optional micro-coach prompt) -->
+  <div class="modal" id="emoNudgeModal">
+    <div class="modalCard">
+      <div class="modalHead">
+        <div class="mh">MICRO-RÉGULATION</div>
+        <div class="small">Clique n’importe où pour fermer</div>
+      </div>
+      <div class="celeTitle" style="font-size:clamp(18px,2.4vw,28px); letter-spacing:.10em" id="emoNudgeTitle"></div>
+      <div class="celeMsg" style="font-size:clamp(13px,1.6vw,18px)" id="emoNudgeMsg"></div>
+      <div class="celeSub" id="emoNudgeSub"></div>
+    </div>
+  </div>
+
+  <!-- Sets panel -->
+  <div class="setsPanel" id="setsPanel">
+    <div class="h">SETS</div>
+    <div id="setsContent"></div>
+  </div>
+
+  <div class="wrap" id="app">
+    <!-- TOP BAR: base épurée (tout le reste dans menu) -->
+    <div class="topbar">
+      <div class="left">
+        <button class="btn icon" id="btnMenu" title="Menu">≡</button>
+
+        <span class="pill" id="pillTasks">0/0 tâches</span>
+        <span class="pill" id="pillEto">0/0 étorions</span>
+        <span class="pill" id="pillDone">0 faites</span>
+        <span class="pill" id="pillTimer">00:00</span>
+
+        <button class="btn primary" id="btnTheme" title="Thème"><span id="themeLabel">THÈME CLAIR</span></button>
+
+        <button class="btn tiny keepFocus" id="btnFocus">FOCUS</button>
+      </div>
+
+      <div class="right">
+        <span class="pill" id="pillMode">mode: normal</span>
+        <span class="pill" id="pillFlow">flow: stable</span>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="title">ELIMINATOR</div>
+      <div class="tag" id="tagline"></div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+      <!-- PROGRESS (isolée) -->
+      <div class="barWrap">
+        <div class="barRow">
+          <div class="barLabel">progression tâches</div>
+          <div class="barLabel" id="barInfo">—</div>
+        </div>
+        <div class="bar">
+          <div class="barFill" id="taskBarFill" style="width:100%"></div>
+          <div class="barPct" id="taskBarPct">100%</div>
+        </div>
+      </div>
+
+      <!-- CURRENT TASK -->
+      <div class="current">
+        <div class="taskName" id="taskName">Aucune tâche</div>
+
+        <div class="chips" id="chips"></div>
+
+        <div class="actions">
+          <div class="roulette" id="btnRoulette" title="Roulette">
+            <div class="rouletteRing" aria-hidden="true"></div>
+            <div class="rouletteText">ROULETTE</div>
           </div>
+
+          <div class="bomb" id="btnEtorion" title="Dégommer un étorion">
+            <div class="em">💣</div>
+            <div class="label">
+              <span>DÉGOMMER</span>
+              <small>1 ÉTORION</small>
+            </div>
+          </div>
+
+          <!-- boutons minimalistes essentiels -->
+          <div class="miniIcon" id="btnNotes" title="Notes">✎</div>
+          <div class="miniIcon" id="btnDoneTask" title="Tâche dégommée">✓</div>
+          <div class="miniIcon" id="btnEditTask" title="Éditer">≋</div>
         </div>
 
-        <div class="miniIcon" id="btnNotes" title="Notes">✎</div>
-        <div class="miniIcon" id="btnDoneTask" title="Marquer tâche dégommée">✓</div>
-        <div class="miniIcon" id="btnEditTask" title="Éditer tâche">≋</div>
-      </div>
-
-      <!-- Liste active "dans une fenêtre en dessous", masquable -->
-      <div class="belowList" id="belowList">
-        <div class="belowHead">
-          <div class="h">LISTE EN COURS</div>
-          <div class="row" style="justify-content:flex-end; gap:8px; flex:0">
+        <div class="belowList" id="belowList">
+          <div class="belowHead">
+            <div class="h">LISTE EN COURS</div>
             <button class="btn tiny" id="btnHideBelow">MASQUER</button>
           </div>
+          <div id="belowTasks"></div>
         </div>
-        <div id="belowTasks"></div>
-      </div>
 
-      <div class="small" id="hintLine" style="text-align:center">
-        Astuce: roulette pour choisir, 💣 pour grignoter l’étorion. Focus pour le mode tunnel.
+        <div class="small" id="hintLine" style="text-align:center">
+          Mode flow: une cible, une action, zéro débat interne.
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<script>
+  <script>
 /* =========================================================
-   ELIMINATOR — Single-file app
-   Objectif: flow, minimalisme, pas de redondance.
+   ELIMINATOR — FLOW + EXECUTIVE SUPPORT + CBT EMOTION JOURNAL
+   Objectif: interface épurée (essentiels sur l’écran),
+             tout le reste dans le menu latéral.
    ========================================================= */
 
-/* -------------------------
-   Helpers
-------------------------- */
 const $ = (id)=>document.getElementById(id);
 const clamp = (n,a,b)=>Math.max(a, Math.min(b,n));
 const uid = ()=>Math.random().toString(36).slice(2,10)+"_"+Date.now().toString(36);
@@ -900,79 +949,78 @@ function fmtMMSS(ms){
   const ss = String(s%60).padStart(2,"0");
   return `${mm}:${ss}`;
 }
-function plural(n, one, many){
-  return (n===1)? one : many;
-}
+function plural(n, one, many){ return (n===1)? one : many; }
 function rand(n){ return Math.floor(Math.random()*n); }
+function escapeHTML(s){
+  return (s||"").replace(/[&<>"']/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[c]));
+}
 
 /* -------------------------
    Storage
 ------------------------- */
-const LS_KEY = "eliminator_v3_flow";
+const LS_KEY = "eliminator_v4_flow_cbt";
 const defaultState = {
-  theme: "light",          // clair par défaut
+  theme: "light",
   focus: false,
+
   showBelowList: false,
   showSets: false,
+
+  drawerW: 420,
   activeTab: "inbox",
+
   settings: {
-    etorionMin: 5,                 // minutes
-    fatigue: 2,                    // 0..4
-    motivation: 2,                 // 0..4
-    celebrationChance: 0.35,       // surprise (pas tout le temps)
-    celebrationAutoCloseSec: 10,   // visible
-    tipsChance: 0.18,              // coaching ponctuel
-    tipsMinGapMin: 6,              // pas spam
-    keepListInFocus: true,         // l’utilisateur l’a demandé: possible de garder/afficher
-    allowSound: false,             // non
-    listSort: "roulette",          // roulette | ordre | alpha | cat
-    includedCats: [],              // si vide => toutes
+    etorionMin: 5,
+
+    fatigue: 2, motivation: 2,
+
+    // surprises
+    celebrationChance: 0.28,
+    celebrationAutoCloseSec: 11,
+    tipsChance: 0.16,
+    tipsMinGapMin: 6,
+    nudgeChance: 0.10,         // micro-régulation émotionnelle ponctuelle
+    nudgeMinGapMin: 10,
+
+    // display
+    keepListInFocus: true,
+    listSort: "roulette",
+    includedCats: [],
+
+    // “support exécutif”
+    antiOverload: true,        // propose kiffance/tips si surcharge
+    autoSuggestKiffance: true, // ponctuel après X étorions
+    kiffanceSuggestEveryEto: 6 // tous les 6 étorions (approx)
   },
+
   tasks: [],
   baseline: { totalTasks:0, totalEtorions:0 },
   currentTaskId: null,
-  currentTaskStart: null, // timestamp when current task chosen
-  notes: [],              // persistent across resets
-  habits: [],             // [{id,name,slots,checks:[], createdAt}]
-  history: [],            // [{day, doneTaskIds:[], doneTitles:[], remainingTitles:[], doneEtorions, totalEtorions, habitsDoneSummary}]
-  kiffance: {
-    bank: {
-      "5": [],
-      "10": [],
-      "15": [],
-      "25": []
-    }
-  },
+  currentTaskStart: null,
+
+  notes: [],
+  habits: [],
+  history: [],
+
+  kiffance: { bank: {"5":[], "10":[], "15":[], "25":[]} },
+
   sets: {
     hospital: { enabled:true, patients: 4, itemsPerPatient:["Voir patient","Note","Traitement","Dossier"], checks:{} },
-    consult:  { enabled:true, patients: 6, itemsPerPatient:["Voir patient","Note","Ordonnance","Dossier"], checks:{} },
-    custom: [] // future
+    consult:  { enabled:true, patients: 6, itemsPerPatient:["Voir patient","Note","Ordonnance","Dossier"], checks:{} }
   },
+
+  // CBT emotion journal
+  emotions: {
+    entries: [],   // {id, day, time, situation, emotion, intensity, body, thoughts, distortions[], behavior, urge, values, reframe, action, skillUsed, afterIntensity}
+  },
+
   lastTipAt: null,
-  stats: {
-    etorionsDone: 0,
-    tasksDone: 0
-  }
+  lastNudgeAt: null,
+
+  stats: { etorionsDone: 0, tasksDone: 0 }
 };
 
 let state = loadState();
-function loadState(){
-  try{
-    const raw = localStorage.getItem(LS_KEY);
-    if(!raw) return seedState(structuredClone(defaultState));
-    const parsed = JSON.parse(raw);
-    // Merge shallowly to avoid missing keys after updates
-    const merged = structuredClone(defaultState);
-    deepAssign(merged, parsed);
-    // ensure seed banks exist
-    return seedState(merged);
-  }catch(e){
-    return seedState(structuredClone(defaultState));
-  }
-}
-function saveState(){
-  localStorage.setItem(LS_KEY, JSON.stringify(state));
-}
 function deepAssign(target, src){
   for(const k in src){
     if(src[k] && typeof src[k]==="object" && !Array.isArray(src[k]) && target[k]){
@@ -982,144 +1030,127 @@ function deepAssign(target, src){
     }
   }
 }
-
-/* -------------------------
-   Seed content (kiffance + celebrations + taglines + tips)
-------------------------- */
 function seedState(s){
-  // Seed kiffance bank if empty (rich, structured, flow-friendly)
-  const bank = s.kiffance?.bank;
-  if(bank){
-    const emptyAll = ["5","10","15","25"].every(k => Array.isArray(bank[k]) && bank[k].length===0);
-    if(emptyAll){
-      bank["5"] = [
-        "Bois un verre d’eau. Debout. Sans négocier.",
-        "Respire 5 cycles lents. Épaules en bas.",
-        "Nettoie une surface de 30 secondes. Stop.",
-        "Étire cou/nuque 45 secondes. Retour immédiat.",
-        "Regarde au loin 20 secondes. Reviens.",
-        "Micro-marche: 60 secondes. Pas plus."
-      ];
-      bank["10"] = [
-        "Mini-reset: toilette + eau + retour.",
-        "Rangement éclair: 10 objets, pas un de plus.",
-        "2 minutes respiration + 8 minutes action simple.",
-        "Décharge mentale: écris 8 lignes, ferme.",
-        "Soleil/fenêtre: 3 minutes + 7 minutes reprise."
-      ];
-      bank["15"] = [
-        "Pause active: marche 10 + eau 5.",
-        "Snack simple + respiration lente, sans écran.",
-        "Étirements + douche flash si possible.",
-        "Rituel anti-chaos: 15 minutes chrono, stop net."
-      ];
-      bank["25"] = [
-        "Vraie pause: 20 minutes hors écran + 5 minutes reprise douce.",
-        "Petite marche + retour avec une seule priorité.",
-        "Micro-sieste 15–20 min + eau + reprise.",
-        "Décompression structurée: musique 10 + marche 10 + retour 5."
-      ];
-    }
-  }
-
-  // Seed notes/habits arrays safety
+  // theme default
+  if(!s.theme) s.theme = "light";
   s.notes = Array.isArray(s.notes)? s.notes : [];
   s.habits = Array.isArray(s.habits)? s.habits : [];
   s.history = Array.isArray(s.history)? s.history : [];
   s.tasks = Array.isArray(s.tasks)? s.tasks : [];
-
-  // Ensure theme default light
-  if(!s.theme) s.theme = "light";
-  // Ensure baseline exists
   if(!s.baseline) s.baseline = { totalTasks:0, totalEtorions:0 };
+  if(!s.kiffance?.bank) s.kiffance = { bank: {"5":[], "10":[], "15":[], "25":[]} };
+  if(!s.emotions) s.emotions = { entries: [] };
+
+  // seed kiffance
+  const bank = s.kiffance.bank;
+  const emptyAll = ["5","10","15","25"].every(k => Array.isArray(bank[k]) && bank[k].length===0);
+  if(emptyAll){
+    bank["5"] = [
+      "Bois un verre d’eau. Debout. Sans négocier.",
+      "Respire 5 cycles lents. Épaules en bas.",
+      "Regarde au loin 20 secondes. Reviens.",
+      "Micro-marche 60 secondes. Retour immédiat.",
+      "Étire nuque/épaules 45 secondes. Stop."
+    ];
+    bank["10"] = [
+      "Mini-reset: eau + toilette + retour.",
+      "Décharge mentale: 8 lignes, puis reprise.",
+      "Rangement éclair: 10 objets, pas plus.",
+      "Fenêtre: 2 minutes dehors + reprise."
+    ];
+    bank["15"] = [
+      "Pause active: marche 10 + eau 5.",
+      "Snack simple sans écran + reprise.",
+      "Étirements 7 + respiration 8."
+    ];
+    bank["25"] = [
+      "Vraie pause: 20 min hors écran + 5 min reprise douce.",
+      "Petite marche + retour avec une seule priorité.",
+      "Micro-sieste 15–20 min + eau + reprise."
+    ];
+  }
 
   return s;
 }
+function loadState(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return seedState(structuredClone(defaultState));
+    const parsed = JSON.parse(raw);
+    const merged = structuredClone(defaultState);
+    deepAssign(merged, parsed);
+    return seedState(merged);
+  }catch(e){
+    return seedState(structuredClone(defaultState));
+  }
+}
+function saveState(){
+  localStorage.setItem(LS_KEY, JSON.stringify(state));
+}
 
-// Taglines (varient parfois)
+/* -------------------------
+   Content pools
+------------------------- */
 const TAGLINE_POOL = [
   "Dégomme toutes les tâches. Réécris la réalité.",
-  "Dégomme les étorions. Forgeron·ne du temps, édition finale.",
-  "La procrastination a une armée. Tu as un plan.",
-  "Mode quête principale: activé. PNJ intérieur: rassuré.",
-  "Une tâche à la fois. Sort ancien: neutralisé.",
-  "Ce n’est pas une liste. C’est une campagne.",
-  "Aujourd’hui, on fait propre. Comme un geste clinique net.",
   "Objectif: flow. Résultat: domination calme.",
-  "Tu avances. Le chaos recule. Sans fanfare, avec efficacité.",
-  "Une micro-action = une faille dans l’empire du bazar."
+  "Une tâche à la fois. Sort ancien: neutralisé.",
+  "Mode quête principale: activé. PNJ intérieur: rassuré.",
+  "Une micro-action = une faille dans l’empire du bazar.",
+  "Le chaos a une armée. Toi, tu as une stratégie."
 ];
 
-// Celebrations: surprise (pondérée fatigue/motivation)
 const CELE_POOL = [
-  {cat:"fantasy", t:"CHANT DE VICTOIRE", m:"Une tâche est tombée. Les montagnes administratives ont légèrement tremblé."},
-  {cat:"fantasy", t:"BANNIÈRE PLANTÉE", m:"Territoire reconquis. La frontière du chaos recule d’un pas."},
-  {cat:"dream",   t:"ARCHITECTE DU RÉEL", m:"Tu viens de plier le temps en origami. Réalité: stabilisée."},
-  {cat:"dream",   t:"TOTEM: STABLE", m:"Tu es dans le réel. Et dans le réel, tu termines les choses. Magnifique."},
-  {cat:"ninja",   t:"TECHNIQUE INTERDITE", m:"Coup précis. Une tâche KO avant qu’elle ne crie."},
-  {cat:"ninja",   t:"MODE INFILTRATION", m:"Entre les lasers de la distraction. Personne n’a vu. Sauf le résultat."},
-  {cat:"med",     t:"GESTE CHIRURGICAL", m:"Incision propre dans le chaos. Hémostase parfaite. Fermeture: impeccable."},
-  {cat:"med",     t:"DIAGNOSTIC: RÉSOLU", m:"Symptôme: tâche. Traitement: action. Pronostic: victoire."},
-  {cat:"game",    t:"QUÊTE VALIDÉE", m:"Objectif atteint. Butin: paix intérieure + 2 points en dignité."},
-  {cat:"game",    t:"ACHIEVEMENT DÉBLOQUÉ", m:"« Je termine ce que je commence ». Qualité légendaire."},
-  {cat:"empire",  t:"EMPIRE ÉTENDU", m:"Un étorion de moins. Ton règne sur la journée s’intensifie."},
-  {cat:"empire",  t:"HÉROÏSME ADMINISTRATIF", m:"La bureaucratie a tenté un regard. Tu l’as ignorée. Elle a capitulé."},
+  {t:"CHANT DE VICTOIRE", m:"Une tâche est tombée. Les montagnes administratives ont légèrement tremblé."},
+  {t:"BANNIÈRE PLANTÉE", m:"Territoire reconquis. La frontière du chaos recule d’un pas."},
+  {t:"ARCHITECTE DU RÉEL", m:"Tu viens de plier le temps en origami. Réalité: stabilisée."},
+  {t:"TECHNIQUE INTERDITE", m:"Coup précis. La tâche est KO avant d’avoir compris."},
+  {t:"GESTE CLINIQUE NET", m:"Incision propre dans le chaos. Hémostase parfaite. Fermeture: impeccable."},
+  {t:"QUÊTE VALIDÉE", m:"Objectif atteint. Butin: paix intérieure + points de dignité."},
+  {t:"EMPIRE ÉTENDU", m:"Tu avances. Le bazar recule. C’est mathématique."},
+  {t:"PORTAIL REFERMÉ", m:"Tu viens de fermer une boucle mentale. Silence sacré."},
 ];
 
-// Tips (coaching flow, ponctuel)
 const TIPS_POOL = [
-  {cat:"pause", t:"MICRO-PAUSE INTELLIGENTE", m:"Pause 60 secondes: eau + 5 respirations lentes. Puis reprise immédiate."},
-  {cat:"focus", t:"RÈGLE DU LASER", m:"Une seule cible. Pas de multi-onglets. Pas d’arbitrage. Exécution."},
-  {cat:"body",  t:"CORPS = INTERRUPTEUR", m:"Épaules basses, mâchoire relâchée. Ton cerveau suit ton corps."},
-  {cat:"time",  t:"MINUTEUR MENTAL", m:"Fais juste 1 étorion. Après, tu renégocies. (Spoiler: tu ne renégocies pas.)"},
-  {cat:"env",   t:"ANTI-FRICTION", m:"Enlève un obstacle matériel maintenant (câble, dossier, onglet)."},
-  {cat:"story", t:"NARRATION", m:"Tu es dans la scène « exécution ». Le personnage n’explique pas. Il agit."},
+  {t:"RÈGLE DU LASER", m:"Une seule cible. Pas de multi-onglets. Exécution."},
+  {t:"CORPS = INTERRUPTEUR", m:"Épaules basses, mâchoire relâchée. Ton cerveau suit ton corps."},
+  {t:"MINUTEUR MENTAL", m:"Fais juste 1 étorion. Après, tu renégocies. (Spoiler: non.)"},
+  {t:"ANTI-FRICTION", m:"Enlève un obstacle matériel maintenant (câble, dossier, onglet)."},
+];
+
+const EMO_NUDGES = [
+  {t:"STOP (30s)", m:"Nommer l’émotion: « Je remarque ___ ». Puis 3 respirations lentes. Rien d’autre."},
+  {t:"ANCRAGE 5-4-3-2-1", m:"5 choses vues, 4 touchées, 3 entendues, 2 senties, 1 goûtée. Reviens au présent."},
+  {t:"DÉFUSION", m:"Remplace « je suis nul·le » par « j’ai la pensée que… ». Même contenu, moins de colle."},
+  {t:"MICRO-CHOIX", m:"Quel est le prochain geste de 30 secondes qui va dans ton sens ? Fais-le. Maintenant."},
 ];
 
 /* -------------------------
    Parsing tasks from inbox
-   Format:
-   CATÉGORIE EN MAJUSCULE
-   tâche - 3
-   autre tâche 2
-   (chiffre = étorions)
 ------------------------- */
 function isAllCapsLine(line){
   const t = line.trim();
   if(!t) return false;
-  // Consider "majuscule" if letters exist and equals upper
   const hasLetters = /[A-Za-zÀ-ÖØ-öø-ÿ]/.test(t);
   if(!hasLetters) return false;
   return t === t.toUpperCase() && t.length <= 80;
 }
 function parseTaskLine(line){
-  // Extract trailing number (etorions) if exists: "xxx - 3" or "xxx 3"
   const raw = line.trim();
   if(!raw) return null;
-
-  // Remove leading bullets
   const cleaned = raw.replace(/^[-*•\s]+/, "").trim();
   if(!cleaned) return null;
 
   let et = null;
   let title = cleaned;
-
-  // patterns:
-  // "titre - 3" OR "titre – 3" OR "titre 3"
   const m1 = cleaned.match(/^(.*?)(?:\s*[-–—]\s*|\s+)(\d+)\s*$/);
   if(m1){
     title = m1[1].trim();
     et = parseInt(m1[2],10);
   }
-  // sanitize title
   title = title.replace(/\s+/g," ").trim();
-
   if(!title) return null;
-
-  // clamp etorions if present
-  if(et!==null){
-    et = clamp(et, 1, 99);
-  }
+  if(et!==null) et = clamp(et, 1, 99);
   return {title, etorions: et};
 }
 function importFromInbox(text){
@@ -1140,7 +1171,6 @@ function importFromInbox(text){
       etorionsTotal: parsed.etorions ?? 1,
       etorionsLeft: parsed.etorions ?? 1,
       pinned: false,
-      priority: 0,
       done: false,
       createdAt: nowISO(),
       doneAt: null
@@ -1150,12 +1180,11 @@ function importFromInbox(text){
 }
 
 /* -------------------------
-   Task selection / ordering
+   Tasks
 ------------------------- */
 function activeTasks(){
-  // filter by included categories if set
   const inc = state.settings.includedCats;
-  return state.tasks.filter(t => !t.done).filter(t=>{
+  return state.tasks.filter(t=>!t.done).filter(t=>{
     if(!inc || inc.length===0) return true;
     return inc.includes(t.cat);
   });
@@ -1177,7 +1206,6 @@ function ensureCurrentTask(){
   }
   const cur = getTaskById(state.currentTaskId);
   if(!cur || cur.done){
-    // choose pinned first
     const pinned = list.find(t=>t.pinned);
     setCurrentTask((pinned||list[0]).id);
   }
@@ -1194,14 +1222,11 @@ function sortTasks(list){
     });
   }
   if(mode==="ordre"){
-    // keep insertion order by createdAt
     return [...list].sort((a,b)=> (a.createdAt||"").localeCompare(b.createdAt||""));
   }
-  // roulette mode keeps pinned at top then random pick when asked
   return [...list].sort((a,b)=>{
     if(a.pinned && !b.pinned) return -1;
     if(!a.pinned && b.pinned) return 1;
-    // stable by createdAt
     return (a.createdAt||"").localeCompare(b.createdAt||"");
   });
 }
@@ -1215,175 +1240,50 @@ function roulettePick(){
 
 /* -------------------------
    Progress logic
-   IMPORTANT: bar starts at 100% filled and DECREASES as tasks are completed.
 ------------------------- */
 function recomputeBaselineIfNeeded(){
-  // baseline should represent "start of session" totals for current task batch
-  // If baseline is empty but tasks exist, set baseline.
   if(state.baseline.totalTasks===0 && state.baseline.totalEtorions===0 && state.tasks.length>0){
     const allActive = activeTasks();
-    const totalTasks = allActive.length;
-    const totalEto = allActive.reduce((a,t)=>a+(t.etorionsTotal||0),0);
-    state.baseline = { totalTasks, totalEtorions: totalEto };
+    state.baseline.totalTasks = allActive.length;
+    state.baseline.totalEtorions = allActive.reduce((a,t)=>a+(t.etorionsTotal||0),0);
   }
 }
 function computeProgress(){
   const baseT = state.baseline.totalTasks || 0;
   const baseE = state.baseline.totalEtorions || 0;
-
   const remaining = activeTasks();
   const remT = remaining.length;
   const remE = remaining.reduce((a,t)=>a+(t.etorionsLeft||0),0);
-
-  // Decreasing bar: percent filled = remaining/base
   const pct = (baseT<=0) ? 100 : clamp(Math.round((remT/baseT)*100), 0, 100);
-
   return { baseT, baseE, remT, remE, pct };
 }
 
 /* -------------------------
-   Etorion actions
+   Kiffance
 ------------------------- */
-function degommeEtorion(){
-  const t = getTaskById(state.currentTaskId);
-  if(!t || t.done) return;
-
-  if(typeof t.etorionsLeft!=="number") t.etorionsLeft = t.etorionsTotal||1;
-  t.etorionsLeft = clamp(t.etorionsLeft - 1, 0, 99);
-
-  state.stats.etorionsDone = (state.stats.etorionsDone||0) + 1;
-
-  // if task etorions reach 0 => task completed
-  if(t.etorionsLeft<=0){
-    completeTask(t.id);
-  }else{
-    maybeShowTip(); // micro-coaching sometimes
-  }
+function kBucket(min){
+  if(min<=5) return "5";
+  if(min<=10) return "10";
+  if(min<=15) return "15";
+  return "25";
+}
+function pickKiffance(){
+  const min = state.settings.etorionMin || 5;
+  const b = kBucket(min);
+  const list = state.kiffance.bank[b] || [];
+  if(list.length===0) return "Respire. Puis reviens.";
+  return list[rand(list.length)];
+}
+function addKiffanceItem(bucket, text){
+  const t = (text||"").trim();
+  if(!t) return;
+  if(!state.kiffance.bank[bucket]) state.kiffance.bank[bucket]=[];
+  state.kiffance.bank[bucket].push(t);
   saveState();
-  renderAll();
-}
-function completeTask(taskId){
-  const t = getTaskById(taskId);
-  if(!t || t.done) return;
-  t.done = true;
-  t.doneAt = nowISO();
-
-  state.stats.tasksDone = (state.stats.tasksDone||0) + 1;
-
-  // confetti ALWAYS at end of task
-  confettiBurst();
-
-  // celebration SOMETIMES
-  maybeShowCelebration();
-
-  // update history today snapshot
-  snapshotDay();
-
-  // choose next task
-  ensureCurrentTask();
 }
 
 /* -------------------------
-   Celebration & tips (surprise, weighted)
-------------------------- */
-let celeTimer = null;
-let tipsTimer = null;
-
-function pickCelebration(){
-  const f = clamp(state.settings.fatigue,0,4);
-  const m = clamp(state.settings.motivation,0,4);
-  const weights = {
-    fantasy: 1 + (f>=3 ? 0.6 : 0),
-    dream:   1 + (f>=3 ? 0.5 : 0),
-    med:     1 + (f>=3 ? 0.7 : 0),
-    ninja:   1 + (m>=3 ? 0.7 : 0),
-    game:    1 + (m>=3 ? 0.6 : 0),
-    empire:  1 + (m>=3 ? 0.8 : 0),
-  };
-  const pool = CELE_POOL.map(x=>({x,w:(weights[x.cat]??1)}));
-  const sum = pool.reduce((a,p)=>a+p.w,0);
-  let r = Math.random()*sum;
-  for(const p of pool){
-    r -= p.w;
-    if(r<=0) return p.x;
-  }
-  return CELE_POOL[rand(CELE_POOL.length)];
-}
-function showCelebration(){
-  const pick = pickCelebration();
-  $("celeTitle").textContent = pick.t;
-  $("celeMsg").textContent = pick.m;
-
-  // small subtitle: keep it minimal
-  const p = computeProgress();
-  const done = (p.baseT - p.remT);
-  $("celeSub").textContent = `${done} ${plural(done,"tâche","tâches")} dégommée${done===1?"":"s"} · continue`;
-
-  openModal("celeModal");
-  const sec = clamp(parseInt(state.settings.celebrationAutoCloseSec,10)||10, 4, 20);
-  if(celeTimer) clearTimeout(celeTimer);
-  celeTimer = setTimeout(()=>closeModal("celeModal"), sec*1000);
-}
-function maybeShowCelebration(){
-  const chance = clamp(Number(state.settings.celebrationChance)||0.35, 0, 1);
-  // Surprise: only sometimes, and slightly more likely after 2-3 tasks
-  const p = computeProgress();
-  const done = (p.baseT - p.remT);
-  const boost = (done>0 && done%3===0) ? 0.22 : 0;
-  if(Math.random() < clamp(chance + boost, 0, 0.85)){
-    showCelebration();
-  }
-}
-
-function pickTip(){
-  // Simple pick: prefer pause if fatigue high, prefer focus if motivation low
-  const f = clamp(state.settings.fatigue,0,4);
-  const m = clamp(state.settings.motivation,0,4);
-
-  const candidates = [];
-  for(const tip of TIPS_POOL){
-    let w = 1;
-    if(tip.cat==="pause") w += (f>=3 ? 1.2 : 0);
-    if(tip.cat==="focus") w += (m<=1 ? 1.0 : 0);
-    if(tip.cat==="body")  w += (f>=2 ? 0.4 : 0);
-    if(tip.cat==="time")  w += (m<=2 ? 0.4 : 0);
-    candidates.push({tip,w});
-  }
-  const sum = candidates.reduce((a,p)=>a+p.w,0);
-  let r = Math.random()*sum;
-  for(const c of candidates){
-    r -= c.w;
-    if(r<=0) return c.tip;
-  }
-  return TIPS_POOL[rand(TIPS_POOL.length)];
-}
-function showTip(){
-  const tip = pickTip();
-  $("tipsTitle").textContent = tip.t;
-  $("tipsMsg").textContent = tip.m;
-  $("tipsSub").textContent = "Un conseil, puis retour au flow.";
-
-  openModal("tipsModal");
-  if(tipsTimer) clearTimeout(tipsTimer);
-  tipsTimer = setTimeout(()=>closeModal("tipsModal"), 9000);
-}
-function maybeShowTip(){
-  const chance = clamp(Number(state.settings.tipsChance)||0.18, 0, 1);
-
-  // gap control
-  const minGap = clamp(Number(state.settings.tipsMinGapMin)||6, 2, 30);
-  const last = state.lastTipAt ? new Date(state.lastTipAt).getTime() : 0;
-  if(last && (Date.now()-last) < minGap*60*1000) return;
-
-  if(Math.random() < chance){
-    state.lastTipAt = nowISO();
-    saveState();
-    showTip();
-  }
-}
-
-/* -------------------------
-   Notes (persistent)
+   Notes
 ------------------------- */
 function addNote(text){
   const t = (text||"").trim();
@@ -1401,15 +1301,11 @@ function renderNotes(){
   $("notesList").innerHTML = list.slice(0,80).map(n=>{
     const dt = new Date(n.at);
     const stamp = dt.toLocaleString("fr-BE",{hour:"2-digit",minute:"2-digit", day:"2-digit", month:"2-digit"});
-    const safe = escapeHTML(n.text);
     return `<div style="padding:8px 6px; border-bottom:1px solid var(--line)">
-      <div style="font-family:var(--mono2); color:var(--muted); font-size:11px; letter-spacing:.06em">${stamp}</div>
-      <div style="white-space:pre-wrap; font-size:13px">${safe}</div>
+      <div style="font-family:var(--mono); color:var(--muted); font-size:11px; letter-spacing:.06em">${stamp}</div>
+      <div style="white-space:pre-wrap; font-size:13px">${escapeHTML(n.text)}</div>
     </div>`;
   }).join("");
-}
-function escapeHTML(s){
-  return (s||"").replace(/[&<>"']/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[c]));
 }
 
 /* -------------------------
@@ -1428,7 +1324,6 @@ function toggleHabitCheck(hId, idx){
   if(!h) return;
   h.checks[idx] = !h.checks[idx];
   saveState();
-  renderAll();
   snapshotDay();
 }
 function habitProgress(h){
@@ -1438,8 +1333,7 @@ function habitProgress(h){
 }
 
 /* -------------------------
-   Sets (Hospital/Consult) — right panel
-   Checks stored by day key
+   Sets (right overlay)
 ------------------------- */
 function initSetsChecksForToday(){
   const dk = dayKey();
@@ -1471,6 +1365,50 @@ function resetSetToday(setName){
   renderSetsPanel();
   snapshotDay();
 }
+function summarizeSetsToday(){
+  initSetsChecksForToday();
+  const dk = dayKey();
+  const out = {};
+  for(const key of ["hospital","consult"]){
+    const set = state.sets[key];
+    const checks = set.checks?.[dk] || {};
+    const total = set.patients * set.itemsPerPatient.length;
+    const done = Object.values(checks).filter(Boolean).length;
+    out[key] = { done, total };
+  }
+  return out;
+}
+
+/* -------------------------
+   Emotion Journal (CBT)
+   - Situation / Emotion / Intensité
+   - Pensées automatiques
+   - Distorsions cognitives
+   - Réévaluation (reframe)
+   - Action/compétence de régulation
+------------------------- */
+const DISTORTIONS = [
+  "Tout ou rien",
+  "Surgénéralisation",
+  "Filtre négatif",
+  "Disqualification du positif",
+  "Lecture de pensée",
+  "Catastrophisme",
+  "Doit / Il faut",
+  "Personnalisation",
+  "Raisonnement émotionnel",
+  "Étiquetage"
+];
+const EMOTIONS = [
+  "Anxiété","Colère","Tristesse","Honte","Culpabilité","Stress","Frustration",
+  "Soulagement","Joie","Fatigue","Solitude","Dégoût","Peur","Irritabilité"
+];
+
+function addEmotionEntry(entry){
+  state.emotions.entries.unshift(entry);
+  saveState();
+  snapshotDay();
+}
 
 /* -------------------------
    History snapshot + export
@@ -1488,7 +1426,14 @@ function snapshotDay(){
     return { name:h.name, done:p.done, total:p.tot };
   });
 
-  // Upsert
+  const sets = summarizeSetsToday();
+
+  const emoToday = (state.emotions.entries||[]).filter(e=>e.day===dk);
+  const emoSummary = {
+    count: emoToday.length,
+    top: emoToday.slice(0,5).map(e=>`${e.emotion}(${e.intensity})`).join(", ")
+  };
+
   const entry = {
     day: dk,
     doneTitles: doneToday.map(t=>t.title),
@@ -1498,7 +1443,8 @@ function snapshotDay(){
     doneEtorions: doneE,
     baselineEtorions: baseE,
     habits: habitsSummary,
-    sets: summarizeSetsToday()
+    sets,
+    emotions: emoSummary
   };
 
   const idx = state.history.findIndex(x=>x.day===dk);
@@ -1506,19 +1452,6 @@ function snapshotDay(){
   else state.history.unshift(entry);
 
   saveState();
-}
-function summarizeSetsToday(){
-  initSetsChecksForToday();
-  const dk = dayKey();
-  const out = {};
-  for(const key of ["hospital","consult"]){
-    const set = state.sets[key];
-    const checks = set.checks?.[dk] || {};
-    const total = set.patients * set.itemsPerPatient.length;
-    const done = Object.values(checks).filter(Boolean).length;
-    out[key] = { done, total };
-  }
-  return out;
 }
 function exportTodayText(){
   snapshotDay();
@@ -1529,56 +1462,41 @@ function exportTodayText(){
   const lines = [];
   lines.push(`ELIMINATOR — RAPPORT JOURNALIER — ${dk}`);
   lines.push("");
+
   lines.push(`TÂCHES FAITES (${e.doneTasks})`);
   if(e.doneTitles.length===0) lines.push("—");
   else e.doneTitles.forEach(t=>lines.push(`- ${t}`));
   lines.push("");
+
   lines.push(`TÂCHES RESTANTES (${e.remainingTasks})`);
   if(e.remainingTitles.length===0) lines.push("—");
   else e.remainingTitles.forEach(t=>lines.push(`- ${t}`));
   lines.push("");
+
   lines.push(`HABITUDES`);
   if(!e.habits || e.habits.length===0) lines.push("—");
   else e.habits.forEach(h=>lines.push(`- ${h.name}: ${h.done}/${h.total}`));
   lines.push("");
-  lines.push(`SETS`);
-  const hs = e.sets?.hospital || {done:0,total:0};
-  const cs = e.sets?.consult || {done:0,total:0};
-  lines.push(`- HOSPITALIER: ${hs.done}/${hs.total}`);
-  lines.push(`- CONSULTATION: ${cs.done}/${cs.total}`);
+
+  lines.push(`ÉMOTIONS`);
+  lines.push(`- Entrées: ${e.emotions?.count||0}`);
+  lines.push(`- Résumé: ${e.emotions?.top||"—"}`);
   lines.push("");
+
+  lines.push(`SETS`);
+  lines.push(`- HOSPITALIER: ${e.sets?.hospital?.done||0}/${e.sets?.hospital?.total||0}`);
+  lines.push(`- CONSULTATION: ${e.sets?.consult?.done||0}/${e.sets?.consult?.total||0}`);
+  lines.push("");
+
   lines.push(`STATS`);
   lines.push(`- ÉTORIONS DÉGOMMÉS (cumul session): ${e.doneEtorions}`);
   lines.push(`- ÉTORIONS BASE (au démarrage): ${e.baselineEtorions}`);
+
   return lines.join("\n");
 }
 
 /* -------------------------
-   Kiffance (by duration buckets)
-------------------------- */
-function kBucket(min){
-  if(min<=5) return "5";
-  if(min<=10) return "10";
-  if(min<=15) return "15";
-  return "25";
-}
-function pickKiffance(){
-  const min = state.settings.etorionMin || 5;
-  const b = kBucket(min);
-  const list = state.kiffance.bank[b] || [];
-  if(list.length===0) return "Respire. Puis reviens.";
-  return list[rand(list.length)];
-}
-function addKiffanceItem(bucket, text){
-  const t = (text||"").trim();
-  if(!t) return;
-  if(!state.kiffance.bank[bucket]) state.kiffance.bank[bucket]=[];
-  state.kiffance.bank[bucket].push(t);
-  saveState();
-}
-
-/* -------------------------
-   Confetti (no sound)
+   Confetti (monochrome) + “gigantic” feel already via modal
 ------------------------- */
 const conf = $("confetti");
 const ctx = conf.getContext("2d");
@@ -1593,10 +1511,11 @@ function resizeCanvas(){
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
-function confettiBurst(){
+let confettiRAF = null;
+function confettiBurst(strength=1){
   const w = window.innerWidth;
   const h = window.innerHeight;
-  const n = 120;
+  const n = Math.floor(160*strength);
   const centerX = w/2;
   const centerY = h/3;
 
@@ -1604,18 +1523,17 @@ function confettiBurst(){
     confettiPieces.push({
       x:centerX,
       y:centerY,
-      vx:(Math.random()-0.5)*10,
-      vy:(Math.random()-0.8)*12,
-      g: 0.35 + Math.random()*0.25,
-      r: 2 + Math.random()*3,
-      life: 70 + Math.random()*40,
+      vx:(Math.random()-0.5)*12*strength,
+      vy:(Math.random()-0.8)*14*strength,
+      g: (0.33 + Math.random()*0.25) * (0.9 + strength*0.2),
+      r: 2 + Math.random()*4*strength,
+      life: 80 + Math.random()*55,
       rot: Math.random()*Math.PI,
-      vr: (Math.random()-0.5)*0.3
+      vr: (Math.random()-0.5)*0.35
     });
   }
   animateConfetti();
 }
-let confettiRAF = null;
 function animateConfetti(){
   if(confettiRAF) return;
   const step = ()=>{
@@ -1627,11 +1545,11 @@ function animateConfetti(){
       p.y += p.vy;
       p.rot += p.vr;
       p.life -= 1;
-      // minimal monochrome look: use fg with alpha
+
       ctx.save();
       ctx.translate(p.x,p.y);
       ctx.rotate(p.rot);
-      ctx.globalAlpha = 0.85;
+      ctx.globalAlpha = 0.86;
       ctx.fillStyle = getComputedStyle(document.body).getPropertyValue("--fg");
       ctx.fillRect(-p.r, -p.r, p.r*2, p.r*2);
       ctx.restore();
@@ -1648,747 +1566,150 @@ function animateConfetti(){
 }
 
 /* -------------------------
-   UI: Drawer tabs + views (regroupés, moins d’onglets)
+   Celebration / Tips / Nudges
+   - aléatoire
+   - fermeture: click n’importe où (modalBack)
 ------------------------- */
-const TAB_DEFS = [
-  { key:"inbox",   label:"INBOX" },     // import
-  { key:"liste",   label:"LISTE" },     // manage tasks + categories
-  { key:"flow",    label:"FLOW" },      // fatigue/motivation/tips/celebration + display prefs
-  { key:"kiff",    label:"KIFFANCE" },  // bank + refresh
-  { key:"habits",  label:"HABITUDES" }, // habits tracker
-  { key:"sets",    label:"SETS" },      // sets settings + export
-  { key:"hist",    label:"HIST" }       // export + calendar
-];
+let celeTimer=null, tipsTimer=null, nudgeTimer=null;
 
-function buildTabs(){
-  const el = $("tabs");
-  el.innerHTML = "";
-  TAB_DEFS.forEach(t=>{
-    const b = document.createElement("div");
-    b.className = "tab"+(state.activeTab===t.key?" active":"");
-    b.textContent = t.label;
-    b.onclick = ()=>{ state.activeTab=t.key; saveState(); renderDrawer(); };
-    el.appendChild(b);
+function openModal(id){
+  $("modalBack").style.display = "block";
+  $(id).style.display = "flex";
+}
+function closeAllModals(){
+  ["notesModal","celeModal","tipsModal","emoNudgeModal"].forEach(id=>{
+    $(id).style.display = "none";
   });
+  $("modalBack").style.display = "none";
+}
+$("modalBack").addEventListener("click", closeAllModals);
+// click anywhere on modal also closes
+["notesModal","celeModal","tipsModal","emoNudgeModal"].forEach(id=>{
+  $(id).addEventListener("click", closeAllModals);
+});
+
+function showCelebration(forceStrength=1){
+  const pick = CELE_POOL[rand(CELE_POOL.length)];
+  $("celeTitle").textContent = pick.t;
+  $("celeMsg").textContent = pick.m;
+
+  const p = computeProgress();
+  const done = (p.baseT - p.remT);
+  $("celeSub").textContent = `${done} ${plural(done,"tâche","tâches")} dégommée${done===1?"":"s"} · continue`;
+
+  // GIANT confetti
+  confettiBurst(1.35 * forceStrength);
+
+  openModal("celeModal");
+  const sec = clamp(parseInt(state.settings.celebrationAutoCloseSec,10)||11, 5, 20);
+  if(celeTimer) clearTimeout(celeTimer);
+  celeTimer = setTimeout(()=>closeAllModals(), sec*1000);
+}
+function maybeShowCelebration(){
+  const chance = clamp(Number(state.settings.celebrationChance)||0.28, 0, 1);
+  const p = computeProgress();
+  const done = (p.baseT - p.remT);
+  const boost = (done>0 && done%3===0) ? 0.20 : 0;
+  if(Math.random() < clamp(chance + boost, 0, 0.80)){
+    showCelebration(1);
+  }
+}
+function showTip(){
+  const pick = TIPS_POOL[rand(TIPS_POOL.length)];
+  $("tipsTitle").textContent = pick.t;
+  $("tipsMsg").textContent = pick.m;
+  $("tipsSub").textContent = "Conseil bref → retour au flow.";
+
+  openModal("tipsModal");
+  if(tipsTimer) clearTimeout(tipsTimer);
+  tipsTimer = setTimeout(()=>closeAllModals(), 9000);
+}
+function maybeShowTip(){
+  const chance = clamp(Number(state.settings.tipsChance)||0.16, 0, 1);
+  const minGap = clamp(Number(state.settings.tipsMinGapMin)||6, 2, 45);
+  const last = state.lastTipAt ? new Date(state.lastTipAt).getTime() : 0;
+  if(last && (Date.now()-last) < minGap*60*1000) return;
+  if(Math.random() < chance){
+    state.lastTipAt = nowISO();
+    saveState();
+    showTip();
+  }
+}
+function showNudge(){
+  const pick = EMO_NUDGES[rand(EMO_NUDGES.length)];
+  $("emoNudgeTitle").textContent = pick.t;
+  $("emoNudgeMsg").textContent = pick.m;
+  $("emoNudgeSub").textContent = "Micro-régulation → puis reprise.";
+
+  openModal("emoNudgeModal");
+  if(nudgeTimer) clearTimeout(nudgeTimer);
+  nudgeTimer = setTimeout(()=>closeAllModals(), 9000);
+}
+function maybeShowNudge(){
+  const chance = clamp(Number(state.settings.nudgeChance)||0.10, 0, 1);
+  const minGap = clamp(Number(state.settings.nudgeMinGapMin)||10, 3, 90);
+  const last = state.lastNudgeAt ? new Date(state.lastNudgeAt).getTime() : 0;
+  if(last && (Date.now()-last) < minGap*60*1000) return;
+  if(Math.random() < chance){
+    state.lastNudgeAt = nowISO();
+    saveState();
+    showNudge();
+  }
 }
 
 /* -------------------------
-   Drawer views content
+   Etorion actions
 ------------------------- */
-function renderDrawer(){
-  buildTabs();
-  const body = $("drawerBody");
-  body.innerHTML = "";
+function degommeEtorion(){
+  const t = getTaskById(state.currentTaskId);
+  if(!t || t.done) return;
 
-  if(state.activeTab==="inbox"){
-    body.appendChild(viewInbox());
-  }else if(state.activeTab==="liste"){
-    body.appendChild(viewListe());
-  }else if(state.activeTab==="flow"){
-    body.appendChild(viewFlow());
-  }else if(state.activeTab==="kiff"){
-    body.appendChild(viewKiffance());
-  }else if(state.activeTab==="habits"){
-    body.appendChild(viewHabits());
-  }else if(state.activeTab==="sets"){
-    body.appendChild(viewSets());
-  }else if(state.activeTab==="hist"){
-    body.appendChild(viewHist());
-  }
-}
+  if(typeof t.etorionsLeft!=="number") t.etorionsLeft = t.etorionsTotal||1;
+  t.etorionsLeft = clamp(t.etorionsLeft - 1, 0, 99);
+  state.stats.etorionsDone = (state.stats.etorionsDone||0) + 1;
 
-function viewInbox(){
-  const wrap = document.createElement("div");
-  wrap.className = "section";
-
-  wrap.innerHTML = `
-    <h3>Importer des tâches</h3>
-    <div class="small" style="margin-bottom:8px">
-      Format: catégorie en MAJUSCULE, puis lignes de tâches. Un chiffre en fin = étorions.<br/>
-      Exemple:<br/>
-      <span style="font-family:var(--mono2)">APPELS<br/>Appeler X - 2<br/>Appeler Y 1</span>
-    </div>
-    <textarea id="inboxArea" placeholder="Colle ta liste ici"></textarea>
-    <div class="row" style="margin-top:8px">
-      <button class="btn primary" id="btnImport">IMPORTER</button>
-      <button class="btn" id="btnClearInbox">VIDER</button>
-    </div>
-    <div class="small" id="importMsg" style="margin-top:8px"></div>
-  `;
-
-  setTimeout(()=>{
-    const btn = $("btnImport");
-    const area = $("inboxArea");
-    const msg = $("importMsg");
-    $("btnClearInbox").onclick = ()=>{ area.value=""; };
-    btn.onclick = ()=>{
-      const txt = area.value || "";
-      const imported = importFromInbox(txt);
-      if(imported.length===0){
-        msg.textContent = "Rien importé. Vérifie le format.";
-        return;
-      }
-      // Append without auto-preloaded tasks (important requirement)
-      state.tasks.push(...imported);
-      // baseline only set if empty
-      if(state.baseline.totalTasks===0 && state.baseline.totalEtorions===0){
-        const act = activeTasks();
-        state.baseline.totalTasks = act.length;
-        state.baseline.totalEtorions = act.reduce((a,t)=>a+(t.etorionsTotal||0),0);
-      }else{
-        // baseline stays: user asked baseline start full; but if they import mid-run,
-        // we expand baseline to keep bar meaningful
-        state.baseline.totalTasks += imported.length;
-        state.baseline.totalEtorions += imported.reduce((a,t)=>a+(t.etorionsTotal||0),0);
-      }
-
-      saveState();
-      ensureCurrentTask();
-      renderAll();
-
-      msg.textContent = `${imported.length} ${plural(imported.length,"tâche importée","tâches importées")}.`;
-    };
-  },0);
-
-  return wrap;
-}
-
-function viewListe(){
-  const wrap = document.createElement("div");
-  wrap.className = "section";
-  const cats = Array.from(new Set(state.tasks.map(t=>t.cat))).sort((a,b)=>a.localeCompare(b,"fr"));
-
-  wrap.innerHTML = `
-    <h3>Liste + tri</h3>
-    <div class="row" style="margin-bottom:8px">
-      <select id="sortSel">
-        <option value="roulette">roulette (pinned d’abord)</option>
-        <option value="ordre">ordre d’import</option>
-        <option value="alpha">alphabétique</option>
-        <option value="cat">par catégorie</option>
-      </select>
-      <button class="btn" id="btnPurgeDone">PURGER FAITES</button>
-    </div>
-
-    <div class="section" style="margin-bottom:10px">
-      <h3>Catégories incluses</h3>
-      <div class="small" style="margin-bottom:8px">Vide = toutes. Sinon, coche celles à inclure.</div>
-      <div id="catsBox"></div>
-      <div class="row" style="margin-top:8px">
-        <button class="btn" id="catsAll">TOUTES</button>
-        <button class="btn" id="catsNone">AUCUNE</button>
-      </div>
-    </div>
-
-    <div class="section">
-      <h3>Tâches (minimal)</h3>
-      <div id="taskListBox"></div>
-    </div>
-  `;
-
-  setTimeout(()=>{
-    $("sortSel").value = state.settings.listSort || "roulette";
-    $("sortSel").onchange = (e)=>{
-      state.settings.listSort = e.target.value;
-      saveState();
-      renderAll();
-      renderDrawer();
-    };
-
-    $("btnPurgeDone").onclick = ()=>{
-      state.tasks = state.tasks.filter(t=>!t.done);
-      // reset baseline to current active totals (keeps logic clean)
-      const act = activeTasks();
-      state.baseline.totalTasks = act.length;
-      state.baseline.totalEtorions = act.reduce((a,t)=>a+(t.etorionsTotal||0),0);
-      saveState();
-      ensureCurrentTask();
-      renderAll();
-      renderDrawer();
-    };
-
-    // categories included
-    const catsBox = $("catsBox");
-    const inc = state.settings.includedCats || [];
-    catsBox.innerHTML = cats.map(c=>{
-      const checked = inc.length===0 ? true : inc.includes(c);
-      return `
-        <div class="row" style="justify-content:space-between; margin:6px 0">
-          <div style="flex:1; min-width:0; font-size:13px; color:var(--fg); overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${escapeHTML(c)}</div>
-          <div class="check ${checked?"on":""}" data-cat="${escapeHTML(c)}">${checked?"✓":""}</div>
-        </div>
-      `;
-    }).join("");
-
-    catsBox.querySelectorAll(".check").forEach(el=>{
-      el.onclick = ()=>{
-        const c = el.getAttribute("data-cat");
-        // if inc empty means all; switch to explicit list excluding clicked if turning off
-        let list = state.settings.includedCats || [];
-        if(list.length===0){
-          list = [...cats];
-        }
-        if(list.includes(c)){
-          list = list.filter(x=>x!==c);
-        }else{
-          list.push(c);
-        }
-        // if list equals all cats => keep empty (all)
-        const normalized = list.length===cats.length ? [] : list;
-        state.settings.includedCats = normalized;
-        saveState();
-        ensureCurrentTask();
-        renderAll();
-        renderDrawer();
-      };
-    });
-
-    $("catsAll").onclick = ()=>{
-      state.settings.includedCats = [];
-      saveState();
-      ensureCurrentTask();
-      renderAll();
-      renderDrawer();
-    };
-    $("catsNone").onclick = ()=>{
-      state.settings.includedCats = [];
-      // none is tricky; we interpret "none" as empty tasks view; so set to impossible cat
-      state.settings.includedCats = ["__NONE__"];
-      saveState();
-      ensureCurrentTask();
-      renderAll();
-      renderDrawer();
-    };
-
-    // task list minimal controls: up/down/edit/delete + mark done
-    const box = $("taskListBox");
-    const list = sortTasks(state.tasks.filter(t=>!t.done));
-    box.innerHTML = list.length===0 ? `<div class="small">Aucune tâche en cours.</div>` : list.map(t=>{
-      const et = t.etorionsTotal||1;
-      const left = t.etorionsLeft??et;
-      const isCur = t.id===state.currentTaskId;
-      return `
-        <div class="taskRow" style="${isCur?"background:linear-gradient(180deg,var(--glass2),transparent); border-radius:10px; border:1px solid var(--line)":""}">
-          <div class="t">${escapeHTML(t.title)}</div>
-          <div class="meta">${left}/${et}</div>
-          <div class="tools">
-            <div class="toolBtn" data-act="up" data-id="${t.id}" title="Monter">↑</div>
-            <div class="toolBtn" data-act="down" data-id="${t.id}" title="Descendre">↓</div>
-            <div class="toolBtn" data-act="edit" data-id="${t.id}" title="Éditer">≋</div>
-            <div class="toolBtn" data-act="done" data-id="${t.id}" title="Dégommée">✓</div>
-            <div class="toolBtn" data-act="del" data-id="${t.id}" title="Supprimer">×</div>
-          </div>
-        </div>
-      `;
-    }).join("");
-
-    box.querySelectorAll(".toolBtn").forEach(b=>{
-      b.onclick = ()=>{
-        const id = b.getAttribute("data-id");
-        const act = b.getAttribute("data-act");
-        if(act==="up") moveTask(id,-1);
-        if(act==="down") moveTask(id,1);
-        if(act==="edit") editTaskPrompt(id);
-        if(act==="done") completeTask(id);
-        if(act==="del") deleteTask(id);
-        saveState();
-        ensureCurrentTask();
-        renderAll();
-        renderDrawer();
-      };
-    });
-  },0);
-
-  return wrap;
-}
-
-function viewFlow(){
-  const wrap = document.createElement("div");
-  wrap.className = "section";
-  wrap.innerHTML = `
-    <h3>Flow (paramètres)</h3>
-
-    <div class="section" style="margin-bottom:10px">
-      <h3>Énergie</h3>
-      <div class="row">
-        <div>
-          <div class="small">Fatigue (0–4)</div>
-          <input id="fatigue" type="number" min="0" max="4" />
-        </div>
-        <div>
-          <div class="small">Motivation (0–4)</div>
-          <input id="motivation" type="number" min="0" max="4" />
-        </div>
-      </div>
-      <div class="row" style="margin-top:8px">
-        <div>
-          <div class="small">Surprise célébration (0–1)</div>
-          <input id="celeChance" type="number" step="0.05" min="0" max="1" />
-        </div>
-        <div>
-          <div class="small">Auto-fermeture célébration (sec)</div>
-          <input id="celeSec" type="number" min="4" max="20" />
-        </div>
-      </div>
-      <div class="row" style="margin-top:8px">
-        <div>
-          <div class="small">Conseils flow (0–1)</div>
-          <input id="tipsChance" type="number" step="0.05" min="0" max="1" />
-        </div>
-        <div>
-          <div class="small">Gap conseils (min)</div>
-          <input id="tipsGap" type="number" min="2" max="30" />
-        </div>
-      </div>
-    </div>
-
-    <div class="section" style="margin-bottom:10px">
-      <h3>Affichage</h3>
-      <div class="row">
-        <div>
-          <div class="small">Ét. 1 étorion = (min)</div>
-          <input id="etoMin" type="number" min="1" max="60" />
-        </div>
-        <div>
-          <div class="small">Liste visible en focus</div>
-          <select id="listFocus">
-            <option value="true">oui</option>
-            <option value="false">non</option>
-          </select>
-        </div>
-      </div>
-      <div class="row" style="margin-top:8px">
-        <button class="btn primary" id="saveFlow">SAUVER</button>
-        <button class="btn" id="testTip">TEST CONSEIL</button>
-        <button class="btn" id="testCele">TEST CÉLÉBRATION</button>
-      </div>
-    </div>
-
-    <div class="small">
-      Note: rien n’est affiché en permanence sur l’interface, sauf l’essentiel. Les conseils et célébrations restent des surprises.
-    </div>
-  `;
-  setTimeout(()=>{
-    $("fatigue").value = state.settings.fatigue;
-    $("motivation").value = state.settings.motivation;
-    $("celeChance").value = state.settings.celebrationChance;
-    $("celeSec").value = state.settings.celebrationAutoCloseSec;
-    $("tipsChance").value = state.settings.tipsChance;
-    $("tipsGap").value = state.settings.tipsMinGapMin;
-    $("etoMin").value = state.settings.etorionMin;
-    $("listFocus").value = String(!!state.settings.keepListInFocus);
-
-    $("saveFlow").onclick = ()=>{
-      state.settings.fatigue = clamp(parseInt($("fatigue").value,10)||0,0,4);
-      state.settings.motivation = clamp(parseInt($("motivation").value,10)||0,0,4);
-      state.settings.celebrationChance = clamp(Number($("celeChance").value)||0,0,1);
-      state.settings.celebrationAutoCloseSec = clamp(parseInt($("celeSec").value,10)||10,4,20);
-      state.settings.tipsChance = clamp(Number($("tipsChance").value)||0,0,1);
-      state.settings.tipsMinGapMin = clamp(parseInt($("tipsGap").value,10)||6,2,30);
-      state.settings.etorionMin = clamp(parseInt($("etoMin").value,10)||5,1,60);
-      state.settings.keepListInFocus = ($("listFocus").value==="true");
-      saveState();
-      renderAll();
-      renderDrawer();
-    };
-    $("testTip").onclick = ()=>showTip();
-    $("testCele").onclick = ()=>showCelebration();
-  },0);
-  return wrap;
-}
-
-function viewKiffance(){
-  const wrap = document.createElement("div");
-  wrap.className = "section";
-
-  wrap.innerHTML = `
-    <h3>Kiffance</h3>
-
-    <div class="section" style="margin-bottom:10px">
-      <h3>Suggestion (selon durée étorion)</h3>
-      <div class="row">
-        <button class="btn primary" id="kPick">RAFRAÎCHIR</button>
-        <button class="btn" id="kAddToTasks">AJOUTER EN TÂCHE</button>
-      </div>
-      <div id="kOut" class="bigMsg" style="margin-top:10px"></div>
-      <div class="small" style="text-align:center">Catégorie: <span id="kCat"></span></div>
-    </div>
-
-    <div class="section" style="margin-bottom:10px">
-      <h3>Banque (visible)</h3>
-      <div class="row">
-        <select id="kBucket">
-          <option value="5">≤ 5 min</option>
-          <option value="10">≤ 10 min</option>
-          <option value="15">≤ 15 min</option>
-          <option value="25">≥ 25 min</option>
-        </select>
-        <button class="btn" id="kShow">AFFICHER</button>
-      </div>
-      <div id="kList" class="small" style="margin-top:8px"></div>
-    </div>
-
-    <div class="section">
-      <h3>Ajouter à la banque</h3>
-      <select id="kAddBucket">
-        <option value="5">≤ 5 min</option>
-        <option value="10">≤ 10 min</option>
-        <option value="15">≤ 15 min</option>
-        <option value="25">≥ 25 min</option>
-      </select>
-      <textarea id="kText" placeholder="Ajoute une kiffance (sans emoji, simple, actionnable)."></textarea>
-      <div class="row" style="margin-top:8px">
-        <button class="btn primary" id="kAdd">AJOUTER</button>
-      </div>
-    </div>
-  `;
-
-  setTimeout(()=>{
-    let last = pickKiffance();
-    $("kOut").textContent = last;
-    $("kCat").textContent = kBucket(state.settings.etorionMin||5);
-
-    $("kPick").onclick = ()=>{
-      last = pickKiffance();
-      $("kOut").textContent = last;
-      $("kCat").textContent = kBucket(state.settings.etorionMin||5);
-      saveState();
-    };
-    $("kAddToTasks").onclick = ()=>{
-      // Add as task in category "KIFFANCE"
-      const t = last.trim();
-      if(!t) return;
-      const et = 1; // small
-      const newT = {
-        id: uid(),
-        title: t,
-        cat: "KIFFANCE",
-        etorionsTotal: et,
-        etorionsLeft: et,
-        pinned: false,
-        priority: 0,
-        done: false,
-        createdAt: nowISO(),
-        doneAt: null
-      };
-      state.tasks.push(newT);
-      state.baseline.totalTasks += 1;
-      state.baseline.totalEtorions += et;
-      saveState();
-      ensureCurrentTask();
-      renderAll();
-      renderDrawer();
-    };
-
-    $("kShow").onclick = ()=>{
-      const b = $("kBucket").value;
-      const list = state.kiffance.bank[b] || [];
-      $("kList").innerHTML = list.length===0 ? "—" : list.map((x,i)=>`
-        <div style="padding:6px 4px; border-bottom:1px solid var(--line)">
-          <span style="font-family:var(--mono2); color:var(--muted); font-size:11px">${i+1}</span>
-          <span style="margin-left:8px">${escapeHTML(x)}</span>
-        </div>
-      `).join("");
-    };
-
-    $("kAdd").onclick = ()=>{
-      const b = $("kAddBucket").value;
-      const txt = $("kText").value;
-      addKiffanceItem(b, txt);
-      $("kText").value = "";
-      renderDrawer();
-    };
-  },0);
-
-  return wrap;
-}
-
-function viewHabits(){
-  const wrap = document.createElement("div");
-  wrap.className = "section";
-
-  wrap.innerHTML = `
-    <h3>Habitudes</h3>
-
-    <div class="section" style="margin-bottom:10px">
-      <h3>Ajouter</h3>
-      <div class="row">
-        <input id="hName" placeholder="Nom de l'habitude (ex: boire des verres d'eau)" />
-        <input id="hSlots" type="number" min="3" max="12" value="8" />
-      </div>
-      <div class="row" style="margin-top:8px">
-        <button class="btn primary" id="hAdd">AJOUTER</button>
-      </div>
-    </div>
-
-    <div class="section">
-      <h3>Liste</h3>
-      <div id="hList"></div>
-    </div>
-  `;
-
-  setTimeout(()=>{
-    $("hAdd").onclick = ()=>{
-      addHabit($("hName").value, $("hSlots").value);
-      $("hName").value="";
-      saveState();
-      renderDrawer();
-      renderAll();
-      snapshotDay();
-    };
-    renderHabitsList();
-  },0);
-
-  return wrap;
-}
-function renderHabitsList(){
-  const box = $("hList");
-  if(!box) return;
-  const list = state.habits || [];
-  if(list.length===0){
-    box.innerHTML = `<div class="small">Aucune habitude.</div>`;
-    return;
-  }
-  box.innerHTML = list.map(h=>{
-    const p = habitProgress(h);
-    const checks = h.checks.map((v,idx)=>`
-      <div class="check ${v?"on":""}" data-h="${h.id}" data-i="${idx}">${v?"✓":""}</div>
-    `).join("");
-    return `
-      <div class="section" style="margin-bottom:10px">
-        <h3>${escapeHTML(h.name)} <span style="font-weight:400; letter-spacing:.06em">(${p.done}/${p.tot})</span></h3>
-        <div class="row" style="gap:6px; align-items:center; justify-content:flex-start">
-          <div style="display:flex; gap:6px; flex-wrap:wrap">${checks}</div>
-        </div>
-        <div class="row" style="margin-top:8px">
-          <button class="btn" data-act="resetHabit" data-h="${h.id}">RESET</button>
-          <button class="btn" data-act="delHabit" data-h="${h.id}">SUPPRIMER</button>
-        </div>
-      </div>
-    `;
-  }).join("");
-
-  box.querySelectorAll(".check").forEach(el=>{
-    el.onclick = ()=>{
-      const hId = el.getAttribute("data-h");
-      const i = parseInt(el.getAttribute("data-i"),10);
-      toggleHabitCheck(hId, i);
-      renderHabitsList();
-    };
-  });
-  box.querySelectorAll("button[data-act]").forEach(b=>{
-    b.onclick = ()=>{
-      const act = b.getAttribute("data-act");
-      const hId = b.getAttribute("data-h");
-      const h = state.habits.find(x=>x.id===hId);
-      if(!h) return;
-      if(act==="resetHabit"){
-        h.checks = h.checks.map(()=>false);
-      }
-      if(act==="delHabit"){
-        state.habits = state.habits.filter(x=>x.id!==hId);
-      }
-      saveState();
-      renderDrawer();
-      renderAll();
-      snapshotDay();
-    };
-  });
-}
-
-function viewSets(){
-  const wrap = document.createElement("div");
-  wrap.className = "section";
-  initSetsChecksForToday();
-
-  wrap.innerHTML = `
-    <h3>Sets</h3>
-    <div class="small" style="margin-bottom:10px">
-      Objectif: tour de salle / consultation sans oublis. Les sets sont visibles à droite (masquables).
-    </div>
-
-    <div class="section" style="margin-bottom:10px">
-      <h3>Hospitalier</h3>
-      <div class="row">
-        <input id="hospPatients" type="number" min="1" max="20" />
-        <button class="btn" id="hospResetToday">RESET AUJOURD'HUI</button>
-      </div>
-      <div class="small" style="margin-top:8px">Fragments par patient: Voir patient · Note · Traitement · Dossier</div>
-    </div>
-
-    <div class="section" style="margin-bottom:10px">
-      <h3>Consultation</h3>
-      <div class="row">
-        <input id="consPatients" type="number" min="1" max="30" />
-        <button class="btn" id="consResetToday">RESET AUJOURD'HUI</button>
-      </div>
-      <div class="small" style="margin-top:8px">Fragments par patient: Voir patient · Note · Ordonnance · Dossier</div>
-    </div>
-
-    <div class="section">
-      <h3>Export</h3>
-      <div class="row">
-        <button class="btn primary" id="expCopy">COPIER RAPPORT DU JOUR</button>
-        <button class="btn" id="expDownload">TÉLÉCHARGER .TXT</button>
-      </div>
-      <textarea id="expArea" style="margin-top:8px"></textarea>
-    </div>
-  `;
-
-  setTimeout(()=>{
-    $("hospPatients").value = state.sets.hospital.patients;
-    $("consPatients").value = state.sets.consult.patients;
-
-    $("hospPatients").onchange = (e)=>{
-      state.sets.hospital.patients = clamp(parseInt(e.target.value,10)||4,1,20);
-      saveState();
-      renderSetsPanel();
-    };
-    $("consPatients").onchange = (e)=>{
-      state.sets.consult.patients = clamp(parseInt(e.target.value,10)||6,1,30);
-      saveState();
-      renderSetsPanel();
-    };
-
-    $("hospResetToday").onclick = ()=>{ resetSetToday("hospital"); };
-    $("consResetToday").onclick = ()=>{ resetSetToday("consult"); };
-
-    const txt = exportTodayText();
-    $("expArea").value = txt;
-
-    $("expCopy").onclick = async ()=>{
-      snapshotDay();
-      const t = exportTodayText();
-      $("expArea").value = t;
-      try{ await navigator.clipboard.writeText(t); }catch(e){}
-    };
-    $("expDownload").onclick = ()=>{
-      snapshotDay();
-      const t = exportTodayText();
-      $("expArea").value = t;
-      const blob = new Blob([t], {type:"text/plain;charset=utf-8"});
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = `eliminator_${dayKey()}.txt`;
-      a.click();
-      URL.revokeObjectURL(a.href);
-    };
-  },0);
-
-  return wrap;
-}
-
-function viewHist(){
-  const wrap = document.createElement("div");
-  wrap.className = "section";
-  snapshotDay();
-
-  wrap.innerHTML = `
-    <h3>Historique + calendrier</h3>
-    <div class="small" style="margin-bottom:10px">
-      Vision simple: jours récents + un mini-calendrier d’activité (tâches/jour).
-    </div>
-
-    <div class="section" style="margin-bottom:10px">
-      <h3>Jours récents</h3>
-      <div id="histList"></div>
-    </div>
-
-    <div class="section">
-      <h3>Calendrier (30 jours)</h3>
-      <div id="calGrid" style="display:grid; grid-template-columns: repeat(10, 1fr); gap:6px"></div>
-      <div class="small" style="margin-top:8px">
-        Intensité = nombre de tâches faites. (Monochrome, vitré.)
-      </div>
-    </div>
-  `;
-
-  setTimeout(()=>{
-    const box = $("histList");
-    const hist = (state.history||[]).slice(0,14);
-    box.innerHTML = hist.length===0 ? "—" : hist.map(h=>{
-      return `
-        <div style="padding:8px 6px; border-bottom:1px solid var(--line)">
-          <div style="font-family:var(--mono2); color:var(--muted); font-size:11px; letter-spacing:.08em">${h.day}</div>
-          <div style="font-size:13px">Faites: ${h.doneTasks} · Restantes: ${h.remainingTasks} · Étorions: ${h.doneEtorions}</div>
-        </div>
-      `;
-    }).join("");
-
-    // calendar (last 30 days)
-    const grid = $("calGrid");
-    const days = [];
-    const today = new Date();
-    for(let i=29;i>=0;i--){
-      const d = new Date(today);
-      d.setDate(today.getDate()-i);
-      days.push(dayKey(d));
+  // sometimes suggest kiffance/tips/nudge based on cadence
+  if(state.settings.autoSuggestKiffance){
+    const every = clamp(parseInt(state.settings.kiffanceSuggestEveryEto,10)||6, 3, 20);
+    if(state.stats.etorionsDone>0 && state.stats.etorionsDone % every === 0){
+      // show a “tip” OR “nudge” OR just keep silence (random)
+      const r = Math.random();
+      if(r<0.45) showTip();
+      else if(r<0.70) showNudge();
+      // else: silence (flow)
     }
-    const map = {};
-    (state.history||[]).forEach(e=>{ map[e.day] = e.doneTasks || 0; });
-    const max = Math.max(1, ...Object.values(map));
-    grid.innerHTML = days.map(dk=>{
-      const v = map[dk] || 0;
-      const intensity = clamp(v/max, 0, 1);
-      // Use accent alpha, still monochrome-ish
-      const a = 0.08 + intensity*0.38;
-      return `
-        <div title="${dk} — ${v} ${plural(v,"tâche","tâches")}"
-             style="
-              height:26px;
-              border-radius:10px;
-              border:1px solid var(--line);
-              background: rgba(0,0,0,.02);
-              position:relative;
-              overflow:hidden;">
-          <div style="position:absolute; inset:0; background: var(--accent); opacity:${a};"></div>
-          <div style="position:absolute; inset:0; display:grid; place-items:center; font-family:var(--mono2); font-size:10px; color:var(--muted)">
-            ${String(new Date(dk).getDate()).padStart(2,"0")}
-          </div>
-        </div>
-      `;
-    }).join("");
-  },0);
+  }else{
+    maybeShowTip();
+    maybeShowNudge();
+  }
 
-  return wrap;
+  if(t.etorionsLeft<=0){
+    completeTask(t.id);
+  }
+
+  saveState();
+  renderAll();
+}
+
+function completeTask(taskId){
+  const t = getTaskById(taskId);
+  if(!t || t.done) return;
+  t.done = true;
+  t.doneAt = nowISO();
+  state.stats.tasksDone = (state.stats.tasksDone||0) + 1;
+
+  // always confetti
+  confettiBurst(1.1);
+
+  // random giant celebration
+  maybeShowCelebration();
+
+  snapshotDay();
+  ensureCurrentTask();
 }
 
 /* -------------------------
-   Task management ops
-------------------------- */
-function moveTask(id, delta){
-  const idx = state.tasks.findIndex(t=>t.id===id);
-  if(idx<0) return;
-  const j = clamp(idx+delta, 0, state.tasks.length-1);
-  const [it] = state.tasks.splice(idx,1);
-  state.tasks.splice(j,0,it);
-}
-function deleteTask(id){
-  const t = getTaskById(id);
-  if(!t) return;
-  const wasActive = !t.done;
-  state.tasks = state.tasks.filter(x=>x.id!==id);
-  if(wasActive){
-    // adjust baseline so bar remains coherent
-    state.baseline.totalTasks = Math.max(0, (state.baseline.totalTasks||0) - 1);
-    state.baseline.totalEtorions = Math.max(0, (state.baseline.totalEtorions||0) - (t.etorionsTotal||0));
-  }
-  if(state.currentTaskId===id){
-    state.currentTaskId=null; state.currentTaskStart=null;
-  }
-}
-function editTaskPrompt(id){
-  const t = getTaskById(id);
-  if(!t) return;
-  const nv = prompt("Éditer la tâche (titre)", t.title);
-  if(nv===null) return;
-  const v = nv.trim();
-  if(!v) return;
-  t.title = v;
-}
-
-/* -------------------------
-   Theme / Focus / Drawer / Modals
+   UI: theme / focus / drawer
 ------------------------- */
 function applyTheme(){
   document.body.setAttribute("data-theme", state.theme);
@@ -2409,7 +1730,6 @@ function toggleFocus(){
   state.focus = !state.focus;
   saveState();
   applyFocus();
-  // In focus, hide everything except essentials; keep list if setting enabled and showBelowList true
   renderAll();
 }
 function openDrawer(){
@@ -2421,22 +1741,171 @@ function closeDrawer(){
   $("drawerBack").classList.remove("show");
   $("drawer").classList.remove("open");
 }
-function openModal(id){
-  $("modalBack").style.display = "block";
-  $(id).style.display = "flex";
+
+/* Drawer resizer */
+function applyDrawerWidth(){
+  document.documentElement.style.setProperty("--drawerW", `${clamp(state.drawerW||420, 320, 820)}px`);
 }
-function closeModal(id){
-  $(id).style.display = "none";
-  // close back only if no other modal open
-  const anyOpen = ["notesModal","celeModal","tipsModal"].some(mid => $(mid).style.display==="flex");
-  if(!anyOpen){
-    $("modalBack").style.display = "none";
+applyDrawerWidth();
+(function initDrawerResizer(){
+  const res = $("drawerResizer");
+  let dragging=false;
+  let startX=0, startW=0;
+  res.addEventListener("mousedown",(e)=>{
+    dragging=true;
+    startX=e.clientX;
+    startW=clamp(state.drawerW||420, 320, 820);
+    e.preventDefault();
+  });
+  window.addEventListener("mousemove",(e)=>{
+    if(!dragging) return;
+    const dx = e.clientX - startX;
+    state.drawerW = clamp(startW + dx, 320, 820);
+    applyDrawerWidth();
+  });
+  window.addEventListener("mouseup",()=>{
+    if(!dragging) return;
+    dragging=false;
+    saveState();
+  });
+
+  // touch
+  res.addEventListener("touchstart",(e)=>{
+    dragging=true;
+    startX=e.touches[0].clientX;
+    startW=clamp(state.drawerW||420, 320, 820);
+    e.preventDefault();
+  }, {passive:false});
+  window.addEventListener("touchmove",(e)=>{
+    if(!dragging) return;
+    const dx = e.touches[0].clientX - startX;
+    state.drawerW = clamp(startW + dx, 320, 820);
+    applyDrawerWidth();
+  }, {passive:true});
+  window.addEventListener("touchend",()=>{
+    if(!dragging) return;
+    dragging=false;
+    saveState();
+  });
+})();
+
+/* -------------------------
+   Render HUD / timer
+------------------------- */
+function setRandomTagline(force=false){
+  const el = $("tagline");
+  if(force || Math.random()<0.22 || !el.textContent.trim()){
+    el.textContent = TAGLINE_POOL[rand(TAGLINE_POOL.length)];
   }
+}
+function renderHUD(){
+  recomputeBaselineIfNeeded();
+  const p = computeProgress();
+  $("pillTasks").textContent = `${p.remT}/${p.baseT} ${plural(p.baseT,"tâche","tâches")}`;
+  $("pillEto").textContent = `${p.remE}/${p.baseE} étorions`;
+  const done = (p.baseT - p.remT);
+  $("pillDone").textContent = `${done} ${plural(done,"faite","faites")}`;
+
+  const f = clamp(state.settings.fatigue,0,4);
+  const m = clamp(state.settings.motivation,0,4);
+  const flow = (m>=3 && f<=2) ? "fort" : (m<=1 && f>=3) ? "fragile" : "stable";
+  $("pillFlow").textContent = `flow: ${flow}`;
+}
+function renderTimer(){
+  const el = $("pillTimer");
+  if(!state.currentTaskStart){
+    el.textContent = "00:00";
+    return;
+  }
+  el.textContent = fmtMMSS(Date.now() - state.currentTaskStart);
+}
+let timerInterval=null;
+function startTimerLoop(){
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(renderTimer, 500);
 }
 
 /* -------------------------
-   Sets panel render
+   Main rendering
 ------------------------- */
+function renderProgress(){
+  const p = computeProgress();
+  $("taskBarFill").style.width = `${p.pct}%`;
+  $("taskBarPct").textContent = `${p.pct}%`;
+  $("barInfo").textContent = `${p.remT} restantes sur ${p.baseT}`;
+}
+function renderCurrent(){
+  ensureCurrentTask();
+  const t = getTaskById(state.currentTaskId);
+  if(!t){
+    $("taskName").textContent = "Aucune tâche";
+    $("chips").innerHTML = "";
+    $("btnEtorion").style.opacity = 0.45;
+    $("btnEtorion").style.pointerEvents = "none";
+    return;
+  }
+  $("btnEtorion").style.opacity = 1;
+  $("btnEtorion").style.pointerEvents = "auto";
+  $("taskName").textContent = t.title;
+
+  const total = t.etorionsTotal || 1;
+  const left = (typeof t.etorionsLeft==="number") ? t.etorionsLeft : total;
+  const chips = [];
+  for(let i=0;i<total;i++){
+    chips.push(`<div class="chip ${i<left?"on":""}"></div>`);
+  }
+  $("chips").innerHTML = chips.join("");
+  if(!state.currentTaskStart) state.currentTaskStart = Date.now();
+}
+function applyListVisible(){
+  const el = $("belowList");
+  const show = !!state.showBelowList;
+  if(show) el.classList.add("show");
+  else el.classList.remove("show");
+  if(state.focus && !state.settings.keepListInFocus){
+    el.classList.remove("show");
+  }
+}
+function renderBelowList(){
+  const box = $("belowTasks");
+  const list = sortTasks(activeTasks());
+  if(list.length===0){
+    box.innerHTML = `<div class="small">Aucune tâche.</div>`;
+    return;
+  }
+  box.innerHTML = list.slice(0,40).map(t=>{
+    const et = t.etorionsTotal||1;
+    const left = t.etorionsLeft??et;
+    const isCur = t.id===state.currentTaskId;
+    return `
+      <div class="taskRow" style="${isCur?"background:linear-gradient(180deg,var(--glass2),transparent); border-radius:10px; border:1px solid var(--line)":""}">
+        <div class="t">${escapeHTML(t.title)}</div>
+        <div class="meta">${left}/${et}</div>
+        <div class="tools">
+          <div class="toolBtn" data-act="up" data-id="${t.id}" title="Monter">↑</div>
+          <div class="toolBtn" data-act="down" data-id="${t.id}" title="Descendre">↓</div>
+          <div class="toolBtn" data-act="pin" data-id="${t.id}" title="Épingler">${t.pinned?"■":"□"}</div>
+          <div class="toolBtn" data-act="done" data-id="${t.id}" title="Dégommée">✓</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+  box.querySelectorAll(".toolBtn").forEach(b=>{
+    b.onclick = ()=>{
+      const id = b.getAttribute("data-id");
+      const act = b.getAttribute("data-act");
+      const t = getTaskById(id);
+      if(!t) return;
+      if(act==="up") moveTask(id,-1);
+      if(act==="down") moveTask(id,1);
+      if(act==="pin") t.pinned = !t.pinned;
+      if(act==="done") completeTask(id);
+      saveState();
+      ensureCurrentTask();
+      renderAll();
+    };
+  });
+}
 function renderSetsPanel(){
   const panel = $("setsPanel");
   if(!state.showSets){
@@ -2458,7 +1927,7 @@ function renderSetsPanel(){
         <button class="btn tiny" data-reset="${key}">RESET AUJOURD'HUI</button>
       </div>`;
     for(let p=1;p<=set.patients;p++){
-      html += `<div class="small" style="font-family:var(--mono2); letter-spacing:.06em; margin-top:8px">Patient ${p}</div>`;
+      html += `<div class="small" style="font-family:var(--mono); letter-spacing:.06em; margin-top:8px">Patient ${p}</div>`;
       items.forEach((it,idx)=>{
         const k = setKeyItem(key,p,idx);
         const on = !!checks[k];
@@ -2485,156 +1954,39 @@ function renderSetsPanel(){
     };
   });
   $("setsContent").querySelectorAll("button[data-reset]").forEach(b=>{
-    b.onclick = ()=>{
-      resetSetToday(b.getAttribute("data-reset"));
-    };
+    b.onclick = ()=> resetSetToday(b.getAttribute("data-reset"));
   });
 }
 
 /* -------------------------
-   Rendering main UI
+   Executive support utilities (fun/useful)
 ------------------------- */
-function setRandomTagline(force=false){
-  const elTag = $("tagline");
-  if(!elTag) return;
-  if(force || Math.random()<0.25 || !elTag.textContent.trim()){
-    elTag.textContent = TAGLINE_POOL[rand(TAGLINE_POOL.length)];
-  }
+function moveTask(id, delta){
+  const idx = state.tasks.findIndex(t=>t.id===id);
+  if(idx<0) return;
+  const j = clamp(idx+delta, 0, state.tasks.length-1);
+  const [it] = state.tasks.splice(idx,1);
+  state.tasks.splice(j,0,it);
 }
-function renderHUD(){
-  recomputeBaselineIfNeeded();
-  const p = computeProgress();
-
-  // tasks: remaining/starting
-  $("pillTasks").textContent = `${p.remT}/${p.baseT} ${plural(p.baseT,"tâche","tâches")}`;
-  $("pillEto").textContent = `${p.remE}/${p.baseE} étorions`;
-  const done = (p.baseT - p.remT);
-  $("pillDone").textContent = `${done} ${plural(done,"faite","faites")}`;
-
-  // flow indicator (simple)
-  const f = clamp(state.settings.fatigue,0,4);
-  const m = clamp(state.settings.motivation,0,4);
-  const flow = (m>=3 && f<=2) ? "fort" : (m<=1 && f>=3) ? "fragile" : "stable";
-  $("pillFlow").textContent = `flow: ${flow}`;
+function editTaskPrompt(id){
+  const t = getTaskById(id);
+  if(!t) return;
+  const nv = prompt("Éditer la tâche (titre)", t.title);
+  if(nv===null) return;
+  const v = nv.trim();
+  if(!v) return;
+  t.title = v;
 }
-function renderTimer(){
-  const el = $("pillTimer");
-  if(!state.currentTaskStart){
-    el.textContent = "00:00";
-    return;
-  }
-  const ms = Date.now() - state.currentTaskStart;
-  el.textContent = fmtMMSS(ms);
-}
-let timerInterval = null;
-function startTimerLoop(){
-  if(timerInterval) clearInterval(timerInterval);
-  timerInterval = setInterval(()=>{
-    renderTimer();
-  }, 500);
-}
-function renderProgress(){
-  const p = computeProgress();
-  // Bar should start 100% and DECREASE as tasks done => fill = remaining/base
-  const fillPct = p.pct;
-  $("taskBarFill").style.width = `${fillPct}%`;
-  $("taskBarPct").textContent = `${fillPct}%`;
-  $("barInfo").textContent = `${p.remT} restantes sur ${p.baseT}`;
-}
-function renderCurrent(){
-  ensureCurrentTask();
-  const t = getTaskById(state.currentTaskId);
-
-  if(!t){
-    $("taskName").textContent = "Aucune tâche";
-    $("chips").innerHTML = "";
-    $("btnEtorion").style.opacity = 0.5;
-    $("btnEtorion").style.pointerEvents = "none";
-    return;
-  }
-
-  $("btnEtorion").style.opacity = 1;
-  $("btnEtorion").style.pointerEvents = "auto";
-
-  // IMPORTANT: do not append durations or extra info to task name
-  $("taskName").textContent = t.title;
-
-  // chips show etorions total, filled for remaining
-  const total = t.etorionsTotal || 1;
-  const left = (typeof t.etorionsLeft==="number") ? t.etorionsLeft : total;
-  const chips = [];
-  for(let i=0;i<total;i++){
-    const on = i < left;
-    chips.push(`<div class="chip ${on?"on":""}"></div>`);
-  }
-  $("chips").innerHTML = chips.join("");
-
-  // timer: if current changed and no start set, set
+function ensureCurrentTaskStart(){
   if(!state.currentTaskStart) state.currentTaskStart = Date.now();
 }
-
-function applyListVisible(){
-  const show = !!state.showBelowList;
-  const el = $("belowList");
-  if(show){
-    el.classList.add("show");
-  }else{
-    el.classList.remove("show");
-  }
-
-  // In focus mode, list visibility depends on setting
-  if(state.focus && !state.settings.keepListInFocus){
-    el.classList.remove("show");
-  }
-}
-function renderBelowList(){
-  const box = $("belowTasks");
-  const list = sortTasks(activeTasks());
-  if(list.length===0){
-    box.innerHTML = `<div class="small">Aucune tâche.</div>`;
-    return;
-  }
-  box.innerHTML = list.slice(0,30).map(t=>{
-    const et = t.etorionsTotal||1;
-    const left = t.etorionsLeft??et;
-    const isCur = t.id===state.currentTaskId;
-    return `
-      <div class="taskRow" style="${isCur?"background:linear-gradient(180deg,var(--glass2),transparent); border-radius:10px; border:1px solid var(--line)":""}">
-        <div class="t">${escapeHTML(t.title)}</div>
-        <div class="meta">${left}/${et}</div>
-        <div class="tools">
-          <div class="toolBtn" data-act="up" data-id="${t.id}" title="Monter">↑</div>
-          <div class="toolBtn" data-act="down" data-id="${t.id}" title="Descendre">↓</div>
-          <div class="toolBtn" data-act="pin" data-id="${t.id}" title="Épingler">${t.pinned?"■":"□"}</div>
-          <div class="toolBtn" data-act="done" data-id="${t.id}" title="Dégommée">✓</div>
-        </div>
-      </div>
-    `;
-  }).join("");
-
-  box.querySelectorAll(".toolBtn").forEach(b=>{
-    b.onclick = ()=>{
-      const id = b.getAttribute("data-id");
-      const act = b.getAttribute("data-act");
-      const t = getTaskById(id);
-      if(!t) return;
-      if(act==="up") moveTask(id,-1);
-      if(act==="down") moveTask(id,1);
-      if(act==="pin") t.pinned = !t.pinned;
-      if(act==="done") completeTask(id);
-      saveState();
-      ensureCurrentTask();
-      renderAll();
-    };
-  });
-}
-
 function renderAll(){
   applyTheme();
   applyFocus();
   setRandomTagline();
   recomputeBaselineIfNeeded();
   ensureCurrentTask();
+  ensureCurrentTaskStart();
   renderHUD();
   renderProgress();
   renderCurrent();
@@ -2645,72 +1997,972 @@ function renderAll(){
 }
 
 /* -------------------------
-   Wire buttons
+   Drawer Tabs (regroupés, sans redondance)
+------------------------- */
+const TAB_DEFS = [
+  { key:"inbox",   label:"INBOX" },
+  { key:"liste",   label:"LISTE" },
+  { key:"habits",  label:"HABITUDES" },
+  { key:"emotions",label:"ÉMOTIONS" },  // NEW
+  { key:"kiff",    label:"KIFFANCE" },
+  { key:"flow",    label:"FLOW" },
+  { key:"sets",    label:"SETS" },
+  { key:"hist",    label:"HIST" }
+];
+
+function buildTabs(){
+  const el = $("tabs");
+  el.innerHTML = "";
+  TAB_DEFS.forEach(t=>{
+    const b = document.createElement("div");
+    b.className = "tab"+(state.activeTab===t.key?" active":"");
+    b.textContent = t.label;
+    b.onclick = ()=>{ state.activeTab=t.key; saveState(); renderDrawer(); };
+    el.appendChild(b);
+  });
+}
+function renderDrawer(){
+  buildTabs();
+  const body = $("drawerBody");
+  body.innerHTML = "";
+
+  if(state.activeTab==="inbox") body.appendChild(viewInbox());
+  if(state.activeTab==="liste") body.appendChild(viewListe());
+  if(state.activeTab==="habits") body.appendChild(viewHabits());
+  if(state.activeTab==="emotions") body.appendChild(viewEmotions());
+  if(state.activeTab==="kiff") body.appendChild(viewKiffance());
+  if(state.activeTab==="flow") body.appendChild(viewFlow());
+  if(state.activeTab==="sets") body.appendChild(viewSets());
+  if(state.activeTab==="hist") body.appendChild(viewHist());
+}
+
+/* -------------------------
+   Views
+------------------------- */
+function viewInbox(){
+  const wrap = document.createElement("div");
+  wrap.className = "section";
+  wrap.innerHTML = `
+    <h3>Importer des tâches</h3>
+    <div class="small" style="margin-bottom:8px">
+      Catégorie en MAJUSCULE + lignes de tâches. Chiffre final = étorions.<br/>
+      Exemple: <span style="font-family:var(--mono)">APPELS / Appeler X - 2</span>
+    </div>
+    <textarea id="inboxArea" placeholder="Colle ta liste ici"></textarea>
+    <div class="row" style="margin-top:8px">
+      <button class="btn primary" id="btnImport">IMPORTER</button>
+      <button class="btn" id="btnClearInbox">VIDER</button>
+      <button class="btn" id="btnShowBelow">AFFICHER LISTE</button>
+    </div>
+    <div class="small" id="importMsg" style="margin-top:8px"></div>
+  `;
+  setTimeout(()=>{
+    const area = $("inboxArea");
+    $("btnClearInbox").onclick = ()=> area.value="";
+    $("btnShowBelow").onclick = ()=>{
+      state.showBelowList = true;
+      saveState();
+      renderAll();
+      closeDrawer();
+    };
+    $("btnImport").onclick = ()=>{
+      const imported = importFromInbox(area.value||"");
+      const msg = $("importMsg");
+      if(imported.length===0){
+        msg.textContent = "Rien importé. Vérifie le format.";
+        return;
+      }
+      state.tasks.push(...imported);
+
+      // baseline expansion (keeps decreasing bar consistent)
+      if(state.baseline.totalTasks===0 && state.baseline.totalEtorions===0){
+        const act = activeTasks();
+        state.baseline.totalTasks = act.length;
+        state.baseline.totalEtorions = act.reduce((a,t)=>a+(t.etorionsTotal||0),0);
+      }else{
+        state.baseline.totalTasks += imported.length;
+        state.baseline.totalEtorions += imported.reduce((a,t)=>a+(t.etorionsTotal||0),0);
+      }
+
+      saveState();
+      ensureCurrentTask();
+      renderAll();
+      msg.textContent = `${imported.length} ${plural(imported.length,"tâche importée","tâches importées")}.`;
+    };
+  },0);
+  return wrap;
+}
+
+function viewListe(){
+  const wrap = document.createElement("div");
+  wrap.className = "section";
+  const cats = Array.from(new Set(state.tasks.map(t=>t.cat))).sort((a,b)=>a.localeCompare(b,"fr"));
+
+  wrap.innerHTML = `
+    <h3>Liste</h3>
+    <div class="row" style="margin-bottom:8px">
+      <select id="sortSel">
+        <option value="roulette">roulette (pinned d’abord)</option>
+        <option value="ordre">ordre d’import</option>
+        <option value="alpha">alphabétique</option>
+        <option value="cat">par catégorie</option>
+      </select>
+      <button class="btn" id="btnToggleBelow">${state.showBelowList?"MASQUER":"AFFICHER"} LISTE</button>
+    </div>
+
+    <div class="section" style="margin-bottom:10px">
+      <h3>Catégories incluses</h3>
+      <div class="small" style="margin-bottom:8px">Vide = toutes. Sinon, coche celles à inclure.</div>
+      <div id="catsBox"></div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="catsAll">TOUTES</button>
+        <button class="btn" id="catsNone">AUCUNE</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Actions</h3>
+      <div class="row">
+        <button class="btn" id="btnResetRun">RESET SESSION (garde notes/habitudes)</button>
+        <button class="btn" id="btnPurgeDone">PURGER FAITES</button>
+      </div>
+    </div>
+  `;
+
+  setTimeout(()=>{
+    $("sortSel").value = state.settings.listSort || "roulette";
+    $("sortSel").onchange = (e)=>{
+      state.settings.listSort = e.target.value;
+      saveState();
+      renderAll();
+      renderDrawer();
+    };
+    $("btnToggleBelow").onclick = ()=>{
+      state.showBelowList = !state.showBelowList;
+      saveState();
+      renderAll();
+      renderDrawer();
+    };
+
+    // categories box
+    const inc = state.settings.includedCats || [];
+    const catsBox = $("catsBox");
+    catsBox.innerHTML = cats.map(c=>{
+      const checked = inc.length===0 ? true : inc.includes(c);
+      return `
+        <div class="row" style="justify-content:space-between; margin:6px 0">
+          <div style="flex:1; min-width:0; font-size:13px; color:var(--fg); overflow:hidden; text-overflow:ellipsis; white-space:nowrap">${escapeHTML(c)}</div>
+          <div class="check ${checked?"on":""}" data-cat="${escapeHTML(c)}">${checked?"✓":""}</div>
+        </div>
+      `;
+    }).join("");
+    catsBox.querySelectorAll(".check").forEach(el=>{
+      el.onclick = ()=>{
+        const c = el.getAttribute("data-cat");
+        let list = state.settings.includedCats || [];
+        if(list.length===0) list = [...cats];
+        if(list.includes(c)) list = list.filter(x=>x!==c);
+        else list.push(c);
+        state.settings.includedCats = (list.length===cats.length) ? [] : list;
+        saveState();
+        ensureCurrentTask();
+        renderAll();
+        renderDrawer();
+      };
+    });
+    $("catsAll").onclick = ()=>{
+      state.settings.includedCats = [];
+      saveState(); ensureCurrentTask(); renderAll(); renderDrawer();
+    };
+    $("catsNone").onclick = ()=>{
+      state.settings.includedCats = ["__NONE__"];
+      saveState(); ensureCurrentTask(); renderAll(); renderDrawer();
+    };
+
+    $("btnResetRun").onclick = ()=>{
+      // reset tasks only, keep notes/habits/emotions/kiffance/history
+      state.tasks = [];
+      state.baseline = { totalTasks:0, totalEtorions:0 };
+      state.currentTaskId = null;
+      state.currentTaskStart = null;
+      state.stats = { etorionsDone:0, tasksDone:0 };
+      state.settings.includedCats = [];
+      saveState();
+      renderAll();
+      renderDrawer();
+    };
+
+    $("btnPurgeDone").onclick = ()=>{
+      state.tasks = state.tasks.filter(t=>!t.done);
+      const act = activeTasks();
+      state.baseline.totalTasks = act.length;
+      state.baseline.totalEtorions = act.reduce((a,t)=>a+(t.etorionsTotal||0),0);
+      saveState();
+      ensureCurrentTask();
+      renderAll();
+      renderDrawer();
+    };
+  },0);
+
+  return wrap;
+}
+
+function viewHabits(){
+  const wrap = document.createElement("div");
+  wrap.className = "section";
+  wrap.innerHTML = `
+    <h3>Habitudes</h3>
+
+    <div class="section" style="margin-bottom:10px">
+      <h3>Ajouter</h3>
+      <div class="row">
+        <input id="hName" placeholder="Nom de l'habitude (ex: eau)" />
+        <input id="hSlots" type="number" min="3" max="12" value="8" />
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn primary" id="hAdd">AJOUTER</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Liste</h3>
+      <div id="hList"></div>
+    </div>
+  `;
+  setTimeout(()=>{
+    $("hAdd").onclick = ()=>{
+      addHabit($("hName").value, $("hSlots").value);
+      $("hName").value="";
+      saveState();
+      renderDrawer();
+      renderAll();
+      snapshotDay();
+    };
+    renderHabitsList();
+  },0);
+  return wrap;
+}
+function renderHabitsList(){
+  const box = $("hList");
+  if(!box) return;
+  const list = state.habits || [];
+  if(list.length===0){
+    box.innerHTML = `<div class="small">Aucune habitude.</div>`;
+    return;
+  }
+  box.innerHTML = list.map(h=>{
+    const p = habitProgress(h);
+    const checks = h.checks.map((v,idx)=>`
+      <div class="check ${v?"on":""}" data-h="${h.id}" data-i="${idx}">${v?"✓":""}</div>
+    `).join("");
+    return `
+      <div class="section" style="margin-bottom:10px">
+        <h3>${escapeHTML(h.name)} <span style="font-weight:400; letter-spacing:.06em">(${p.done}/${p.tot})</span></h3>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center">${checks}</div>
+        <div class="row" style="margin-top:8px">
+          <button class="btn" data-act="resetHabit" data-h="${h.id}">RESET</button>
+          <button class="btn" data-act="delHabit" data-h="${h.id}">SUPPRIMER</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  box.querySelectorAll(".check").forEach(el=>{
+    el.onclick = ()=>{
+      const hId = el.getAttribute("data-h");
+      const i = parseInt(el.getAttribute("data-i"),10);
+      toggleHabitCheck(hId, i);
+      renderHabitsList();
+      renderAll();
+    };
+  });
+  box.querySelectorAll("button[data-act]").forEach(b=>{
+    b.onclick = ()=>{
+      const act = b.getAttribute("data-act");
+      const hId = b.getAttribute("data-h");
+      const h = state.habits.find(x=>x.id===hId);
+      if(!h) return;
+      if(act==="resetHabit") h.checks = h.checks.map(()=>false);
+      if(act==="delHabit") state.habits = state.habits.filter(x=>x.id!==hId);
+      saveState();
+      renderDrawer();
+      renderAll();
+      snapshotDay();
+    };
+  });
+}
+
+function viewEmotions(){
+  const wrap = document.createElement("div");
+  wrap.className = "section";
+
+  wrap.innerHTML = `
+    <h3>Journal des émotions (TCC)</h3>
+
+    <div class="small" style="margin-bottom:10px">
+      But: comprendre → réguler. Pas juger. (Et surtout: garder du carburant exécutif.)
+    </div>
+
+    <div class="section" style="margin-bottom:10px">
+      <h3>Nouvelle entrée</h3>
+
+      <div class="row">
+        <select id="emoEmotion"></select>
+        <input id="emoIntensity" type="number" min="0" max="100" value="60" />
+      </div>
+      <div class="small" style="margin-top:6px">Intensité (0–100). Mets un chiffre, pas une dissertation.</div>
+
+      <div style="height:8px"></div>
+
+      <div class="row">
+        <textarea id="emoSituation" placeholder="Situation (qui/quoi/où) — factuel, court"></textarea>
+      </div>
+
+      <div class="row" style="margin-top:8px">
+        <textarea id="emoThoughts" placeholder="Pensées automatiques (ex: 'ça va mal se passer')"></textarea>
+      </div>
+
+      <div class="row" style="margin-top:8px">
+        <textarea id="emoBody" placeholder="Corps (ex: tension, cœur, respiration)"></textarea>
+      </div>
+
+      <div style="height:8px"></div>
+      <div class="section" style="margin-bottom:10px">
+        <h3>Distorsions cognitives</h3>
+        <div id="distBox" style="display:flex; gap:6px; flex-wrap:wrap"></div>
+        <div class="small" style="margin-top:6px">Coche 0–2 max. Pas un catalogue. (On vise le flow.)</div>
+      </div>
+
+      <div class="row" style="margin-top:8px">
+        <textarea id="emoReframe" placeholder="Réévaluation (pensée alternative plus réaliste)"></textarea>
+      </div>
+
+      <div class="row" style="margin-top:8px">
+        <select id="emoSkill"></select>
+        <input id="emoAfter" type="number" min="0" max="100" value="40" />
+      </div>
+      <div class="small" style="margin-top:6px">Après compétence: intensité (0–100). Mesure la régulation.</div>
+
+      <div class="row" style="margin-top:8px">
+        <button class="btn primary" id="emoSave">ENREGISTRER</button>
+        <button class="btn" id="emoQuick">MICRO-RÉGULATION (30s)</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Aujourd'hui</h3>
+      <div id="emoToday"></div>
+    </div>
+
+    <div class="section" style="margin-top:10px">
+      <h3>Export</h3>
+      <div class="row">
+        <button class="btn" id="emoCopy">COPIER (AUJOURD'HUI)</button>
+        <button class="btn" id="emoPurge">PURGER (30 JOURS+)</button>
+      </div>
+      <textarea id="emoExport" style="margin-top:8px"></textarea>
+    </div>
+  `;
+
+  setTimeout(()=>{
+    // emotion options
+    const emoSel = $("emoEmotion");
+    emoSel.innerHTML = EMOTIONS.map(e=>`<option value="${escapeHTML(e)}">${escapeHTML(e)}</option>`).join("");
+
+    // skill options (TCC/DBT-inspired but practical)
+    const SKILLS = [
+      "Respiration 4-6 (2 min)",
+      "Ancrage 5-4-3-2-1 (1 min)",
+      "Défusion: « j’ai la pensée que… »",
+      "Opposite action (micro)",
+      "Pause + eau + reprise",
+      "Plan 1 étorion (micro-action)",
+      "Auto-compassion brève",
+      "Réévaluation écrite (3 lignes)"
+    ];
+    const skillSel = $("emoSkill");
+    skillSel.innerHTML = SKILLS.map(s=>`<option value="${escapeHTML(s)}">${escapeHTML(s)}</option>`).join("");
+
+    // distortions
+    const box = $("distBox");
+    box.innerHTML = DISTORTIONS.map(d=>`
+      <div class="check" data-d="${escapeHTML(d)}"></div>
+      <div style="margin-right:10px; font-size:12px; color:var(--muted); font-family:var(--mono)">${escapeHTML(d)}</div>
+    `).join("");
+
+    // make “check + label” clickable
+    const nodes = Array.from(box.children);
+    for(let i=0;i<nodes.length;i+=2){
+      const chk = nodes[i];
+      const lbl = nodes[i+1];
+      const toggle = ()=>{
+        chk.classList.toggle("on");
+        chk.textContent = chk.classList.contains("on") ? "✓" : "";
+      };
+      chk.onclick = toggle;
+      lbl.onclick = toggle;
+    }
+
+    $("emoQuick").onclick = ()=> showNudge();
+
+    $("emoSave").onclick = ()=>{
+      const day = dayKey();
+      const time = new Date().toLocaleTimeString("fr-BE",{hour:"2-digit",minute:"2-digit"});
+      const situation = ($("emoSituation").value||"").trim();
+      const thoughts = ($("emoThoughts").value||"").trim();
+      const body = ($("emoBody").value||"").trim();
+      const emotion = emoSel.value;
+      const intensity = clamp(parseInt($("emoIntensity").value,10)||0, 0, 100);
+      const reframe = ($("emoReframe").value||"").trim();
+      const skillUsed = skillSel.value;
+      const afterIntensity = clamp(parseInt($("emoAfter").value,10)||0, 0, 100);
+
+      const chosen = [];
+      // collect distortions (max 2)
+      for(let i=0;i<nodes.length;i+=2){
+        const chk = nodes[i];
+        if(chk.classList.contains("on")){
+          chosen.push(nodes[i+1].textContent.trim());
+        }
+      }
+      const distortions = chosen.slice(0,2);
+
+      if(!situation && !thoughts && !body){
+        // require at least some content
+        showNudge();
+        return;
+      }
+
+      addEmotionEntry({
+        id: uid(),
+        day, time,
+        situation,
+        emotion, intensity,
+        body,
+        thoughts,
+        distortions,
+        reframe,
+        skillUsed,
+        afterIntensity
+      });
+
+      // clear light
+      $("emoSituation").value="";
+      $("emoThoughts").value="";
+      $("emoBody").value="";
+      $("emoReframe").value="";
+      // uncheck distortions
+      for(let i=0;i<nodes.length;i+=2){
+        nodes[i].classList.remove("on");
+        nodes[i].textContent = "";
+      }
+
+      renderEmoToday();
+      // optional little supportive nudge (not celebration)
+      if(Math.random()<0.15) showTip();
+    };
+
+    $("emoCopy").onclick = async ()=>{
+      const txt = exportEmotionsToday();
+      $("emoExport").value = txt;
+      try{ await navigator.clipboard.writeText(txt); }catch(e){}
+    };
+
+    $("emoPurge").onclick = ()=>{
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate()-30);
+      const keep = (state.emotions.entries||[]).filter(e=>{
+        const d = new Date(e.day+"T00:00:00");
+        return d >= cutoff;
+      });
+      state.emotions.entries = keep;
+      saveState();
+      renderEmoToday();
+    };
+
+    renderEmoToday();
+    $("emoExport").value = exportEmotionsToday();
+  },0);
+
+  return wrap;
+}
+
+function exportEmotionsToday(){
+  const dk = dayKey();
+  const entries = (state.emotions.entries||[]).filter(e=>e.day===dk);
+  if(entries.length===0) return `ÉMOTIONS — ${dk}\n\n—`;
+  const lines = [];
+  lines.push(`ÉMOTIONS — ${dk}`);
+  lines.push("");
+  entries.slice().reverse().forEach(e=>{
+    lines.push(`${e.time} — ${e.emotion} ${e.intensity}→${e.afterIntensity}`);
+    if(e.situation) lines.push(`- Situation: ${e.situation}`);
+    if(e.thoughts) lines.push(`- Pensées: ${e.thoughts}`);
+    if(e.body) lines.push(`- Corps: ${e.body}`);
+    if(e.distortions?.length) lines.push(`- Distorsions: ${e.distortions.join(", ")}`);
+    if(e.reframe) lines.push(`- Réévaluation: ${e.reframe}`);
+    if(e.skillUsed) lines.push(`- Compétence: ${e.skillUsed}`);
+    lines.push("");
+  });
+  return lines.join("\n");
+}
+
+function renderEmoToday(){
+  const box = $("emoToday");
+  if(!box) return;
+  const dk = dayKey();
+  const entries = (state.emotions.entries||[]).filter(e=>e.day===dk);
+  if(entries.length===0){
+    box.innerHTML = `<div class="small">Aucune entrée aujourd’hui.</div>`;
+    return;
+  }
+  box.innerHTML = entries.slice(0,12).map(e=>{
+    const d = e.distortions?.length ? ` · ${e.distortions.join(", ")}` : "";
+    const sit = e.situation ? escapeHTML(e.situation) : "—";
+    return `
+      <div style="padding:8px 6px; border-bottom:1px solid var(--line)">
+        <div style="font-family:var(--mono); color:var(--muted); font-size:11px; letter-spacing:.06em">
+          ${escapeHTML(e.time)} — ${escapeHTML(e.emotion)} ${e.intensity}→${e.afterIntensity}${d}
+        </div>
+        <div style="font-size:13px; margin-top:4px">${sit}</div>
+      </div>
+    `;
+  }).join("");
+}
+
+function viewKiffance(){
+  const wrap = document.createElement("div");
+  wrap.className = "section";
+  wrap.innerHTML = `
+    <h3>Kiffance</h3>
+
+    <div class="section" style="margin-bottom:10px">
+      <h3>Suggestion</h3>
+      <div class="row">
+        <button class="btn primary" id="kPick">RAFRAÎCHIR</button>
+        <button class="btn" id="kAddToTasks">AJOUTER EN TÂCHE</button>
+      </div>
+      <div id="kOut" class="small" style="margin-top:10px; font-size:13px; color:var(--fg)"></div>
+      <div class="small" style="text-align:center; margin-top:6px">Catégorie: <span id="kCat"></span></div>
+    </div>
+
+    <div class="section" style="margin-bottom:10px">
+      <h3>Banque (visible)</h3>
+      <div class="row">
+        <select id="kBucket">
+          <option value="5">≤ 5 min</option>
+          <option value="10">≤ 10 min</option>
+          <option value="15">≤ 15 min</option>
+          <option value="25">≥ 25 min</option>
+        </select>
+        <button class="btn" id="kShow">AFFICHER</button>
+      </div>
+      <div id="kList" class="small" style="margin-top:8px"></div>
+    </div>
+
+    <div class="section">
+      <h3>Ajouter à la banque</h3>
+      <select id="kAddBucket">
+        <option value="5">≤ 5 min</option>
+        <option value="10">≤ 10 min</option>
+        <option value="15">≤ 15 min</option>
+        <option value="25">≥ 25 min</option>
+      </select>
+      <textarea id="kText" placeholder="Action simple, sans fioriture."></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="btn primary" id="kAdd">AJOUTER</button>
+      </div>
+    </div>
+  `;
+  setTimeout(()=>{
+    let last = pickKiffance();
+    $("kOut").textContent = last;
+    $("kCat").textContent = kBucket(state.settings.etorionMin||5);
+
+    $("kPick").onclick = ()=>{
+      last = pickKiffance();
+      $("kOut").textContent = last;
+      $("kCat").textContent = kBucket(state.settings.etorionMin||5);
+    };
+    $("kAddToTasks").onclick = ()=>{
+      const t = last.trim();
+      if(!t) return;
+      const et = 1;
+      const newT = {
+        id: uid(),
+        title: t,
+        cat: "KIFFANCE",
+        etorionsTotal: et,
+        etorionsLeft: et,
+        pinned: false,
+        done: false,
+        createdAt: nowISO(),
+        doneAt: null
+      };
+      state.tasks.push(newT);
+      state.baseline.totalTasks += 1;
+      state.baseline.totalEtorions += et;
+      saveState();
+      ensureCurrentTask();
+      renderAll();
+    };
+
+    $("kShow").onclick = ()=>{
+      const b = $("kBucket").value;
+      const list = state.kiffance.bank[b] || [];
+      $("kList").innerHTML = list.length===0 ? "—" : list.map((x,i)=>`
+        <div style="padding:6px 4px; border-bottom:1px solid var(--line)">
+          <span style="font-family:var(--mono); color:var(--muted); font-size:11px">${i+1}</span>
+          <span style="margin-left:8px">${escapeHTML(x)}</span>
+        </div>
+      `).join("");
+    };
+
+    $("kAdd").onclick = ()=>{
+      const b = $("kAddBucket").value;
+      addKiffanceItem(b, $("kText").value);
+      $("kText").value = "";
+      renderDrawer();
+    };
+  },0);
+  return wrap;
+}
+
+function viewFlow(){
+  const wrap = document.createElement("div");
+  wrap.className = "section";
+  wrap.innerHTML = `
+    <h3>Flow (paramètres)</h3>
+
+    <div class="section" style="margin-bottom:10px">
+      <h3>Énergie</h3>
+      <div class="row">
+        <div>
+          <div class="small">Fatigue (0–4)</div>
+          <input id="fatigue" type="number" min="0" max="4" />
+        </div>
+        <div>
+          <div class="small">Motivation (0–4)</div>
+          <input id="motivation" type="number" min="0" max="4" />
+        </div>
+      </div>
+    </div>
+
+    <div class="section" style="margin-bottom:10px">
+      <h3>Surprises</h3>
+      <div class="row">
+        <div>
+          <div class="small">Célébration (0–1)</div>
+          <input id="celeChance" type="number" step="0.05" min="0" max="1" />
+        </div>
+        <div>
+          <div class="small">Auto-fermeture (sec)</div>
+          <input id="celeSec" type="number" min="5" max="20" />
+        </div>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <div>
+          <div class="small">Conseils flow (0–1)</div>
+          <input id="tipsChance" type="number" step="0.05" min="0" max="1" />
+        </div>
+        <div>
+          <div class="small">Gap conseils (min)</div>
+          <input id="tipsGap" type="number" min="2" max="45" />
+        </div>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <div>
+          <div class="small">Micro-régulation (0–1)</div>
+          <input id="nudgeChance" type="number" step="0.05" min="0" max="1" />
+        </div>
+        <div>
+          <div class="small">Gap micro-régulation (min)</div>
+          <input id="nudgeGap" type="number" min="3" max="90" />
+        </div>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="testCele">TEST CÉLÉBRATION</button>
+        <button class="btn" id="testTip">TEST CONSEIL</button>
+        <button class="btn" id="testNudge">TEST RÉGULATION</button>
+      </div>
+    </div>
+
+    <div class="section" style="margin-bottom:10px">
+      <h3>Affichage</h3>
+      <div class="row">
+        <div>
+          <div class="small">1 étorion = (min)</div>
+          <input id="etoMin" type="number" min="1" max="60" />
+        </div>
+        <div>
+          <div class="small">Liste visible en focus</div>
+          <select id="listFocus">
+            <option value="true">oui</option>
+            <option value="false">non</option>
+          </select>
+        </div>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="toggleBelow">${state.showBelowList?"MASQUER":"AFFICHER"} LISTE</button>
+        <button class="btn" id="toggleSets">${state.showSets?"MASQUER":"AFFICHER"} SETS</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Support exécutif</h3>
+      <div class="row">
+        <div>
+          <div class="small">Auto-suggérer (tous les X étorions)</div>
+          <input id="kEvery" type="number" min="3" max="20" />
+        </div>
+        <div>
+          <div class="small">Activer auto-suggestion</div>
+          <select id="autoSugg">
+            <option value="true">oui</option>
+            <option value="false">non</option>
+          </select>
+        </div>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn primary" id="saveFlow">SAUVER</button>
+      </div>
+    </div>
+  `;
+
+  setTimeout(()=>{
+    $("fatigue").value = state.settings.fatigue;
+    $("motivation").value = state.settings.motivation;
+    $("celeChance").value = state.settings.celebrationChance;
+    $("celeSec").value = state.settings.celebrationAutoCloseSec;
+    $("tipsChance").value = state.settings.tipsChance;
+    $("tipsGap").value = state.settings.tipsMinGapMin;
+    $("nudgeChance").value = state.settings.nudgeChance;
+    $("nudgeGap").value = state.settings.nudgeMinGapMin;
+    $("etoMin").value = state.settings.etorionMin;
+    $("listFocus").value = String(!!state.settings.keepListInFocus);
+    $("kEvery").value = state.settings.kiffanceSuggestEveryEto;
+    $("autoSugg").value = String(!!state.settings.autoSuggestKiffance);
+
+    $("toggleBelow").onclick = ()=>{
+      state.showBelowList = !state.showBelowList;
+      saveState(); renderAll(); renderDrawer();
+    };
+    $("toggleSets").onclick = ()=>{
+      state.showSets = !state.showSets;
+      saveState(); renderAll(); renderDrawer();
+    };
+
+    $("testCele").onclick = ()=> showCelebration(1.2);
+    $("testTip").onclick = ()=> showTip();
+    $("testNudge").onclick = ()=> showNudge();
+
+    $("saveFlow").onclick = ()=>{
+      state.settings.fatigue = clamp(parseInt($("fatigue").value,10)||0,0,4);
+      state.settings.motivation = clamp(parseInt($("motivation").value,10)||0,0,4);
+      state.settings.celebrationChance = clamp(Number($("celeChance").value)||0,0,1);
+      state.settings.celebrationAutoCloseSec = clamp(parseInt($("celeSec").value,10)||11,5,20);
+      state.settings.tipsChance = clamp(Number($("tipsChance").value)||0,0,1);
+      state.settings.tipsMinGapMin = clamp(parseInt($("tipsGap").value,10)||6,2,45);
+      state.settings.nudgeChance = clamp(Number($("nudgeChance").value)||0,0,1);
+      state.settings.nudgeMinGapMin = clamp(parseInt($("nudgeGap").value,10)||10,3,90);
+      state.settings.etorionMin = clamp(parseInt($("etoMin").value,10)||5,1,60);
+      state.settings.keepListInFocus = ($("listFocus").value==="true");
+      state.settings.kiffanceSuggestEveryEto = clamp(parseInt($("kEvery").value,10)||6,3,20);
+      state.settings.autoSuggestKiffance = ($("autoSugg").value==="true");
+      saveState();
+      renderAll();
+      renderDrawer();
+    };
+  },0);
+
+  return wrap;
+}
+
+function viewSets(){
+  const wrap = document.createElement("div");
+  wrap.className = "section";
+  initSetsChecksForToday();
+  wrap.innerHTML = `
+    <h3>Sets</h3>
+    <div class="small" style="margin-bottom:10px">
+      Fenêtre à droite (masquable). Checklist sans oubli.
+    </div>
+
+    <div class="section" style="margin-bottom:10px">
+      <h3>Hospitalier</h3>
+      <div class="row">
+        <input id="hospPatients" type="number" min="1" max="20" />
+        <button class="btn" id="hospResetToday">RESET AUJOURD'HUI</button>
+      </div>
+    </div>
+
+    <div class="section" style="margin-bottom:10px">
+      <h3>Consultation</h3>
+      <div class="row">
+        <input id="consPatients" type="number" min="1" max="30" />
+        <button class="btn" id="consResetToday">RESET AUJOURD'HUI</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Rapport du jour</h3>
+      <div class="row">
+        <button class="btn primary" id="expCopy">COPIER</button>
+        <button class="btn" id="expDownload">TÉLÉCHARGER .TXT</button>
+      </div>
+      <textarea id="expArea" style="margin-top:8px"></textarea>
+    </div>
+  `;
+  setTimeout(()=>{
+    $("hospPatients").value = state.sets.hospital.patients;
+    $("consPatients").value = state.sets.consult.patients;
+
+    $("hospPatients").onchange = (e)=>{
+      state.sets.hospital.patients = clamp(parseInt(e.target.value,10)||4,1,20);
+      saveState();
+      renderSetsPanel();
+    };
+    $("consPatients").onchange = (e)=>{
+      state.sets.consult.patients = clamp(parseInt(e.target.value,10)||6,1,30);
+      saveState();
+      renderSetsPanel();
+    };
+    $("hospResetToday").onclick = ()=> resetSetToday("hospital");
+    $("consResetToday").onclick = ()=> resetSetToday("consult");
+
+    $("expArea").value = exportTodayText();
+
+    $("expCopy").onclick = async ()=>{
+      const t = exportTodayText();
+      $("expArea").value = t;
+      try{ await navigator.clipboard.writeText(t); }catch(e){}
+    };
+    $("expDownload").onclick = ()=>{
+      const t = exportTodayText();
+      $("expArea").value = t;
+      const blob = new Blob([t], {type:"text/plain;charset=utf-8"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `eliminator_${dayKey()}.txt`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    };
+  },0);
+  return wrap;
+}
+
+function viewHist(){
+  const wrap = document.createElement("div");
+  wrap.className = "section";
+  snapshotDay();
+
+  wrap.innerHTML = `
+    <h3>Historique</h3>
+    <div class="small" style="margin-bottom:10px">
+      Derniers jours + mini-calendrier (tâches/jour).
+    </div>
+
+    <div class="section" style="margin-bottom:10px">
+      <h3>Jours récents</h3>
+      <div id="histList"></div>
+    </div>
+
+    <div class="section">
+      <h3>Calendrier (30 jours)</h3>
+      <div id="calGrid" style="display:grid; grid-template-columns: repeat(10, 1fr); gap:6px"></div>
+      <div class="small" style="margin-top:8px">
+        Intensité = nombre de tâches faites.
+      </div>
+    </div>
+  `;
+
+  setTimeout(()=>{
+    const box = $("histList");
+    const hist = (state.history||[]).slice(0,14);
+    box.innerHTML = hist.length===0 ? "—" : hist.map(h=>{
+      return `
+        <div style="padding:8px 6px; border-bottom:1px solid var(--line)">
+          <div style="font-family:var(--mono); color:var(--muted); font-size:11px; letter-spacing:.08em">${h.day}</div>
+          <div style="font-size:13px">Faites: ${h.doneTasks} · Restantes: ${h.remainingTasks} · Étorions: ${h.doneEtorions} · Émotions: ${h.emotions?.count||0}</div>
+        </div>
+      `;
+    }).join("");
+
+    const grid = $("calGrid");
+    const days = [];
+    const today = new Date();
+    for(let i=29;i>=0;i--){
+      const d = new Date(today);
+      d.setDate(today.getDate()-i);
+      days.push(dayKey(d));
+    }
+    const map = {};
+    (state.history||[]).forEach(e=>{ map[e.day] = e.doneTasks || 0; });
+    const max = Math.max(1, ...Object.values(map));
+    grid.innerHTML = days.map(dk=>{
+      const v = map[dk] || 0;
+      const intensity = clamp(v/max, 0, 1);
+      const a = 0.06 + intensity*0.34;
+      return `
+        <div title="${dk} — ${v} ${plural(v,"tâche","tâches")}"
+             style="
+              height:28px;
+              border-radius:10px;
+              border:1px solid var(--line);
+              background: rgba(0,0,0,.02);
+              position:relative;
+              overflow:hidden;">
+          <div style="position:absolute; inset:0; background: var(--accent); opacity:${a};"></div>
+          <div style="position:absolute; inset:0; display:grid; place-items:center; font-family:var(--mono); font-size:10px; color:var(--muted)">
+            ${String(new Date(dk).getDate()).padStart(2,"0")}
+          </div>
+        </div>
+      `;
+    }).join("");
+  },0);
+
+  return wrap;
+}
+
+/* -------------------------
+   Notes modal open
+------------------------- */
+function openNotes(){
+  renderNotes();
+  openModal("notesModal");
+}
+
+/* -------------------------
+   Wire top actions
 ------------------------- */
 $("btnMenu").onclick = openDrawer;
 $("drawerClose").onclick = closeDrawer;
 $("drawerBack").onclick = closeDrawer;
 
 $("btnTheme").onclick = toggleTheme;
-
-$("btnFocus").onclick = ()=>toggleFocus();
-
-$("btnReset").onclick = ()=>{
-  // Reset tasks, keep notes + kiffance + habits + history
-  state.tasks = [];
-  state.baseline = { totalTasks:0, totalEtorions:0 };
-  state.currentTaskId = null;
-  state.currentTaskStart = null;
-  state.stats = { etorionsDone:0, tasksDone:0 };
-  state.settings.includedCats = [];
-  saveState();
-  renderAll();
-};
-
-$("btnToggleList").onclick = ()=>{
-  state.showBelowList = !state.showBelowList;
-  saveState();
-  renderAll();
-};
-$("btnHideBelow").onclick = ()=>{
-  state.showBelowList = false;
-  saveState();
-  renderAll();
-};
-
-$("btnToggleSets").onclick = ()=>{
-  state.showSets = !state.showSets;
-  saveState();
-  renderAll();
-};
+$("btnFocus").onclick = toggleFocus;
 
 $("btnRoulette").onclick = ()=>{
   const el = $("btnRoulette");
-  el.classList.remove("rouletteSpin"); // reset
-  void el.offsetWidth; // reflow
+  el.classList.remove("rouletteSpin");
+  void el.offsetWidth;
   el.classList.add("rouletteSpin");
 
   const pick = roulettePick();
   if(!pick) return;
-
-  // set current task (smooth)
   setTimeout(()=>{
     setCurrentTask(pick.id);
-    saveState();
     renderAll();
-    maybeShowTip();
+    // sometimes tips/nudges, but not always
+    if(Math.random()<0.18) maybeShowTip();
+    if(Math.random()<0.12) maybeShowNudge();
   }, 220);
 };
 
-$("btnEtorion").onclick = ()=>{
-  degommeEtorion();
-};
+$("btnEtorion").onclick = degommeEtorion;
 
-$("btnNotes").onclick = ()=>{
-  renderNotes();
-  openModal("notesModal");
-};
-$("notesClose").onclick = ()=>closeModal("notesModal");
+$("btnNotes").onclick = openNotes;
+
 $("noteAdd").onclick = ()=>{ addNote($("noteInput").value); $("noteInput").value=""; };
 $("noteClear").onclick = ()=>{ $("noteInput").value=""; };
 
@@ -2730,30 +2982,27 @@ $("btnEditTask").onclick = ()=>{
   renderAll();
 };
 
-$("celeClose").onclick = ()=>closeModal("celeModal");
-$("tipsClose").onclick = ()=>closeModal("tipsModal");
-$("modalBack").onclick = ()=>{
-  // close all
-  ["notesModal","celeModal","tipsModal"].forEach(closeModal);
+$("btnHideBelow").onclick = ()=>{
+  state.showBelowList = false;
+  saveState();
+  renderAll();
 };
 
 /* -------------------------
    Start
 ------------------------- */
 applyTheme();
-renderAll();
+applyFocus();
+setRandomTagline(true);
 renderDrawer();
+renderAll();
 startTimerLoop();
 snapshotDay();
 
-/* -------------------------
-   Tiny extras for flow: when user comes back to app, re-render timer
-------------------------- */
+/* refresh on return */
 document.addEventListener("visibilitychange", ()=>{
-  if(!document.hidden){
-    renderAll();
-  }
+  if(!document.hidden) renderAll();
 });
-</script>
+  </script>
 </body>
 </html>
