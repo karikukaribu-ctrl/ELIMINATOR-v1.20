@@ -5,63 +5,83 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>ELIMINATOR</title>
 
+  <!-- Polices "soft / Ghibli-ish" (rondes, chaleureuses) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Fredoka:wght@400;600;700&family=Comfortaa:wght@400;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+
   <style>
     :root{
-      --bg: #f4f6fb;
-      --fg: #0d1321;
-      --muted: rgba(13,19,33,.62);
-
-      --glass: rgba(255,255,255,.58);
-      --glass2: rgba(255,255,255,.34);
-      --lineA: rgba(13,19,33,.14);
+      /* Base */
+      --bg:#f4f6fb; --fg:#0d1321; --muted: rgba(13,19,33,.62);
+      --glass: rgba(255,255,255,.62); --glass2: rgba(255,255,255,.36);
+      --lineA: rgba(13,19,33,.14); --line: var(--lineA);
       --shadow: 0 18px 60px rgba(0,0,0,.10);
       --blur: 18px;
 
-      --accent: rgba(0,140,255,.16);
-      --accent2: rgba(0,140,255,.32);
+      /* Palette par défaut = ocre / bordeaux doux */
+      --accent: rgba(198, 126, 40, .18);      /* ocre */
+      --accent2: rgba(198, 126, 40, .34);
+      --barAccent: rgba(198, 126, 40, .22);
+      --barAccent2: rgba(198, 126, 40, .44);
 
-      --radius: 6px;
-      --radius2: 4px;
-      --barH: 38px;
+      /* UI */
+      --radius: 8px;
+      --radius2: 6px;
+
+      --uiScale: 1.00;
+      --titleScale: 1.12;
+      --taskScale: 1.42;
+
+      /* Barre (grosse + adaptable) */
+      --barH: clamp(64px, 10vh, 120px);
+      --barText: clamp(18px, 2.4vw, 28px);
+      --barBlockMinH: clamp(120px, 24vh, 220px); /* "au moins 25% de la moitié de l'écran" approx -> gros bloc */
+
       --chipH: 18px;
 
       --appW: min(1320px, 96vw);
       --vpad: clamp(10px, 2.2vh, 18px);
       --hpad: clamp(10px, 2.2vw, 18px);
 
-      --font: ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial;
+      --font: "Nunito", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
+      --display: "Fredoka", "Nunito", ui-sans-serif, system-ui;
+      --hand: "Patrick Hand", "Nunito", ui-sans-serif;
       --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 
-      --uiScale: 1.00;
-      --titleScale: 1.18;
-      --taskScale: 1.50;
-
-      --line: var(--lineA);
       --btnFill: 0;
-
       --drawerW: 460px;
-      --rightW: 520px;
+      --rightW: 560px;
 
-      --barAccent: var(--accent);
-      --barAccent2: var(--accent2);
+      --topbarH: 72px;
     }
 
+    /* Sombre mais pas cave de Mordor */
     [data-theme="dark"]{
-      --bg:#0b0f17;
-      --fg:#eaf0ff;
-      --muted: rgba(234,240,255,.62);
-
-      --glass: rgba(18,24,38,.60);
-      --glass2: rgba(18,24,38,.36);
+      --bg:#0e1422; --fg:#eaf0ff; --muted: rgba(234,240,255,.66);
+      --glass: rgba(20,28,46,.62); --glass2: rgba(20,28,46,.36);
       --lineA: rgba(234,240,255,.14);
-      --shadow: 0 18px 80px rgba(0,0,0,.36);
+      --shadow: 0 18px 90px rgba(0,0,0,.40);
       --blur: 20px;
 
-      --accent: rgba(0,255,140,.14);
-      --accent2: rgba(0,255,140,.28);
+      --accent: rgba(131, 26, 36, .18);        /* bordeaux */
+      --accent2: rgba(131, 26, 36, .34);
+      --barAccent: rgba(208, 138, 56, .16);    /* ocre plus doux en sombre */
+      --barAccent2: rgba(208, 138, 56, .34);
+    }
 
-      --barAccent: var(--accent);
-      --barAccent2: var(--accent2);
+    /* Pastel “Ghibli-like” (ludique) */
+    [data-theme="pastel"]{
+      --bg:#f7f3ea; --fg:#1f2937; --muted: rgba(31,41,55,.62);
+      --glass: rgba(255,255,255,.70); --glass2: rgba(255,255,255,.42);
+      --lineA: rgba(31,41,55,.14);
+      --shadow: 0 20px 70px rgba(0,0,0,.12);
+      --blur: 18px;
+
+      --accent: rgba(120, 190, 170, .20);     /* vert d’eau */
+      --accent2: rgba(120, 190, 170, .38);
+      --barAccent: rgba(244, 173, 104, .22);  /* orange pastel */
+      --barAccent2: rgba(244, 173, 104, .44);
     }
 
     *{ box-sizing:border-box; }
@@ -76,12 +96,16 @@
       color: var(--fg);
       overflow-x:hidden;
     }
-
-    /* ✅ FIX: selector correct */
-    body[data-theme="dark"]{
+    [data-theme="dark"] body{
       background:
-        radial-gradient(1200px 700px at 25% 15%, rgba(0,255,140,.055), transparent 60%),
-        radial-gradient(1100px 720px at 80% 30%, rgba(0,140,255,.045), transparent 60%),
+        radial-gradient(1200px 700px at 25% 15%, rgba(131,26,36,.10), transparent 60%),
+        radial-gradient(1100px 720px at 80% 30%, rgba(198,126,40,.08), transparent 60%),
+        var(--bg);
+    }
+    [data-theme="pastel"] body{
+      background:
+        radial-gradient(1200px 700px at 25% 15%, rgba(120,190,170,.20), transparent 60%),
+        radial-gradient(1100px 720px at 80% 30%, rgba(244,173,104,.18), transparent 60%),
         var(--bg);
     }
 
@@ -90,12 +114,14 @@
       display:flex;
       flex-direction:column;
       gap: clamp(10px, 1.6vh, 14px);
-      padding: var(--vpad) var(--hpad) calc(var(--vpad) + 10px);
+      padding: calc(var(--vpad) + var(--topbarH) + 14px) var(--hpad) calc(var(--vpad) + 10px);
       align-items:center;
     }
 
+    /* TOPBAR VRAIMENT FIXE */
     .topbar{
       width: var(--appW);
+      height: var(--topbarH);
       display:flex;
       justify-content:space-between;
       align-items:center;
@@ -103,13 +129,16 @@
       padding: 10px 10px;
       border:1px solid var(--line);
       border-radius: var(--radius);
-      background: var(--glass);
+      background: linear-gradient(180deg, var(--glass), rgba(255,255,255,.10));
       backdrop-filter: blur(var(--blur));
       box-shadow: var(--shadow);
-      position: sticky;
-      top: 8px;
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 10px;
       z-index: 70;
     }
+
     .topbar .left, .topbar .right{
       display:flex;
       align-items:center;
@@ -132,9 +161,11 @@
       user-select:none;
       white-space:nowrap;
       transition: transform 140ms ease, background 120ms ease, opacity 120ms ease;
+      font-family: var(--mono);
     }
     .btn:hover{ background: rgba(0,0,0,.04); }
-    [data-theme="dark"] .btn:hover{ background: rgba(255,255,255,.05); }
+    [data-theme="dark"] .btn:hover{ background: rgba(255,255,255,.06); }
+    [data-theme="pastel"] .btn:hover{ background: rgba(0,0,0,.03); }
     .btn:active{ transform: translateY(1px); }
 
     .btn.icon{
@@ -143,7 +174,6 @@
       display:grid;
       place-items:center;
       padding:0;
-      font-family: var(--mono);
       letter-spacing:0;
       text-transform:none;
       font-size: calc(15px * var(--uiScale));
@@ -151,18 +181,10 @@
 
     .btn.primary{
       background:
-        linear-gradient(180deg,
-          rgba(255,255,255, calc(.30 * var(--btnFill))) ,
-          rgba(0,0,0,0)
-        );
+        radial-gradient(700px 200px at 20% 40%, var(--accent2), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255, calc(.25 * var(--btnFill))), rgba(0,0,0,0));
       box-shadow: inset 0 0 0 1px var(--line);
-    }
-    [data-theme="dark"] .btn.primary{
-      background:
-        linear-gradient(180deg,
-          rgba(255,255,255, calc(.12 * var(--btnFill))) ,
-          rgba(0,0,0,0)
-        );
+      font-weight: 900;
     }
 
     .pill{
@@ -176,8 +198,15 @@
       white-space:nowrap;
       user-select:none;
     }
-    [data-theme="dark"] .pill{ background: rgba(255,255,255,.04); }
+    [data-theme="dark"] .pill{ background: rgba(255,255,255,.05); }
     .pill.hidden{ display:none; }
+    .pill.hot{
+      color: var(--fg);
+      background:
+        radial-gradient(550px 180px at 20% 40%, var(--barAccent2), transparent 62%),
+        rgba(0,0,0,.02);
+      font-weight: 900;
+    }
 
     .hero{
       width: var(--appW);
@@ -188,21 +217,25 @@
       padding: 2px 8px 0;
     }
     .title{
+      font-family: var(--display);
       font-size: calc(clamp(54px, 5.8vw, 92px) * var(--titleScale));
-      letter-spacing: .22em;
+      letter-spacing: .18em;
       text-transform:uppercase;
       margin: 6px 0 0;
-      font-weight: 820;
+      font-weight: 900;
       line-height:1.02;
       text-align:center;
+      text-shadow: 0 10px 30px rgba(0,0,0,.10);
     }
     .tag{
-      font-size: 13px;
+      font-family: var(--hand);
+      font-size: clamp(14px, 1.4vw, 18px);
       color: var(--muted);
       text-align:center;
       max-width: 78ch;
       padding: 0 8px;
       min-height: 18px;
+      letter-spacing: .02em;
     }
 
     .main{
@@ -215,28 +248,26 @@
       justify-content:center;
     }
 
+    /* GROS BLOC PROGRESSION */
     .barWrap{
       width:100%;
+      min-height: var(--barBlockMinH);
       display:flex;
       flex-direction:column;
-      gap:10px;
+      gap: 14px;
       padding: 18px 16px 18px;
       border:1px solid var(--line);
       border-radius: var(--radius);
-      background: var(--glass);
+      background:
+        radial-gradient(900px 260px at 25% 15%, var(--glass2), transparent 60%),
+        linear-gradient(180deg, var(--glass), rgba(255,255,255,.08));
       backdrop-filter: blur(var(--blur));
       box-shadow: var(--shadow);
     }
-    .barRow{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-    }
+    .barRow{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
     .barLabel{
       font-size: 12px;
-      letter-spacing:.08em;
+      letter-spacing:.10em;
       text-transform:uppercase;
       color: var(--muted);
       font-family: var(--mono);
@@ -246,28 +277,32 @@
       height: var(--barH);
       border:1px solid var(--line);
       background: rgba(0,0,0,.03);
-      border-radius: var(--radius2);
+      border-radius: calc(var(--radius2) + 2px);
       position:relative;
       overflow:hidden;
     }
-    [data-theme="dark"] .bar{ background: rgba(255,255,255,.04); }
+    [data-theme="dark"] .bar{ background: rgba(255,255,255,.06); }
     .barFill{
       position:absolute; inset:0;
       width:100%;
       background:
-        radial-gradient(800px 140px at 20% 50%, var(--barAccent2), transparent 55%),
-        linear-gradient(90deg, var(--barAccent), transparent 70%);
+        radial-gradient(900px 220px at 25% 50%, var(--barAccent2), transparent 58%),
+        linear-gradient(90deg, var(--barAccent), transparent 72%);
       transition: width 260ms ease;
     }
     .barPct{
       position:absolute; inset:0;
       display:grid;
       place-items:center;
-      font-family: var(--mono);
-      font-size: 12px;
+      font-family: var(--display);
+      font-size: var(--barText);
       color: var(--fg);
-      opacity:.92;
+      opacity:.95;
       pointer-events:none;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-weight: 900;
+      text-shadow: 0 10px 24px rgba(0,0,0,.12);
     }
 
     .current{
@@ -275,17 +310,21 @@
       padding: 16px 16px 14px;
       border:1px solid var(--line);
       border-radius: var(--radius);
-      background: var(--glass);
+      background:
+        radial-gradient(700px 240px at 20% 0%, var(--glass2), transparent 70%),
+        linear-gradient(180deg, var(--glass), rgba(255,255,255,.08));
       backdrop-filter: blur(var(--blur));
       box-shadow: var(--shadow);
       display:flex;
       flex-direction:column;
       gap: 14px;
     }
+
     .taskName{
-      font-size: calc(clamp(38px, 4.8vw, 76px) * var(--taskScale));
-      font-weight: 860;
-      letter-spacing:.01em;
+      font-family: var(--display);
+      font-size: calc(clamp(30px, 4.2vw, 62px) * var(--taskScale));
+      font-weight: 900;
+      letter-spacing:.02em;
       text-align:center;
       line-height:1.06;
       padding: 4px 6px;
@@ -302,11 +341,11 @@
     .chip{
       width: var(--chipH);
       height: var(--chipH);
-      border-radius: 2px;
+      border-radius: 3px;
       border:1px solid var(--line);
       background: rgba(0,0,0,.03);
     }
-    [data-theme="dark"] .chip{ background: rgba(255,255,255,.04); }
+    [data-theme="dark"] .chip{ background: rgba(255,255,255,.05); }
     .chip.on{ background: var(--barAccent2); }
 
     .actions{
@@ -342,20 +381,17 @@
       text-transform:uppercase;
       color: var(--fg);
       opacity:.92;
-      font-weight:820;
+      font-weight: 900;
       font-family: var(--mono);
     }
     .rouletteRing{
-      position:absolute;
-      inset:10px;
+      position:absolute; inset:10px;
       border-radius:999px;
       border:1px dashed var(--line);
       opacity:.85;
     }
     .rouletteNeedle{
-      position:absolute;
-      top: 10px;
-      left: 50%;
+      position:absolute; top: 10px; left: 50%;
       width: 0; height: 0;
       border-left: 8px solid transparent;
       border-right: 8px solid transparent;
@@ -368,11 +404,13 @@
     @keyframes spin{ 0%{ transform: rotate(0deg); } 100%{ transform: rotate(1080deg); } }
 
     .bomb{
-      min-width: clamp(180px, 26vw, 300px);
+      min-width: clamp(190px, 28vw, 320px);
       padding: 14px 16px;
       border-radius: var(--radius2);
       border:1px solid var(--line);
-      background: linear-gradient(180deg, var(--glass2), transparent);
+      background:
+        radial-gradient(700px 220px at 25% 40%, var(--barAccent2), transparent 62%),
+        linear-gradient(180deg, var(--glass2), transparent);
       cursor:pointer;
       text-transform:uppercase;
       letter-spacing:.10em;
@@ -384,9 +422,9 @@
       user-select:none;
       box-shadow: var(--shadow);
       transition: transform 140ms ease;
+      font-family: var(--mono);
+      font-weight: 900;
     }
-    .bomb:hover{ background: rgba(0,0,0,.03); }
-    [data-theme="dark"] .bomb:hover{ background: rgba(255,255,255,.04); }
     .bomb:active{ transform: translateY(1px) scale(.99); }
     .bomb .em{ font-family: var(--mono); font-size: 16px; opacity:.92; }
     .bomb .label{ display:flex; flex-direction:column; line-height:1.10; align-items:center; }
@@ -399,13 +437,7 @@
       font-family: var(--mono);
     }
 
-    .miniRow{
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      align-items:center;
-      flex-wrap:wrap;
-    }
+    .miniRow{ display:flex; gap:10px; justify-content:center; align-items:center; flex-wrap:wrap; }
     .miniIcon{
       width:56px; height:56px;
       border-radius: var(--radius2);
@@ -422,22 +454,31 @@
       letter-spacing:.06em;
     }
     .miniIcon:hover{ background: rgba(0,0,0,.03); }
-    [data-theme="dark"] .miniIcon:hover{ background: rgba(255,255,255,.04); }
+    [data-theme="dark"] .miniIcon:hover{ background: rgba(255,255,255,.05); }
     .miniIcon:active{ transform: translateY(1px) scale(.99); }
     .miniLabel{ width:auto; padding: 0 12px; font-size: 12px; text-transform:uppercase; }
 
-    .belowList{
-      width:100%;
+    /* SETS SUR L'INTERFACE (alignés) */
+    .setsDock{
+      width: 100%;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 860px){
+      .setsDock{ grid-template-columns: 1fr; }
+    }
+    .setCard{
       border:1px solid var(--line);
       border-radius: var(--radius);
-      background: var(--glass);
-      backdrop-filter: blur(var(--blur));
+      background:
+        radial-gradient(700px 220px at 20% 10%, var(--glass2), transparent 60%),
+        linear-gradient(180deg, var(--glass), rgba(255,255,255,.06));
       box-shadow: var(--shadow);
       padding: 10px;
-      display:none;
+      backdrop-filter: blur(var(--blur));
     }
-    .belowList.show{ display:block; }
-    .belowHead{
+    .setHead{
       display:flex;
       justify-content:space-between;
       align-items:center;
@@ -446,53 +487,97 @@
       border-bottom:1px solid var(--line);
       margin-bottom:8px;
     }
-    .belowHead .h{
-      font-size:12px; letter-spacing:.10em; text-transform:uppercase; color:var(--muted);
-      font-family: var(--mono);
-    }
-    .taskRow{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding: 8px 6px;
-      border-bottom:1px solid var(--line);
-    }
-    .taskRow:last-child{ border-bottom:none; }
-    .taskRow .t{
-      flex:1;
-      min-width:0;
-      font-size: 13px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      color: var(--fg);
-    }
-    .taskRow .meta{
-      font-size: 11px;
-      color: var(--muted);
-      font-family: var(--mono);
-      white-space:nowrap;
-    }
-    .taskRow .tools{
-      display:flex;
-      gap:6px;
-      align-items:center;
-    }
-    .toolBtn{
-      width:36px; height:32px;
-      border-radius: var(--radius2);
-      border:1px solid var(--line);
-      display:grid;
-      place-items:center;
-      cursor:pointer;
-      background: transparent;
+    .setTitle{
       font-family: var(--mono);
       font-size: 12px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color: var(--muted);
+      font-weight: 900;
+    }
+    .setMeta{
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      white-space:nowrap;
+    }
+    .setGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .setUnit{
+      border:1px solid var(--line);
+      border-radius: var(--radius2);
+      padding: 8px;
+      background: rgba(0,0,0,.02);
+    }
+    [data-theme="dark"] .setUnit{ background: rgba(255,255,255,.04); }
+    .setUnitTitle{
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      margin-bottom:8px;
+      font-weight: 900;
+    }
+    .setBtns{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .setBtn{
+      border:1px solid var(--line);
+      border-radius: var(--radius2);
+      padding: 8px 8px;
+      background: transparent;
+      font-family: var(--mono);
+      font-size: 11px;
+      cursor:pointer;
+      letter-spacing:.06em;
+      text-transform:uppercase;
       user-select:none;
     }
-    .toolBtn:hover{ background: rgba(0,0,0,.03); }
-    [data-theme="dark"] .toolBtn:hover{ background: rgba(255,255,255,.04); }
+    .setBtn.on{
+      background:
+        radial-gradient(550px 180px at 20% 50%, var(--accent2), transparent 62%),
+        rgba(0,0,0,.02);
+      color: var(--fg);
+      font-weight: 900;
+    }
+
+    /* Emotions mini-résumé (plus joli) */
+    .emoDock{
+      width:100%;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:center;
+    }
+    .emoChip{
+      border:1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      background: rgba(0,0,0,.02);
+      color: var(--fg);
+      display:flex;
+      gap:8px;
+      align-items:center;
+      user-select:none;
+    }
+    [data-theme="dark"] .emoChip{ background: rgba(255,255,255,.04); }
+    .emoDot{
+      width:10px; height:10px;
+      border-radius:999px;
+      background: var(--barAccent2);
+      border:1px solid var(--line);
+    }
 
     .small{ font-size:12px; color: var(--muted); font-family: var(--mono); }
 
@@ -500,63 +585,58 @@
     .focusOn .topbar .right{ display:none !important; }
     .focusOn .topbar{ justify-content:center; }
     .focusOn .topbar .left{ width:100%; justify-content:center; }
-    .focusOn .tag{ opacity:.95; }
 
-    .drawerBack{
+    .drawerBack, .rightBack, .modalBack{
       position:fixed; inset:0;
       background: rgba(0,0,0,.22);
       backdrop-filter: blur(10px);
       display:none;
       z-index:80;
     }
-    .drawer{
-      position:fixed;
-      top:0; left:0;
-      width: min(var(--drawerW), 94vw);
+    .drawer, .rightPanel{
+      position:fixed; top:0;
       height:100%;
       background: var(--glass);
-      border-right:1px solid var(--line);
       backdrop-filter: blur(var(--blur));
       box-shadow: var(--shadow);
-      transform: translateX(-105%);
       transition: transform 220ms ease;
       z-index:90;
       display:flex;
       flex-direction:column;
     }
+    .drawer{
+      left:0;
+      width: min(var(--drawerW), 94vw);
+      border-right:1px solid var(--line);
+      transform: translateX(-105%);
+    }
+    .rightPanel{
+      right:0;
+      width: min(var(--rightW), 94vw);
+      border-left:1px solid var(--line);
+      transform: translateX(105%);
+      z-index:85;
+    }
     .drawer.open{ transform: translateX(0); }
-    .drawerBack.show{ display:block; }
+    .rightPanel.open{ transform: translateX(0); }
+    .drawerBack.show, .rightBack.show{ display:block; }
 
-    .drawerTop{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
+    .drawerTop, .rightTop{
+      display:flex; justify-content:space-between; align-items:center;
       padding: 10px 12px;
       border-bottom:1px solid var(--line);
       gap:10px;
     }
-    .drawerTitle{
+    .drawerTitle, .rightTitle{
       font-size: 12px;
       letter-spacing:.14em;
       text-transform:uppercase;
       color: var(--muted);
       font-family: var(--mono);
+      font-weight: 900;
     }
-    .drawerResizer{
-      position:absolute;
-      top:0; right:-6px;
-      width:12px;
-      height:100%;
-      cursor: ew-resize;
-      opacity:0;
-    }
-    .drawer:hover .drawerResizer{ opacity:1; }
-
-    .tabs{
-      display:flex;
-      gap:8px;
-      padding: 10px 12px 6px;
-      flex-wrap:wrap;
+    .tabs, .rightTabs{
+      display:flex; gap:8px; padding: 10px 12px 6px; flex-wrap:wrap;
     }
     .tab{
       padding: 7px 9px;
@@ -569,13 +649,16 @@
       color: var(--muted);
       user-select:none;
       font-family: var(--mono);
+      font-weight: 900;
     }
     .tab.active{
       color: var(--fg);
-      background: linear-gradient(180deg, var(--glass2), transparent);
+      background:
+        radial-gradient(600px 180px at 20% 50%, var(--accent2), transparent 62%),
+        linear-gradient(180deg, var(--glass2), transparent);
       box-shadow: inset 0 0 0 1px var(--line);
     }
-    .drawerBody{ padding: 10px 12px 18px; overflow:auto; }
+    .drawerBody, .rightBody{ padding: 10px 12px 18px; overflow:auto; }
 
     .section{
       border:1px solid var(--line);
@@ -583,7 +666,7 @@
       padding: 10px;
       background: rgba(0,0,0,.02);
     }
-    [data-theme="dark"] .section{ background: rgba(255,255,255,.03); }
+    [data-theme="dark"] .section{ background: rgba(255,255,255,.04); }
     .section h3{
       margin: 0 0 8px;
       font-size: 11px;
@@ -591,7 +674,7 @@
       text-transform:uppercase;
       color: var(--muted);
       font-family: var(--mono);
-      font-weight:820;
+      font-weight: 900;
     }
 
     textarea, input, select{
@@ -607,18 +690,10 @@
     }
     textarea{ min-height: 120px; resize:vertical; }
     .row{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-    .row > *{ flex:1; min-width: 120px; }
+    .row > *{ flex:1; min-width: 140px; }
 
-    .modalBack{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.25);
-      backdrop-filter: blur(14px);
-      display:none;
-      z-index:110;
-    }
     .modal{
-      position:fixed;
-      inset:0;
+      position:fixed; inset:0;
       display:none;
       z-index:120;
       padding: 18px;
@@ -634,7 +709,6 @@
       box-shadow: var(--shadow);
       padding: 12px;
       position:relative;
-      overflow:hidden;
       max-height: 86vh;
       overflow:auto;
     }
@@ -650,65 +724,7 @@
     .modalHead .mh{
       font-size: 12px; letter-spacing:.14em; text-transform:uppercase; color: var(--muted);
       font-family: var(--mono);
-    }
-
-    .celeCard{
-      width:min(1040px, 97vw);
-      min-height: min(74vh, 780px);
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      padding: 22px 16px;
-    }
-    .celeHalo{
-      position:absolute;
-      inset:-40%;
-      background:
-        radial-gradient(circle at 30% 30%, var(--barAccent2), transparent 55%),
-        radial-gradient(circle at 70% 40%, var(--barAccent), transparent 55%),
-        radial-gradient(circle at 50% 70%, rgba(255,255,255,.10), transparent 55%);
-      opacity:.58;
-      filter: blur(2px);
-      transform: rotate(8deg);
-      pointer-events:none;
-      animation: halo 2.2s ease-in-out infinite alternate;
-    }
-    @keyframes halo{
-      0%{ transform: rotate(6deg) scale(1.02); opacity:.50; }
-      100%{ transform: rotate(10deg) scale(1.08); opacity:.72; }
-    }
-    .celeTitle{
-      font-size: clamp(30px, 4.6vw, 62px);
       font-weight: 900;
-      letter-spacing:.16em;
-      text-transform:uppercase;
-      text-align:center;
-      margin: 10px 0 10px;
-    }
-    .celeMsg{
-      font-size: clamp(14px, 1.9vw, 24px);
-      text-align:center;
-      line-height:1.55;
-      margin: 0 auto 12px;
-      max-width: 78ch;
-      opacity:.95;
-    }
-    .celeSub{
-      font-size: 12px;
-      color: var(--muted);
-      text-align:center;
-      margin: 0;
-      font-family: var(--mono);
-      letter-spacing:.06em;
-    }
-    .celeHint{
-      margin-top: 14px;
-      text-align:center;
-      color: var(--muted);
-      font-size: 11px;
-      letter-spacing:.10em;
-      text-transform:uppercase;
-      font-family: var(--mono);
     }
 
     #confetti{
@@ -716,107 +732,6 @@
       inset:0;
       pointer-events:none;
       z-index:140;
-    }
-
-    .rightBack{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.12);
-      backdrop-filter: blur(10px);
-      display:none;
-      z-index:75;
-    }
-    .rightPanel{
-      position:fixed;
-      top:0; right:0;
-      width: min(var(--rightW), 94vw);
-      height:100%;
-      background: var(--glass);
-      border-left:1px solid var(--line);
-      backdrop-filter: blur(var(--blur));
-      box-shadow: var(--shadow);
-      transform: translateX(105%);
-      transition: transform 220ms ease;
-      z-index:85;
-      display:flex;
-      flex-direction:column;
-    }
-    .rightPanel.open{ transform: translateX(0); }
-    .rightBack.show{ display:block; }
-    .rightTop{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding: 10px 12px;
-      border-bottom:1px solid var(--line);
-      gap:10px;
-    }
-    .rightTitle{
-      font-size: 12px;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      color: var(--muted);
-      font-family: var(--mono);
-    }
-    .rightResizer{
-      position:absolute;
-      top:0; left:-6px;
-      width:12px;
-      height:100%;
-      cursor: ew-resize;
-      opacity:0;
-    }
-    .rightPanel:hover .rightResizer{ opacity:1; }
-    .rightTabs{
-      display:flex;
-      gap:8px;
-      padding: 10px 12px 6px;
-      flex-wrap:wrap;
-      justify-content:flex-start;
-    }
-    .rightBody{ padding: 10px 12px 18px; overflow:auto; }
-
-    .spark{
-      width:100%;
-      height: 34px;
-      border:1px solid var(--line);
-      border-radius: var(--radius2);
-      background: rgba(0,0,0,.02);
-      position:relative;
-      overflow:hidden;
-    }
-    [data-theme="dark"] .spark{ background: rgba(255,255,255,.03); }
-    .sparkFill{
-      position:absolute; inset:0;
-      width:50%;
-      background:
-        radial-gradient(600px 80px at 20% 50%, var(--barAccent2), transparent 55%),
-        linear-gradient(90deg, var(--barAccent), transparent);
-      opacity:.95;
-    }
-
-    .gridCal{
-      display:grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap:6px;
-    }
-    .calCell{
-      height:28px;
-      border-radius: var(--radius2);
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.02);
-      position:relative;
-      overflow:hidden;
-      user-select:none;
-    }
-    [data-theme="dark"] .calCell{ background: rgba(255,255,255,.03); }
-    .calInk{ position:absolute; inset:0; background: var(--barAccent); opacity:.10; }
-    .calInk2{ position:absolute; inset:0; background: var(--barAccent2); opacity:.00; mix-blend-mode: multiply; }
-    .calTxt{
-      position:absolute; inset:0;
-      display:grid; place-items:center;
-      font-family: var(--mono);
-      font-size:10px;
-      color: var(--muted);
     }
 
     [data-borders="off"]{ --line: rgba(0,0,0,0); }
@@ -835,10 +750,8 @@
 <body data-theme="light" data-borders="on" data-buttons="ghost">
   <canvas id="confetti"></canvas>
 
-  <!-- LEFT DRAWER -->
   <div class="drawerBack" id="drawerBack"></div>
   <div class="drawer" id="drawer">
-    <div class="drawerResizer" id="drawerResizer" title="Agrandir/réduire"></div>
     <div class="drawerTop">
       <div class="drawerTitle">MENU</div>
       <button class="btn" id="drawerClose">FERMER</button>
@@ -847,30 +760,27 @@
     <div class="drawerBody" id="drawerBody"></div>
   </div>
 
-  <!-- RIGHT PANEL -->
   <div class="rightBack" id="rightBack"></div>
   <div class="rightPanel" id="rightPanel">
-    <div class="rightResizer" id="rightResizer" title="Agrandir/réduire"></div>
     <div class="rightTop">
-      <div class="rightTitle">PANNEAU DROIT</div>
+      <div class="rightTitle" id="rightTitle">PANNEAU DROIT</div>
       <button class="btn" id="rightClose">FERMER</button>
     </div>
     <div class="rightTabs" id="rightTabs"></div>
     <div class="rightBody" id="rightBody"></div>
   </div>
 
-  <!-- MODALS -->
   <div class="modalBack" id="modalBack"></div>
 
   <div class="modal" id="notesModal">
-    <div class="modalCard">
+    <div class="modalCard" onclick="event.stopPropagation()">
       <div class="modalHead">
         <div class="mh">NOTES</div>
-        <div class="small">Clique hors carte pour fermer</div>
+        <div class="small">Clique hors de la carte pour fermer</div>
       </div>
       <div class="section">
         <h3>Ajouter une note</h3>
-        <textarea id="noteInput" placeholder="Écris ici. Sortie de RAM."></textarea>
+        <textarea id="noteInput" placeholder="Écris ici. Une rune dans le grimoire."></textarea>
         <div class="row" style="margin-top:8px">
           <button class="btn primary" id="noteAdd">AJOUTER</button>
           <button class="btn" id="noteClear">VIDER</button>
@@ -884,65 +794,30 @@
     </div>
   </div>
 
-  <div class="modal" id="celeModal">
-    <div class="modalCard celeCard">
-      <div class="celeHalo" aria-hidden="true"></div>
-      <div class="celeTitle" id="celeTitle"></div>
-      <div class="celeMsg" id="celeMsg"></div>
-      <div class="celeSub" id="celeSub"></div>
-      <div class="celeHint">Clique hors carte pour fermer</div>
-    </div>
-  </div>
-
-  <div class="modal" id="tipsModal">
-    <div class="modalCard">
+  <div class="modal" id="pomodoroModal">
+    <div class="modalCard" onclick="event.stopPropagation()">
       <div class="modalHead">
-        <div class="mh">CONSEIL FLOW</div>
-        <div class="small">Clique hors carte pour fermer</div>
+        <div class="mh">POMODORO</div>
+        <div class="small">Clique hors de la carte pour fermer</div>
       </div>
-      <div class="celeTitle" style="font-size:clamp(18px,2.4vw,28px); letter-spacing:.08em" id="tipsTitle"></div>
-      <div class="celeMsg" style="font-size:clamp(13px,1.6vw,18px)" id="tipsMsg"></div>
-      <div class="celeSub" id="tipsSub"></div>
-    </div>
-  </div>
-
-  <div class="modal" id="emoNudgeModal">
-    <div class="modalCard">
-      <div class="modalHead">
-        <div class="mh">MICRO-RÉGULATION</div>
-        <div class="small">Clique hors carte pour fermer</div>
+      <div class="section">
+        <h3>Durée</h3>
+        <div class="row">
+          <input id="pomoMin" type="number" min="5" max="90" step="1" />
+          <button class="btn primary" id="pomoStart">DÉMARRER</button>
+          <button class="btn" id="pomoStop">STOP</button>
+        </div>
+        <div style="height:10px"></div>
+        <div class="small" id="pomoInfo">—</div>
       </div>
-      <div class="celeTitle" style="font-size:clamp(18px,2.4vw,28px); letter-spacing:.10em" id="emoNudgeTitle"></div>
-      <div class="celeMsg" style="font-size:clamp(13px,1.6vw,18px)" id="emoNudgeMsg"></div>
-      <div class="celeSub" id="emoNudgeSub"></div>
-    </div>
-  </div>
-
-  <div class="modal" id="biasModal">
-    <div class="modalCard">
-      <div class="modalHead">
-        <div class="mh">BIAIS / DISTORSIONS</div>
-        <div class="small">Clique hors carte pour fermer</div>
-      </div>
-      <div id="biasList" class="small"></div>
-    </div>
-  </div>
-
-  <div class="modal" id="setEditModal">
-    <div class="modalCard">
-      <div class="modalHead">
-        <div class="mh">ÉDITION</div>
-        <div class="small">Clique hors carte pour fermer</div>
-      </div>
-      <div id="setEditBody"></div>
     </div>
   </div>
 
   <div class="modal" id="exportModal">
-    <div class="modalCard">
+    <div class="modalCard" onclick="event.stopPropagation()">
       <div class="modalHead">
         <div class="mh">EXPORT</div>
-        <div class="small">Clique hors carte pour fermer</div>
+        <div class="small">Clique hors de la carte pour fermer</div>
       </div>
       <div class="section">
         <h3>Texte / JSON / CSV</h3>
@@ -953,55 +828,56 @@
           <button class="btn" id="expCopy">COPIER</button>
         </div>
         <textarea id="expOut" style="min-height:260px"></textarea>
-        <div class="small" style="margin-top:8px">Ne met pas les notes dans le rapport.</div>
       </div>
     </div>
   </div>
 
   <div class="wrap" id="app">
-    <!-- TOPBAR -->
     <div class="topbar">
       <div class="left">
         <button class="btn icon keepFocus" id="btnMenu" title="Menu gauche">≡</button>
 
-        <button class="btn keepFocus" id="btnTheme" title="Thème"><span id="themeLabel">THÈME CLAIR</span></button>
+        <!-- Thème : light → dark → pastel -->
+        <button class="btn keepFocus" id="btnTheme" title="Thème"><span id="themeLabel">MODE CLAIR</span></button>
 
         <button class="btn keepFocus" id="btnCounters" title="Afficher/masquer compteurs">COMPTEURS</button>
-        <span class="pill hidden" id="pillTasks">0/0 tâches</span>
-        <span class="pill hidden" id="pillEto">0/0 étorions</span>
-        <span class="pill hidden" id="pillDone">0 faites</span>
-        <span class="pill hidden" id="pillTimer">00:00</span>
+        <span class="pill hidden" id="pillTasks">0/0</span>
+        <span class="pill hidden" id="pillEto">0/0</span>
+        <span class="pill hidden" id="pillDone">0</span>
+
+        <!-- Timer + Pomodoro visibles sur la topbar -->
+        <span class="pill hot" id="pillTimer">00:00</span>
+        <span class="pill" id="pillPomo">POMO —</span>
+        <button class="btn keepFocus" id="btnPomo" title="Pomodoro">POMO</button>
 
         <button class="btn keepFocus" id="btnListToggle" title="Afficher/masquer la liste sur l'écran">LISTE</button>
-        <button class="btn keepFocus" id="btnFocus" title="Mode focus (flow)">FOCUS</button>
+        <button class="btn keepFocus" id="btnFocus" title="Mode focus">FOCUS</button>
       </div>
-
       <div class="right">
         <button class="btn icon keepFocus" id="btnRight" title="Panneau droit">▦</button>
       </div>
     </div>
 
-    <!-- HERO -->
     <div class="hero">
       <div class="title" id="appTitle">ELIMINATOR</div>
       <div class="tag" id="tagline"></div>
     </div>
 
-    <!-- MAIN -->
     <div class="main">
-      <!-- PROGRESS -->
       <div class="barWrap">
         <div class="barRow">
-          <div class="barLabel">progression tâches</div>
+          <div class="barLabel">progression (tu réduis le chaos)</div>
           <div class="barLabel" id="barInfo">—</div>
         </div>
         <div class="bar" title="La barre commence à 100% et diminue">
           <div class="barFill" id="taskBarFill" style="width:100%"></div>
           <div class="barPct" id="taskBarPct">100%</div>
         </div>
+
+        <!-- Mini résumé émotions -->
+        <div class="emoDock" id="emoDock"></div>
       </div>
 
-      <!-- CURRENT TASK -->
       <div class="current">
         <div class="taskName" id="taskName">Aucune tâche</div>
         <div class="chips" id="chips"></div>
@@ -1014,7 +890,7 @@
           </div>
 
           <div class="bomb" id="btnEtorion" title="Dégommer un étorion">
-            <div class="em">💣</div>
+            <div class="em">⚔️</div>
             <div class="label">
               <span>DÉGOMMER</span>
               <small>1 ÉTORION</small>
@@ -1023,46 +899,39 @@
         </div>
 
         <div class="miniRow">
-          <div class="miniIcon" id="btnUndo" title="Annuler (undo)">↶</div>
+          <div class="miniIcon" id="btnUndo" title="Annuler">↶</div>
           <div class="miniIcon miniLabel" id="btnNotes" title="Notes">NOTES</div>
-          <div class="miniIcon" id="btnDoneTask" title="Tâche dégommée">✓</div>
-          <div class="miniIcon" id="btnEditTask" title="Éditer">≋</div>
-          <div class="miniIcon" id="btnPause" title="Pause compteur / Pomodoro">⏸</div>
+          <div class="miniIcon" id="btnDoneTask" title="Tâche terminée">✓</div>
+          <div class="miniIcon" id="btnPause" title="Pause timer">⏸</div>
         </div>
 
-        <div class="belowList" id="belowList">
-          <div class="belowHead">
-            <div class="h">LISTE EN COURS</div>
-            <button class="btn" id="btnHideBelow">MASQUER</button>
-          </div>
-          <div id="belowTasks"></div>
-        </div>
+        <!-- Sets visibles directement + alignés -->
+        <div class="setsDock" id="setsDock"></div>
 
         <div class="small" id="hintLine" style="text-align:center">
-          Une cible. Une action. Zéro tribunal intérieur.
+          Aujourd’hui tu es un paladin du rangement mental. Un paladin un peu fatigué, mais paladin quand même.
         </div>
       </div>
+
+      <div class="section" id="belowList" style="width:100%; display:none">
+        <div class="row" style="margin-bottom:8px">
+          <div class="small" style="flex:2">LISTE EN COURS</div>
+          <button class="btn" id="btnHideBelow">MASQUER</button>
+        </div>
+        <div id="belowTasks"></div>
+      </div>
+
     </div>
   </div>
 
   <script>
-/* =========================================================
-   ELIMINATOR — unified (stabilisé)
-   ✅ Fix dark background selector
-   ✅ Fix modals closing: only backdrop click closes, card click doesn't
-   ✅ structuredClone fallback
-   ✅ Editors safe: no innerHTML with user text
-   ========================================================= */
+"use strict";
 
+/* ================= Utils ================= */
 const $ = (id)=>document.getElementById(id);
 const clamp = (n,a,b)=>Math.max(a, Math.min(b,n));
 const uid = ()=>Math.random().toString(36).slice(2,10)+"_"+Date.now().toString(36);
 const nowISO = ()=>new Date().toISOString();
-
-if(typeof globalThis.structuredClone!=="function"){
-  globalThis.structuredClone = (o)=>JSON.parse(JSON.stringify(o));
-}
-
 function dayKey(d=new Date()){
   const y=d.getFullYear();
   const m=String(d.getMonth()+1).padStart(2,"0");
@@ -1070,184 +939,158 @@ function dayKey(d=new Date()){
   return `${y}-${m}-${da}`;
 }
 function fmtMMSS(ms){
-  const s = Math.floor(ms/1000);
-  const mm = String(Math.floor(s/60)).padStart(2,"0");
-  const ss = String(s%60).padStart(2,"0");
+  const s=Math.max(0, Math.floor(ms/1000));
+  const mm=String(Math.floor(s/60)).padStart(2,"0");
+  const ss=String(s%60).padStart(2,"0");
   return `${mm}:${ss}`;
 }
-function plural(n, one, many){ return (n===1)? one : many; }
-function rand(n){ return Math.floor(Math.random()*n); }
 function escapeHTML(s){
   return (s||"").replace(/[&<>"']/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[c]));
 }
+function clearEl(el){ while(el.firstChild) el.removeChild(el.firstChild); }
+function structuredCloneSafe(o){
+  if(typeof structuredClone==="function") return structuredClone(o);
+  return JSON.parse(JSON.stringify(o));
+}
 
-/* -------------------------
-   Storage
-------------------------- */
-const LS_KEY = "eliminator_unified_stable_singlefile";
+/* ================= Storage ================= */
+const LS_KEY = "eliminator_ghibli_plus_v1";
 
-/* ===== (le reste du JS arrive en PARTIE 2) ===== */
-const ACCENTS = {
-  cyan:   { a:"rgba(0,140,255,.16)", a2:"rgba(0,140,255,.32)" },
-  violet: { a:"rgba(140,80,255,.16)", a2:"rgba(140,80,255,.32)" },
-  lime:   { a:"rgba(0,255,140,.14)", a2:"rgba(0,255,140,.30)" },
-  amber:  { a:"rgba(255,180,0,.14)", a2:"rgba(255,180,0,.28)" },
-  steel:  { a:"rgba(180,200,255,.12)", a2:"rgba(180,200,255,.24)" },
-  rose:   { a:"rgba(255,120,180,.12)", a2:"rgba(255,120,180,.24)" },
-  ice:    { a:"rgba(120,220,255,.12)", a2:"rgba(120,220,255,.24)" }
-};
-const FONT_FAMILIES = {
-  system: 'ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial',
-  elegant: '"SF Pro Display", -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial',
-  neutral: 'system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial',
-  serif: 'ui-serif, "New York", "Iowan Old Style", Georgia, serif'
-};
-
+/* ================= Default state ================= */
 const defaultState = {
-  theme: "light",
-  focus: false,
+  theme:"light",                 // light | dark | pastel
+  focus:false,
+  showBelowList:false,
+  showCounters:false,
+  countersAutoHideSec:10,
 
-  showBelowList: false,
-  showCounters: false,
-  countersAutoHideSec: 10,
-
-  drawerW: 460,
-  rightW: 520,
-  activeTab: "inbox",
-  rightTab: "sets",
-
-  appearance: {
-    accentLight: "cyan",
-    accentDark: "lime",
-    barColorLight: "cyan",
-    barColorDark: "lime",
-    fontFamily: "elegant",
-    uiScale: 1.00,
-    titleScale: 1.18,
-    taskScale: 1.50,
-    borders: "on",
-    buttons: "ghost",
-    radius: 6,
-    barH: 38,
-    chipH: 18
+  appearance:{
+    borders:"on",
+    buttons:"ghost",
+    uiScale:1.0,
+    titleScale:1.12,
+    taskScale:1.42,
+    // Adaptables :
+    barH: 86,                    // px (sera clamp côté CSS via var)
+    barBlockMinH: 170,           // px
+    barText: 24                  // px
   },
 
-  settings: {
-    fatigue: 2, motivation: 2,
-    celebrationBase: 0.18,
-    celebrationAutoCloseSec: 11,
-    tipsChance: 0.14,
-    tipsMinGapMin: 6,
-    nudgeChance: 0.10,
-    nudgeMinGapMin: 10,
-    streakMilestone: 3,
-    longGapMin: 10,
-    megaOnMilestones: true,
-    keepListInFocus: true,
-    autoSuggestKiffance: true,
-    kiffanceSuggestEveryEto: 6
+  settings:{
+    // Flow utile :
+    tipsChance:0.14,
+    tipsMinGapMin:6,
+    nudgeChance:0.10,
+    nudgeMinGapMin:10,
+    keepListInFocus:true
   },
 
-  timer: {
-    running: true,
-    startedAt: null,
-    pausedAt: null,
-    pausedTotal: 0,
-    pomodoroMin: 25,
-    pomodoroRunning: false,
-    pomodoroEndsAt: null
+  timer:{
+    startedAt:null,
+    pausedAt:null,
+    pausedTotal:0
   },
 
-  tasks: [],
-  baseline: { totalTasks:0, totalEtorions:0 },
-  currentTaskId: null,
-  currentTaskStart: null,
+  pomodoro:{
+    minutes:25,
+    running:false,
+    endsAt:null
+  },
 
-  notes: [],
-  habits: [],
-  history: [],
+  tasks:[],
+  baseline:{ totalTasks:0, totalEtorions:0 },
+  currentTaskId:null,
 
-  kiffance: { bank: {"5":[], "10":[], "15":[], "25":[]} },
+  notes:[],
+  emotions:{ entries:[] },
 
-  sets: { list: [], selectedId: null },
+  sets:{ list:[], selectedIds:[] },  // on affiche 2 sets dockés
+  history:[],
+  stats:{ etorionsDone:0, tasksDone:0 },
+  streak:{ tasksInARow:0, lastTaskDoneAt:null },
 
-  emotions: { entries: [] },
-
-  stats: { etorionsDone: 0, tasksDone: 0 },
-  streak: { tasksInARow: 0, lastTaskDoneAt: null },
-  lastCelebrationAt: null,
-  lastTipAt: null,
-  lastNudgeAt: null,
-
-  undo: []
+  undo:[]
 };
 
+/* ================= Seed / merge ================= */
 function deepAssign(target, src){
   for(const k in src){
     if(src[k] && typeof src[k]==="object" && !Array.isArray(src[k]) && target[k]){
       deepAssign(target[k], src[k]);
-    }else{
-      target[k] = src[k];
-    }
+    }else target[k]=src[k];
   }
 }
 
 function seedState(s){
-  const bank = s.kiffance?.bank || (s.kiffance={bank:{"5":[], "10":[], "15":[], "25":[]}}).bank;
-  const emptyAll = ["5","10","15","25"].every(k => Array.isArray(bank[k]) && bank[k].length===0);
-  if(emptyAll){
-    bank["5"] = [
-      "Bois un verre d’eau. Debout. Sans négocier.",
-      "Respire 5 cycles lents. Épaules en bas.",
-      "Regarde au loin 20 secondes. Reviens.",
-      "Micro-marche 60 secondes. Retour immédiat.",
-      "Étire nuque/épaules 45 secondes. Stop.",
-      "Nettoie une surface 30 secondes. Terminé."
-    ];
-    bank["10"] = [
-      "Mini-reset: eau + toilette + retour.",
-      "Décharge mentale: 8 lignes, puis reprise.",
-      "Rangement éclair: 10 objets, pas plus.",
-      "Fenêtre: 2 minutes dehors + reprise.",
-      "Étirements 4 minutes + eau."
-    ];
-    bank["15"] = [
-      "Pause active: marche 10 + eau 5.",
-      "Snack simple sans écran + reprise.",
-      "Étirements 7 + respiration 8.",
-      "Visage / mains + retour propre."
-    ];
-    bank["25"] = [
-      "Vraie pause: 20 min hors écran + 5 min reprise douce.",
-      "Petite marche + retour avec une seule priorité.",
-      "Micro-sieste 15–20 min + eau + reprise.",
-      "Musique calme, pas de scroll. Puis reprise."
-    ];
-  }
-
-  if(!s.sets || !Array.isArray(s.sets.list)) s.sets = { list:[], selectedId:null };
+  // Sets : 2 sets par défaut, renommés SET 1 / SET 2, alignés Patient + items
+  if(!s.sets || !Array.isArray(s.sets.list)) s.sets={list:[], selectedIds:[]};
   if(s.sets.list.length===0){
-    const mkSet = (title, unitName, unitCount, items, categories=[]) => ({
-      id: uid(),
-      title,
-      unitName,
-      unitCount,
-      items,
-      categories,
-      checks: {},
-      pinned: false,
-      order: Date.now() + Math.random()
+    const mkSet=(title, unitName, unitCount, items)=>({
+      id:uid(), title, unitName, unitCount, items,
+      checks:{}
     });
-    const hosp = mkSet("HOSPITALIER","Patient",4,["Voir patient","Note","Traitement","Dossier"],["HÔPITAL"]);
-    const consult = mkSet("CONSULTATION","Patient",6,["Voir patient","Note","Ordonnance","Dossier"],["CONSULT"]);
-    s.sets.list = [hosp, consult];
-    s.sets.selectedId = hosp.id;
+    const set1 = mkSet("SET 1","Patient",4,["Notes","Dossier","Traitement","Plan"]);
+    const set2 = mkSet("SET 2","Patient",6,["Notes","Dossier","Ordonnance","Plan"]);
+    s.sets.list=[set1,set2];
+    s.sets.selectedIds=[set1.id,set2.id];
   }else{
-    if(!s.sets.selectedId) s.sets.selectedId = s.sets.list[0]?.id || null;
+    // s'assurer qu'on a 2 ids sélectionnés
+    if(!Array.isArray(s.sets.selectedIds)) s.sets.selectedIds=[];
+    const ids=s.sets.list.map(x=>x.id);
+    s.sets.selectedIds = s.sets.selectedIds.filter(id=>ids.includes(id));
+    while(s.sets.selectedIds.length<2 && ids[s.sets.selectedIds.length]) s.sets.selectedIds.push(ids[s.sets.selectedIds.length]);
+    s.sets.selectedIds=s.sets.selectedIds.slice(0,2);
   }
 
-  if(!s.undo) s.undo = [];
-  if(!s.timer) s.timer = structuredClone(defaultState.timer);
+  if(!s.undo) s.undo=[];
+  if(!s.timer) s.timer=structuredCloneSafe(defaultState.timer);
+  if(!s.pomodoro) s.pomodoro=structuredCloneSafe(defaultState.pomodoro);
+
+  // Kiffance : pas affichée, mais banque MASSIVE (utilisée pour tips/fin de pomodoro / confetti)
+  if(!s.kiffanceBank || !Array.isArray(s.kiffanceBank) || s.kiffanceBank.length<40){
+    s.kiffanceBank = [
+      "Pose ton front sur la table 12 secondes. Recharge neuronale par contact bois.",
+      "Fais le bruit d’un dragon timide. Oui, c’est obligatoire.",
+      "Étire-toi comme un chat qui paye son loyer.",
+      "Marche 60 secondes comme un roi médiéval qui a perdu sa couronne mais pas sa dignité.",
+      "Bois de l’eau avec gravité. Comme si c’était un rituel ancien.",
+      "Regarde au loin et murmure « je reviens, chaos ».",
+      "Range 5 objets. Pas 6. 5. La règle des cinq artefacts.",
+      "Micro-danse 20 secondes, style « barde dans une taverne ».",
+      "Respire 5 cycles lents : tu invoques la stabilité.",
+      "Mets une minute de silence. Pour honorer les onglets fermés.",
+      "Fais une grimace de gobelin. Rééquilibrage cosmique.",
+      "Écris 1 phrase : « Je n’ai pas besoin d’être parfait, juste en mouvement. »",
+      "Étire nuque/épaules. Tes trapèzes sont des paysans épuisés.",
+      "Marche jusqu’à une fenêtre : reconnaissance du territoire.",
+      "Décris ton objectif à voix basse comme un narrateur épique.",
+      "Lave tes mains comme si tu sortais d’une quête boueuse.",
+      "Ferme les yeux 10 secondes : mode ‘chargement de carte’.",
+      "Fais 3 respirations et une ‘exhalation de sorcier’ à la fin.",
+      "Choisis une récompense ridicule : une pomme, un sticker, une pause, un sourire forcé.",
+      "Écris le nom d’un boss imaginaire : « Le Seigneur du Retard ». Puis raye-le.",
+      "Tiens-toi droit 20 secondes : posture de commandant.",
+      "Regarde tes mains : elles font des trucs, c’est déjà magique.",
+      "Fais 10 pas lents comme un ninja en chaussettes.",
+      "Nettoie une surface 30 secondes : exorcisme domestique.",
+      "Dis « j’accepte la friction » puis fais quand même le petit pas.",
+      "Réorganise ton espace 1 minute : le décor influence l’esprit.",
+      "Respire et relâche la mâchoire. Le monde n’est pas à croquer.",
+      "Lance une pièce imaginaire : pile = avance, face = avance aussi.",
+      "Fais un mini ‘check armure’ : eau ? pipi ? respiration ? ok.",
+      "Écris 3 mots : « simple, net, maintenant ».",
+      "Souris 2 secondes : hack neurologique sans demander l’avis du cerveau.",
+      "Un étirement de poignet : salutations aux tendons.",
+      "Dépose ton téléphone plus loin : exil diplomatique.",
+      "Fais une pause yeux : regarde à 6 mètres pendant 20 secondes.",
+      "Prends une inspiration ‘qui sent le pain’. Expire ‘qui chasse les corbeaux’.",
+      "Choisis un objet et remets-le parfaitement aligné. Petite victoire fasciste (mais utile).",
+      "Dessine un carré. Puis un autre. Voilà, structure.",
+      "Tape dans tes mains une fois. Fin de la cérémonie.",
+      "Répète : « je fais le prochain geste, pas le plan entier ».",
+      "Tu gagnes le titre de “Chevalier du Prochain Pas”."
+    ];
+  }
 
   return s;
 }
@@ -1255,192 +1098,101 @@ function seedState(s){
 function loadState(){
   try{
     const raw = localStorage.getItem(LS_KEY);
-    if(!raw) return seedState(structuredClone(defaultState));
+    if(!raw) return seedState(structuredCloneSafe(defaultState));
     const parsed = JSON.parse(raw);
-    const merged = structuredClone(defaultState);
+    const merged = structuredCloneSafe(defaultState);
     deepAssign(merged, parsed);
     return seedState(merged);
   }catch(e){
-    return seedState(structuredClone(defaultState));
+    return seedState(structuredCloneSafe(defaultState));
   }
 }
 let state = loadState();
 function saveState(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
 
-/* -------------------------
-   Appearance
-------------------------- */
+/* ================= Theme / appearance ================= */
 function applyAppearance(){
   document.body.setAttribute("data-theme", state.theme);
   document.body.setAttribute("data-borders", state.appearance.borders || "on");
   document.body.setAttribute("data-buttons", state.appearance.buttons || "ghost");
 
-  document.documentElement.style.setProperty("--uiScale", String(state.appearance.uiScale ?? 1.0));
-  document.documentElement.style.setProperty("--titleScale", String(state.appearance.titleScale ?? 1.18));
-  document.documentElement.style.setProperty("--taskScale", String(state.appearance.taskScale ?? 1.5));
+  // Variables adaptables
+  const barH = clamp(Number(state.appearance.barH)||86, 56, 160);
+  const barBlockMinH = clamp(Number(state.appearance.barBlockMinH)||170, 120, 320);
+  const barText = clamp(Number(state.appearance.barText)||24, 16, 40);
 
-  document.documentElement.style.setProperty("--radius", `${clamp(state.appearance.radius ?? 6, 0, 14)}px`);
-  document.documentElement.style.setProperty("--barH", `${clamp(state.appearance.barH ?? 38, 26, 52)}px`);
-  document.documentElement.style.setProperty("--chipH", `${clamp(state.appearance.chipH ?? 18, 12, 28)}px`);
+  document.documentElement.style.setProperty("--barH", `clamp(64px, 10vh, ${barH}px)`);
+  document.documentElement.style.setProperty("--barBlockMinH", `clamp(120px, 24vh, ${barBlockMinH}px)`);
+  document.documentElement.style.setProperty("--barText", `${barText}px`);
 
-  document.documentElement.style.setProperty("--drawerW", `${clamp(state.drawerW||460, 340, 920)}px`);
-  document.documentElement.style.setProperty("--rightW", `${clamp(state.rightW||520, 340, 980)}px`);
-
-  const ff = FONT_FAMILIES[state.appearance.fontFamily] || FONT_FAMILIES.elegant;
-  document.documentElement.style.setProperty("--font", ff);
-
-  const accentKey = (state.theme==="light") ? (state.appearance.accentLight||"cyan") : (state.appearance.accentDark||"lime");
-  const a = ACCENTS[accentKey] || ACCENTS.cyan;
-  document.documentElement.style.setProperty("--accent", a.a);
-  document.documentElement.style.setProperty("--accent2", a.a2);
-
-  const barKey = (state.theme==="light") ? (state.appearance.barColorLight||accentKey) : (state.appearance.barColorDark||accentKey);
-  const b = ACCENTS[barKey] || a;
-  document.documentElement.style.setProperty("--barAccent", b.a);
-  document.documentElement.style.setProperty("--barAccent2", b.a2);
-
-  $("themeLabel").textContent = state.theme==="light" ? "THÈME CLAIR" : "THÈME SOMBRE";
+  $("themeLabel").textContent =
+    state.theme==="light" ? "MODE CLAIR" :
+    state.theme==="dark" ? "MODE SOMBRE" : "MODE PASTEL";
 }
 
-/* -------------------------
-   Pools
-------------------------- */
+/* ================= Taglines (médiéval absurde) ================= */
 const TAGLINE_POOL = [
-  "Quête principale: active. Quêtes secondaires: muselées.",
-  "Le chaos a une armée. Toi, tu as une tactique clinique.",
-  "Un étorion. Une incision nette. Hémostase du bazar.",
-  "Bienvenue dans le donjon administratif. Tu as la clé.",
-  "Inception, mais pour les to-do: implantation de flow réussie.",
-  "Frieren dirait: « Encore une petite action, et le monde change. »",
-  "Mode ninja: silencieux. Précis. Irréprochable.",
-  "Tu poses des balises dans le temps. Le temps obéit."
+  "Tu avances, le chaos recule. C’est la loi du royaume.",
+  "Aujourd’hui : une quête principale. Le reste : des gobelins décoratifs.",
+  "Ton agenda tremble. Tes étorions aussi.",
+  "On ne négocie pas avec la procrastination. On la contourne.",
+  "Par la barbe du mage, tu vas finir ce truc.",
+  "Le boss final c’est… le bouton ‘envoyer’. À l’assaut.",
+  "Si tu hésites : frappe un étorion. Très chevaleresque."
 ];
+function setRandomTagline(force=false){
+  const el=$("tagline");
+  if(force || !el.textContent.trim() || Math.random()<0.25){
+    el.textContent = TAGLINE_POOL[Math.floor(Math.random()*TAGLINE_POOL.length)];
+  }
+}
 
-const CELE_POOL_SMALL = [
-  {t:"BANNIÈRE PLANTÉE", m:"Territoire reconquis. Le chaos recule d’un pas."},
-  {t:"TECHNIQUE INTERDITE", m:"Coup net. La tâche n’a pas eu le temps de protester."},
-  {t:"INCISION PROPRE", m:"Acte clinique: précis. Fermeture: impeccable."},
-  {t:"PORTAIL REFERMÉ", m:"Boucle mentale scellée. Silence sacré."},
-  {t:"QUÊTE VALIDÉE", m:"Objectif atteint. Butin: clarté + points de dignité."},
-  {t:"NINJUTSU ADMINISTRATIF", m:"Tu as éliminé la cible sans bruit. Personne n’a rien vu."},
-  {t:"TOTEM STABLE", m:"Réalité stabilisée. Ton totem ne vacille pas."}
-];
-
-const CELE_POOL_MEGA = [
-  {t:"SEIGNEUR DES LISTES", m:"Les ombres du chaos s’effacent. Tu marches avec la lumière du flow."},
-  {t:"ARCHITECTE DU RÉEL", m:"Tu plies le temps en origami. La journée se met au garde-à-vous."},
-  {t:"ROI·REINE CONQUISTADOR·A", m:"Tu plantes ton étendard sur la montagne des obligations. Victoire absolue."},
-  {t:"RAID FINAL BOSS", m:"Le boss « procrastination » vient de prendre un critique. Écran de victoire."},
-  {t:"DÉPLOIEMENT CLINIQUE", m:"Symptôme: chaos. Traitement: toi. Réponse: spectaculaire."},
-  {t:"DREAM WITHIN DREAM", m:"Tu termines une tâche dans une tâche… et tu reviens avec du flow dans les poches."}
-];
-
-const TIPS_POOL = [
-  {t:"RÈGLE DU LASER", m:"Une seule cible. Pas de multi-onglets. Exécution."},
-  {t:"ANTI-FRICTION", m:"Enlève un obstacle matériel maintenant (dossier, onglet, câble)."},
-  {t:"MICRO-CONTRAT", m:"Fais juste 1 étorion. Après, tu renégocies. (Spoiler: non.)"},
-  {t:"CORPS = INTERRUPTEUR", m:"Épaules basses. Mâchoire relâchée. Le cerveau suit."}
-];
-
-const EMO_NUDGES = [
-  {t:"STOP (30s)", m:"Je remarque l’émotion: « ___ ». 3 respirations lentes. Puis reprise."},
-  {t:"ANCRAGE 5-4-3-2-1", m:"5 vues, 4 touchées, 3 entendues, 2 senties, 1 goûtée."},
-  {t:"DÉFUSION", m:"Remplace « je suis X » par « j’ai la pensée que… »."},
-  {t:"ACTION OPPOSÉE (micro)", m:"Choisis un geste de 30 secondes à l’opposé de l’évitement."}
-];
-
-const DISTORTIONS = [
-  {k:"Tout ou rien", d:"Noir/blanc: « si ce n’est pas parfait, c’est nul »."},
-  {k:"Surgénéralisation", d:"Un événement → « c’est toujours comme ça »."},
-  {k:"Filtre négatif", d:"Tu zoomes sur le défaut, tu ignores le reste."},
-  {k:"Disqualification du positif", d:"Tu annules ce qui va bien (« c’est rien »)."},
-  {k:"Lecture de pensée", d:"Tu crois savoir ce que l’autre pense (sans preuve)."},
-  {k:"Catastrophisme", d:"Tu projettes le pire scénario comme certitude."},
-  {k:"Doit / Il faut", d:"Règles rigides qui écrasent la flexibilité."},
-  {k:"Personnalisation", d:"Tu t’attribues la cause de tout."},
-  {k:"Raisonnement émotionnel", d:"« Je le sens donc c’est vrai »."},
-  {k:"Étiquetage", d:"Tu te colles une étiquette globale (« je suis X »)."}
-];
-
-const EMOTIONS = ["Anxiété","Colère","Tristesse","Honte","Culpabilité","Stress","Frustration","Soulagement","Joie","Fatigue","Solitude","Dégoût","Peur","Irritabilité"];
-const NEEDS = ["Sécurité","Repos","Clarté","Lien","Contrôle","Reconnaissance","Compétence","Autonomie","Sens","Protection"];
-const BLOCKS = ["Surcharge","Flou des priorités","Peur de mal faire","Fatigue","Distraction","Évitement","Perfectionnisme","Trop de décisions","Conflit","Manque d’info"];
-const SKILLS = [
-  "Respiration 4-6 (2 min)",
-  "Ancrage 5-4-3-2-1 (1 min)",
-  "Défusion: « j’ai la pensée que… »",
-  "STOP (TCC/DBT) (30s)",
-  "Action opposée (micro)",
-  "Plan 1 étorion (micro-action)",
-  "Réévaluation (3 lignes)",
-  "Auto-compassion brève",
-  "Hydratation + posture + reprise"
-];
-
-/* -------------------------
-   Task parsing
-------------------------- */
+/* ================= Tasks parsing ================= */
 function isAllCapsLine(line){
-  const t = line.trim();
-  if(!t) return false;
-  const hasLetters = /[A-Za-zÀ-ÖØ-öø-ÿ]/.test(t);
+  const t=line.trim(); if(!t) return false;
+  const hasLetters=/[A-Za-zÀ-ÖØ-öø-ÿ]/.test(t);
   if(!hasLetters) return false;
-  return t === t.toUpperCase() && t.length <= 90;
+  return t===t.toUpperCase() && t.length<=90;
 }
 function parseTaskLine(line){
-  const raw = line.trim();
-  if(!raw) return null;
-  const cleaned = raw.replace(/^[-*•\s]+/, "").trim();
+  const raw=line.trim(); if(!raw) return null;
+  const cleaned=raw.replace(/^[-*•\s]+/,"").trim();
   if(!cleaned) return null;
 
-  let et = null;
-  let title = cleaned;
-  const m1 = cleaned.match(/^(.*?)(?:\s*[-–—]\s*|\s+)(\d+)\s*$/);
-  if(m1){
-    title = m1[1].trim();
-    et = parseInt(m1[2],10);
-  }
-  title = title.replace(/\s+/g," ").trim();
+  let et=null, title=cleaned;
+  const m=cleaned.match(/^(.*?)(?:\s*[-–—]\s*|\s+)(\d+)\s*$/);
+  if(m){ title=m[1].trim(); et=parseInt(m[2],10); }
+  title=title.replace(/\s+/g," ").trim();
   if(!title) return null;
-  if(et!==null) et = clamp(et, 1, 99);
+  if(et!==null) et=clamp(et,1,99);
   return {title, etorions: et};
 }
 function importFromInbox(text){
-  const lines = text.split(/\r?\n/).map(l=>l.trim()).filter(l=>l.length>0);
-  let cat = "INBOX";
-  const out = [];
+  const lines=text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+  let cat="INBOX";
+  const out=[];
   for(const line of lines){
-    if(isAllCapsLine(line)){
-      cat = line.trim().toUpperCase();
-      continue;
-    }
-    const parsed = parseTaskLine(line);
-    if(!parsed) continue;
+    if(isAllCapsLine(line)){ cat=line.trim().toUpperCase(); continue; }
+    const p=parseTaskLine(line); if(!p) continue;
     out.push({
       id: uid(),
-      title: parsed.title,
+      title: p.title,
       cat,
-      etorionsTotal: parsed.etorions ?? 1,
-      etorionsLeft: parsed.etorions ?? 1,
-      pinned: false,
-      done: false,
+      etorionsTotal: p.etorions ?? 1,
+      etorionsLeft: p.etorions ?? 1,
+      pinned:false,
+      done:false,
       createdAt: nowISO(),
-      doneAt: null
+      doneAt:null
     });
   }
   return out;
 }
 
-/* -------------------------
-   Tasks core
-------------------------- */
+/* ================= Tasks core ================= */
 function activeTasks(){ return state.tasks.filter(t=>!t.done); }
 function getTaskById(id){ return state.tasks.find(t=>t.id===id) || null; }
-function setCurrentTask(id){
-  state.currentTaskId = id;
-  state.currentTaskStart = Date.now();
-  if(!state.timer.startedAt) state.timer.startedAt = Date.now();
-}
+function setCurrentTask(id){ state.currentTaskId=id; }
 function sortTasks(list){
   return [...list].sort((a,b)=>{
     if(a.pinned && !b.pinned) return -1;
@@ -1449,818 +1201,299 @@ function sortTasks(list){
   });
 }
 function roulettePick(){
-  const list = sortTasks(activeTasks());
+  const list=sortTasks(activeTasks());
   if(list.length===0) return null;
-  const pinned = list.filter(t=>t.pinned);
-  const pool = pinned.length>0 ? pinned : list;
-  return pool[rand(pool.length)];
+  const pinned=list.filter(t=>t.pinned);
+  const pool=pinned.length?pinned:list;
+  return pool[Math.floor(Math.random()*pool.length)];
 }
 function ensureCurrentTask(){
-  const list = activeTasks();
-  if(list.length===0){
-    state.currentTaskId = null;
-    state.currentTaskStart = null;
-    return;
-  }
-  const cur = getTaskById(state.currentTaskId);
+  const list=activeTasks();
+  if(list.length===0){ state.currentTaskId=null; return; }
+  const cur=getTaskById(state.currentTaskId);
   if(!cur || cur.done){
-    const pinned = list.find(t=>t.pinned);
-    setCurrentTask((pinned||list[0]).id);
+    const pinned=list.find(t=>t.pinned);
+    state.currentTaskId=(pinned||list[0]).id;
   }
 }
 
-/* -------------------------
-   Baseline + progress
-------------------------- */
+/* ================= Baseline + progress ================= */
 function recomputeBaselineIfNeeded(){
   if(state.baseline.totalTasks===0 && state.baseline.totalEtorions===0 && state.tasks.length>0){
-    const allActive = activeTasks();
-    state.baseline.totalTasks = allActive.length;
-    state.baseline.totalEtorions = allActive.reduce((a,t)=>a+(t.etorionsTotal||0),0);
+    const all=activeTasks();
+    state.baseline.totalTasks=all.length;
+    state.baseline.totalEtorions=all.reduce((a,t)=>a+(t.etorionsTotal||0),0);
   }
 }
 function computeProgress(){
-  const baseT = state.baseline.totalTasks || 0;
-  const baseE = state.baseline.totalEtorions || 0;
-  const remaining = activeTasks();
-  const remT = remaining.length;
-  const remE = remaining.reduce((a,t)=>a+(t.etorionsLeft||0),0);
-  const pct = (baseT<=0) ? 100 : clamp(Math.round((remT/baseT)*100), 0, 100);
-  return { baseT, baseE, remT, remE, pct };
+  const baseT=state.baseline.totalTasks||0;
+  const baseE=state.baseline.totalEtorions||0;
+  const rem=activeTasks();
+  const remT=rem.length;
+  const remE=rem.reduce((a,t)=>a+(t.etorionsLeft||0),0);
+  const pct=(baseT<=0)?100:clamp(Math.round((remT/baseT)*100),0,100);
+  return {baseT,baseE,remT,remE,pct};
 }
 
-/* -------------------------
-   Undo snapshots
-------------------------- */
+/* ================= Undo ================= */
 function pushUndo(label){
-  const snap = {
-    label,
-    at: Date.now(),
-    tasks: structuredClone(state.tasks),
-    baseline: structuredClone(state.baseline),
-    currentTaskId: state.currentTaskId,
-    currentTaskStart: state.currentTaskStart,
-    stats: structuredClone(state.stats),
-    streak: structuredClone(state.streak),
-    lastCelebrationAt: state.lastCelebrationAt
-  };
-  state.undo.unshift(snap);
-  state.undo = state.undo.slice(0, 12);
+  state.undo.unshift({
+    label, at:Date.now(),
+    snapshot: structuredCloneSafe({
+      tasks: state.tasks,
+      baseline: state.baseline,
+      currentTaskId: state.currentTaskId,
+      stats: state.stats,
+      timer: state.timer,
+      pomodoro: state.pomodoro,
+      emotions: state.emotions,
+      sets: state.sets
+    })
+  });
+  state.undo = state.undo.slice(0,12);
 }
 function undo(){
-  const snap = state.undo.shift();
+  const snap=state.undo.shift();
   if(!snap) return;
-  state.tasks = snap.tasks;
-  state.baseline = snap.baseline;
-  state.currentTaskId = snap.currentTaskId;
-  state.currentTaskStart = snap.currentTaskStart;
-  state.stats = snap.stats;
-  state.streak = snap.streak;
-  state.lastCelebrationAt = snap.lastCelebrationAt;
+  const s=snap.snapshot;
+  state.tasks=s.tasks;
+  state.baseline=s.baseline;
+  state.currentTaskId=s.currentTaskId;
+  state.stats=s.stats;
+  state.timer=s.timer;
+  state.pomodoro=s.pomodoro;
+  state.emotions=s.emotions;
+  state.sets=s.sets;
   saveState();
   renderAll();
 }
 
-/* -------------------------
-   Notes
-------------------------- */
+/* ================= Confetti (simple) ================= */
+const conf=$("confetti");
+const ctx=conf.getContext("2d");
+let confettiPieces=[];
+function resizeCanvas(){
+  conf.width=window.innerWidth*devicePixelRatio;
+  conf.height=window.innerHeight*devicePixelRatio;
+  conf.style.width=window.innerWidth+"px";
+  conf.style.height=window.innerHeight+"px";
+  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+let confettiRAF=null;
+function confettiBurst(strength=1){
+  const w=window.innerWidth, h=window.innerHeight;
+  const n=Math.floor(120*strength);
+  const cx=w/2, cy=h/3;
+  for(let i=0;i<n;i++){
+    confettiPieces.push({
+      x:cx,y:cy,
+      vx:(Math.random()-0.5)*10*strength,
+      vy:(Math.random()-0.85)*14*strength,
+      g:0.35+Math.random()*0.2,
+      r:2+Math.random()*3*strength,
+      life:70+Math.random()*50,
+      rot:Math.random()*Math.PI,
+      vr:(Math.random()-0.5)*0.35
+    });
+  }
+  if(!confettiRAF) confettiRAF=requestAnimationFrame(confettiStep);
+}
+function confettiStep(){
+  ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+  confettiPieces=confettiPieces.filter(p=>p.life>0);
+  for(const p of confettiPieces){
+    p.vy+=p.g; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; p.life-=1;
+    ctx.save();
+    ctx.translate(p.x,p.y);
+    ctx.rotate(p.rot);
+    ctx.globalAlpha=0.84;
+    ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue("--fg");
+    ctx.fillRect(-p.r,-p.r,p.r*2,p.r*2);
+    ctx.restore();
+  }
+  if(confettiPieces.length>0) confettiRAF=requestAnimationFrame(confettiStep);
+  else { cancelAnimationFrame(confettiRAF); confettiRAF=null; ctx.clearRect(0,0,window.innerWidth,window.innerHeight); }
+}
+
+/* ================= Modals ================= */
+function openModal(id){
+  $("modalBack").style.display="block";
+  $(id).style.display="flex";
+}
+function closeAllModals(){
+  ["notesModal","pomodoroModal","exportModal"].forEach(id=>{ const el=$(id); if(el) el.style.display="none"; });
+  $("modalBack").style.display="none";
+}
+$("modalBack").addEventListener("click", closeAllModals);
+
+/* ================= Notes ================= */
 function addNote(text){
-  const t = (text||"").trim();
-  if(!t) return;
-  state.notes.unshift({ id: uid(), text: t, at: nowISO() });
+  const t=(text||"").trim(); if(!t) return;
+  state.notes.unshift({id:uid(), text:t, at:nowISO()});
 }
 function renderNotes(){
-  const list = state.notes || [];
-  if(list.length===0){
-    $("notesList").innerHTML = "<div class='small'>Aucune note.</div>";
-    return;
-  }
+  const list=state.notes||[];
+  if(list.length===0){ $("notesList").innerHTML="<div class='small'>Aucune note.</div>"; return; }
   $("notesList").innerHTML = list.slice(0,80).map(n=>{
-    const dt = new Date(n.at);
-    const stamp = dt.toLocaleString("fr-BE",{hour:"2-digit",minute:"2-digit", day:"2-digit", month:"2-digit"});
+    const dt=new Date(n.at);
+    const stamp=dt.toLocaleString("fr-BE",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit"});
     return `<div style="padding:8px 6px; border-bottom:1px solid var(--line)">
-      <div style="font-family:var(--mono); color:var(--muted); font-size:11px; letter-spacing:.06em">${stamp}</div>
+      <div style="font-family:var(--mono); color:var(--muted); font-size:11px">${stamp}</div>
       <div style="white-space:pre-wrap; font-size:13px">${escapeHTML(n.text)}</div>
     </div>`;
   }).join("");
 }
 
-/* -------------------------
-   Habits
-------------------------- */
-function addHabit(name, slots){
-  const nm = (name||"").trim();
-  if(!nm) return;
-  const sl = clamp(parseInt(slots,10)||8, 3, 12);
-  const checks = Array.from({length:sl}, ()=>false);
-  state.habits.push({ id: uid(), name:nm, slots:sl, checks, createdAt: nowISO() });
-}
-function habitProgress(h){
-  const done = h.checks.filter(Boolean).length;
-  const tot = h.checks.length;
-  return {done, tot, pct: tot? Math.round(done/tot*100):0};
-}
-function toggleHabitCheck(hId, idx){
-  const h = state.habits.find(x=>x.id===hId);
-  if(!h) return;
-  h.checks[idx] = !h.checks[idx];
-}
-
-/* -------------------------
-   Sets
-------------------------- */
-function getSetById(id){ return state.sets.list.find(s=>s.id===id) || null; }
-function selectedSet(){ return getSetById(state.sets.selectedId) || state.sets.list[0] || null; }
-function ensureSelectedSet(){
-  if(state.sets.list.length===0) return;
-  if(!state.sets.selectedId || !getSetById(state.sets.selectedId)){
-    state.sets.selectedId = state.sets.list[0].id;
-  }
-}
-function initSetChecksForToday(set){
-  const dk = dayKey();
-  if(!set.checks) set.checks = {};
-  if(!set.checks[dk]) set.checks[dk] = {};
-}
-function setCheckKey(uIndex, iIndex){ return `u${uIndex}_i${iIndex}`; }
-function toggleSetCheck(setId, uIndex, iIndex){
-  const set = getSetById(setId);
-  if(!set) return;
-  initSetChecksForToday(set);
-  const dk = dayKey();
-  const k = setCheckKey(uIndex, iIndex);
-  set.checks[dk][k] = !set.checks[dk][k];
-}
-function resetSetToday(setId){
-  const set = getSetById(setId);
-  if(!set) return;
-  initSetChecksForToday(set);
-  set.checks[dayKey()] = {};
-}
-function summarizeSetToday(setId){
-  const set = getSetById(setId);
-  if(!set) return {done:0,total:0};
-  initSetChecksForToday(set);
-  const dk = dayKey();
-  const checks = set.checks[dk] || {};
-  const total = (set.unitCount||0) * (set.items?.length||0);
-  const done = Object.values(checks).filter(Boolean).length;
-  return {done,total};
-}
-function addSet(){
-  const s = {
-    id: uid(),
-    title: "NOUVEAU SET",
-    unitName: "Item",
-    unitCount: 3,
-    items: ["Étape 1","Étape 2","Étape 3"],
-    categories: [],
-    checks: {},
-    pinned: false,
-    order: Date.now()
-  };
-  state.sets.list.push(s);
-  state.sets.selectedId = s.id;
-}
-function deleteSet(id){
-  state.sets.list = state.sets.list.filter(s=>s.id!==id);
-  ensureSelectedSet();
-}
-function moveSet(id, delta){
-  const idx = state.sets.list.findIndex(s=>s.id===id);
-  if(idx<0) return;
-  const j = clamp(idx+delta, 0, state.sets.list.length-1);
-  const [it] = state.sets.list.splice(idx,1);
-  state.sets.list.splice(j,0,it);
-}
-
-/* -------------------------
-   Emotion Journal
-------------------------- */
-function addEmotionEntry(e){ state.emotions.entries.unshift(e); }
-function emotionsToday(){
-  const dk = dayKey();
-  return (state.emotions.entries||[]).filter(e=>e.day===dk);
-}
-function avgIntensity(list){
-  if(!list || list.length===0) return 0;
-  const vals = list.map(e=>Number(e.intensity)||0);
-  return Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
-}
-function topEmotion(list){
-  if(!list || list.length===0) return null;
-  const map = new Map();
-  list.forEach(e=>{ map.set(e.emotion, (map.get(e.emotion)||0) + 1); });
-  let best=null, bestv=-1;
-  for(const [k,v] of map.entries()){
-    if(v>bestv){ bestv=v; best=k; }
-  }
-  return best;
-}
-
-/* -------------------------
-   History snapshot
-------------------------- */
-function snapshotDay(){
-  const dk = dayKey();
-  const doneToday = state.tasks.filter(t=>t.done && t.doneAt && t.doneAt.startsWith(dk));
-  const active = activeTasks();
-
-  const baseE = state.baseline.totalEtorions || 0;
-  const doneE = (state.stats.etorionsDone||0);
-
-  const habitsSummary = (state.habits||[]).map(h=>{
-    const p = habitProgress(h);
-    return { name:h.name, done:p.done, total:p.tot };
-  });
-
-  const setSummary = (state.sets.list||[]).map(s=>{
-    const sum = summarizeSetToday(s.id);
-    return { id:s.id, title:s.title, done:sum.done, total:sum.total };
-  });
-
-  const emoToday = emotionsToday();
-  const emoSummary = { count: emoToday.length, avg: avgIntensity(emoToday), top: topEmotion(emoToday) };
-
-  const entry = {
-    day: dk,
-    doneTitles: doneToday.map(t=>t.title),
-    remainingTitles: active.map(t=>t.title),
-    doneTasks: doneToday.length,
-    remainingTasks: active.length,
-    doneEtorions: doneE,
-    baselineEtorions: baseE,
-    habits: habitsSummary,
-    sets: setSummary,
-    emotions: emoSummary
-  };
-
-  const idx = state.history.findIndex(x=>x.day===dk);
-  if(idx>=0) state.history[idx] = entry;
-  else state.history.unshift(entry);
-}
-
-/* -------------------------
-   Confetti
-------------------------- */
-const conf = $("confetti");
-const ctx = conf.getContext("2d");
-let confettiPieces = [];
-function resizeCanvas(){
-  conf.width = window.innerWidth * devicePixelRatio;
-  conf.height = window.innerHeight * devicePixelRatio;
-  conf.style.width = window.innerWidth+"px";
-  conf.style.height = window.innerHeight+"px";
-  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-}
-window.addEventListener("resize", resizeCanvas);
-resizeCanvas();
-
-let confettiRAF = null;
-function confettiBurst(strength=1){
-  const w = window.innerWidth;
-  const h = window.innerHeight;
-  const n = Math.floor(190*strength);
-  const centerX = w/2;
-  const centerY = h/3;
-
-  for(let i=0;i<n;i++){
-    confettiPieces.push({
-      x:centerX,
-      y:centerY,
-      vx:(Math.random()-0.5)*12*strength,
-      vy:(Math.random()-0.85)*16*strength,
-      g: (0.33 + Math.random()*0.25) * (0.9 + strength*0.2),
-      r: 2 + Math.random()*4*strength,
-      life: 90 + Math.random()*70,
-      rot: Math.random()*Math.PI,
-      vr: (Math.random()-0.5)*0.35
-    });
-  }
-  animateConfetti();
-}
-function animateConfetti(){
-  if(confettiRAF) return;
-  const step = ()=>{
-    ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
-    confettiPieces = confettiPieces.filter(p=>p.life>0);
-    for(const p of confettiPieces){
-      p.vy += p.g;
-      p.x += p.vx;
-      p.y += p.vy;
-      p.rot += p.vr;
-      p.life -= 1;
-
-      ctx.save();
-      ctx.translate(p.x,p.y);
-      ctx.rotate(p.rot);
-      ctx.globalAlpha = 0.84;
-      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--fg");
-      ctx.fillRect(-p.r, -p.r, p.r*2, p.r*2);
-      ctx.restore();
-    }
-    if(confettiPieces.length>0){
-      confettiRAF = requestAnimationFrame(step);
-    }else{
-      cancelAnimationFrame(confettiRAF);
-      confettiRAF = null;
-      ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
-    }
-  };
-  confettiRAF = requestAnimationFrame(step);
-}
-
-/* -------------------------
-   Modals (✅ FIX)
-------------------------- */
-let celeTimer=null, tipsTimer=null, nudgeTimer=null, countersTimer=null;
-
-function openModal(id){
-  $("modalBack").style.display = "block";
-  $(id).style.display = "flex";
-}
-function closeAllModals(){
-  ["notesModal","celeModal","tipsModal","emoNudgeModal","biasModal","setEditModal","exportModal"].forEach(id=>{
-    const el = $(id);
-    if(el) el.style.display = "none";
-  });
-  $("modalBack").style.display = "none";
-}
-
-/* ✅ close on backdrop */
-$("modalBack").addEventListener("click", closeAllModals);
-
-/* ✅ close only when clicking outside card (not inside) */
-["notesModal","celeModal","tipsModal","emoNudgeModal","biasModal","setEditModal","exportModal"].forEach(id=>{
-  const el = $(id);
-  if(!el) return;
-  el.addEventListener("click",(e)=>{ if(e.target===el) closeAllModals(); });
-  const card = el.querySelector(".modalCard");
-  if(card) card.addEventListener("click",(e)=>e.stopPropagation());
-});
-
-function setRandomTagline(force=false){
-  const el = $("tagline");
-  if(force || Math.random()<0.20 || !el.textContent.trim()){
-    el.textContent = TAGLINE_POOL[rand(TAGLINE_POOL.length)];
-  }
-}
-
-/* -------------------------
-   Adaptive celebrations
-------------------------- */
-function minutesSince(ts){
-  if(!ts) return 9999;
-  return (Date.now() - ts) / 60000;
-}
-function showCelebration(mega=false){
-  const pool = mega ? CELE_POOL_MEGA : CELE_POOL_SMALL;
-  const pick = pool[rand(pool.length)];
-  $("celeTitle").textContent = pick.t;
-  $("celeMsg").textContent = pick.m;
-
-  const p = computeProgress();
-  const done = (p.baseT - p.remT);
-  $("celeSub").textContent = `${done} ${plural(done,"tâche","tâches")} ${plural(done,"dégommée","dégommées")} · continue`;
-
-  confettiBurst(mega ? 1.75 : 1.15);
-  openModal("celeModal");
-
-  state.lastCelebrationAt = Date.now();
-  saveState();
-
-  const sec = clamp(parseInt(state.settings.celebrationAutoCloseSec,10)||11, 5, 20);
-  if(celeTimer) clearTimeout(celeTimer);
-  celeTimer = setTimeout(()=>closeAllModals(), sec*1000);
-}
-function shouldMegaCelebrate(){
-  const p = computeProgress();
-  const done = (p.baseT - p.remT);
-  if(done<=0) return false;
-  const milestones = [0.25,0.50,0.75,1.00].map(x=>Math.round((p.baseT||0)*x));
-  const isMilestone = milestones.includes(done) || (p.remT===0 && p.baseT>0);
-  const isStreak = (state.streak.tasksInARow||0) >= (state.settings.streakMilestone||3);
-  return !!(state.settings.megaOnMilestones && (isMilestone || isStreak));
-}
-function maybeShowCelebration(){
-  const base = clamp(Number(state.settings.celebrationBase)||0.18, 0, 1);
-  const streak = (state.streak.tasksInARow||0);
-  const bonusStreak = (streak>=3) ? 0.18 : 0;
-  const gapMin = minutesSince(state.lastCelebrationAt);
-  const bonusGap = (gapMin >= (state.settings.longGapMin||10)) ? 0.12 : 0;
-  const chance = clamp(base + bonusStreak + bonusGap, 0, 0.85);
-
-  if(Math.random() < chance){
-    const mega = shouldMegaCelebrate();
-    showCelebration(mega);
-  }
-}
-
-/* -------------------------
-   Tips / nudges
-------------------------- */
-function showTip(){
-  const pick = TIPS_POOL[rand(TIPS_POOL.length)];
-  $("tipsTitle").textContent = pick.t;
-  $("tipsMsg").textContent = pick.m;
-  $("tipsSub").textContent = "Conseil bref → retour au flow.";
-  openModal("tipsModal");
-  state.lastTipAt = Date.now();
-  saveState();
-  if(tipsTimer) clearTimeout(tipsTimer);
-  tipsTimer = setTimeout(()=>closeAllModals(), 9000);
-}
-function showNudge(){
-  const pick = EMO_NUDGES[rand(EMO_NUDGES.length)];
-  $("emoNudgeTitle").textContent = pick.t;
-  $("emoNudgeMsg").textContent = pick.m;
-  $("emoNudgeSub").textContent = "Micro-régulation → puis reprise.";
-  openModal("emoNudgeModal");
-  state.lastNudgeAt = Date.now();
-  saveState();
-  if(nudgeTimer) clearTimeout(nudgeTimer);
-  nudgeTimer = setTimeout(()=>closeAllModals(), 9000);
-}
-function maybeTip(){
-  const chance = clamp(Number(state.settings.tipsChance)||0.14, 0, 1);
-  const gap = minutesSince(state.lastTipAt);
-  if(gap < (state.settings.tipsMinGapMin||6)) return;
-  if(Math.random() < chance) showTip();
-}
-function maybeNudge(){
-  const chance = clamp(Number(state.settings.nudgeChance)||0.10, 0, 1);
-  const gap = minutesSince(state.lastNudgeAt);
-  if(gap < (state.settings.nudgeMinGapMin||10)) return;
-  if(Math.random() < chance) showNudge();
-}
-
-/* -------------------------
-   Timer / pause / pomodoro
-------------------------- */
+/* ================= Timer / Pomodoro ================= */
 function timerNowMs(){
   if(!state.timer.startedAt) return 0;
-  const now = Date.now();
-  const paused = state.timer.pausedTotal || 0;
-  const extraPaused = state.timer.pausedAt ? (now - state.timer.pausedAt) : 0;
-  return Math.max(0, now - state.timer.startedAt - paused - extraPaused);
+  const now=Date.now();
+  const paused=state.timer.pausedTotal||0;
+  const extra=state.timer.pausedAt ? (now - state.timer.pausedAt) : 0;
+  return Math.max(0, now - state.timer.startedAt - paused - extra);
 }
 function togglePause(){
-  if(!state.timer.startedAt) state.timer.startedAt = Date.now();
+  if(!state.timer.startedAt) state.timer.startedAt=Date.now();
   if(state.timer.pausedAt){
-    state.timer.pausedTotal = (state.timer.pausedTotal||0) + (Date.now() - state.timer.pausedAt);
-    state.timer.pausedAt = null;
-    state.timer.running = true;
+    state.timer.pausedTotal=(state.timer.pausedTotal||0) + (Date.now()-state.timer.pausedAt);
+    state.timer.pausedAt=null;
   }else{
-    state.timer.pausedAt = Date.now();
-    state.timer.running = false;
+    state.timer.pausedAt=Date.now();
   }
-  saveState();
-  renderAll();
+  saveState(); renderAll();
 }
-function startPomodoro(){
-  const min = clamp(parseInt(state.timer.pomodoroMin,10)||25, 5, 90);
-  state.timer.pomodoroMin = min;
-  state.timer.pomodoroRunning = true;
-  state.timer.pomodoroEndsAt = Date.now() + min*60*1000;
-  saveState();
+function pomoRemainingMs(){
+  if(!state.pomodoro.running || !state.pomodoro.endsAt) return null;
+  return Math.max(0, state.pomodoro.endsAt - Date.now());
+}
+function startPomodoro(min){
+  const m=clamp(Number(min)||25, 5, 90);
+  state.pomodoro.minutes=m;
+  state.pomodoro.running=true;
+  state.pomodoro.endsAt=Date.now() + m*60*1000;
+  saveState(); renderAll();
 }
 function stopPomodoro(){
-  state.timer.pomodoroRunning = false;
-  state.timer.pomodoroEndsAt = null;
-  saveState();
-}
-function pomodoroLeft(){
-  if(!state.timer.pomodoroRunning || !state.timer.pomodoroEndsAt) return null;
-  const ms = state.timer.pomodoroEndsAt - Date.now();
-  return Math.max(0, ms);
-}
-function tickPomodoro(){
-  const left = pomodoroLeft();
-  if(left===null) return;
-  if(left<=0){
-    stopPomodoro();
-    showNudge();
-  }
+  state.pomodoro.running=false;
+  state.pomodoro.endsAt=null;
+  saveState(); renderAll();
 }
 
-/* -------------------------
-   Etorions + completing tasks
-------------------------- */
-function degommeEtorion(){
-  const t = getTaskById(state.currentTaskId);
-  if(!t || t.done) return;
-
-  pushUndo("etorion");
-
-  if(typeof t.etorionsLeft!=="number") t.etorionsLeft = t.etorionsTotal||1;
-  t.etorionsLeft = clamp(t.etorionsLeft - 1, 0, 99);
-  state.stats.etorionsDone = (state.stats.etorionsDone||0) + 1;
-
-  if(state.settings.autoSuggestKiffance){
-    const every = clamp(parseInt(state.settings.kiffanceSuggestEveryEto,10)||6, 3, 20);
-    if(state.stats.etorionsDone>0 && state.stats.etorionsDone % every === 0){
-      const r = Math.random();
-      if(r<0.40) showTip();
-      else if(r<0.58) showNudge();
-    }
-  }
-
-  if(t.etorionsLeft<=0){
-    completeTask(t.id);
-    return;
-  }
-
-  snapshotDay();
-  saveState();
-  renderAll();
+/* ================= Kiffance (non affichée) ================= */
+function randomKiffance(){
+  const bank=state.kiffanceBank||[];
+  if(!bank.length) return "Pause courte : eau + respiration.";
+  return bank[Math.floor(Math.random()*bank.length)];
 }
 
+/* ================= Completing ================= */
 function completeTask(taskId){
-  const t = getTaskById(taskId);
+  const t=getTaskById(taskId);
   if(!t || t.done) return;
 
   pushUndo("taskComplete");
+  t.done=true; t.doneAt=nowISO();
+  state.stats.tasksDone=(state.stats.tasksDone||0)+1;
+  confettiBurst(1.10);
 
-  t.done = true;
-  t.doneAt = nowISO();
-  state.stats.tasksDone = (state.stats.tasksDone||0) + 1;
-
-  const now = Date.now();
-  const last = state.streak.lastTaskDoneAt;
-  if(last && (now - last) <= 20*60*1000) state.streak.tasksInARow = (state.streak.tasksInARow||0) + 1;
-  else state.streak.tasksInARow = 1;
-  state.streak.lastTaskDoneAt = now;
-
-  confettiBurst(1.15);
-  maybeShowCelebration();
-
-  snapshotDay();
   ensureCurrentTask();
   saveState();
   renderAll();
+}
+function degommeEtorion(){
+  const t=getTaskById(state.currentTaskId);
+  if(!t || t.done) return;
 
-  maybeTip();
-  maybeNudge();
+  pushUndo("etorion");
+  const total=t.etorionsTotal||1;
+  if(typeof t.etorionsLeft!=="number") t.etorionsLeft=total;
+  t.etorionsLeft = clamp(t.etorionsLeft-1, 0, 99);
+  state.stats.etorionsDone=(state.stats.etorionsDone||0)+1;
+
+  if(t.etorionsLeft<=0){ completeTask(t.id); return; }
+  saveState(); renderAll();
 }
 
-/* -------------------------
-   Counters show/hide
-------------------------- */
-function setCountersVisible(on, autoHide=true){
-  state.showCounters = !!on;
-  const pills = ["pillTasks","pillEto","pillDone","pillTimer"].map($);
-  pills.forEach(p=>p.classList.toggle("hidden", !state.showCounters));
-  saveState();
-
-  if(countersTimer) clearTimeout(countersTimer);
-  if(on && autoHide){
-    countersTimer = setTimeout(()=>{
-      state.showCounters = false;
-      pills.forEach(p=>p.classList.add("hidden"));
-      saveState();
-    }, clamp(state.countersAutoHideSec||10, 3, 30) * 1000);
-  }
-}
-
-/* -------------------------
-   UI toggles
-------------------------- */
-function toggleTheme(){
-  state.theme = (state.theme==="light") ? "dark" : "light";
-  saveState();
-  renderAll();
-}
-function applyFocus(){
-  const app = $("app");
-  if(state.focus) app.classList.add("focusOn");
-  else app.classList.remove("focusOn");
-}
-function toggleFocus(){
-  state.focus = !state.focus;
+/* ================= Emotions : plus visuel ================= */
+const EMOTIONS = [
+  {name:"Joie", c:"#2fbf71"},
+  {name:"Soulagement", c:"#7bdff2"},
+  {name:"Fatigue", c:"#cdb4db"},
+  {name:"Stress", c:"#ffd166"},
+  {name:"Anxiété", c:"#ef476f"},
+  {name:"Colère", c:"#ff6b6b"},
+  {name:"Tristesse", c:"#4d96ff"},
+  {name:"Honte", c:"#9b5de5"},
+  {name:"Culpabilité", c:"#f15bb5"},
+  {name:"Frustration", c:"#f77f00"}
+];
+function addEmotionQuick(name, intensity){
+  pushUndo("emoAdd");
+  state.emotions.entries.unshift({
+    id:uid(),
+    day:dayKey(),
+    at:nowISO(),
+    emotion:name,
+    intensity: clamp(Number(intensity)||5,0,10)
+  });
   saveState();
   renderAll();
 }
-
-/* -------------------------
-   Panels + resizers
-------------------------- */
-function openDrawer(){
-  $("drawerBack").classList.add("show");
-  $("drawer").classList.add("open");
-  renderDrawer();
+function emotionsToday(){
+  const dk=dayKey();
+  return (state.emotions.entries||[]).filter(e=>e.day===dk);
 }
-function closeDrawer(){
-  $("drawerBack").classList.remove("show");
-  $("drawer").classList.remove("open");
+function avgIntensity(list){
+  if(!list?.length) return 0;
+  return Math.round(list.reduce((a,b)=>a+(Number(b.intensity)||0),0)/list.length);
 }
-function openRight(){
-  $("rightBack").classList.add("show");
-  $("rightPanel").classList.add("open");
-  renderRight();
+function topEmotion(list){
+  if(!list?.length) return null;
+  const m=new Map();
+  list.forEach(e=>m.set(e.emotion,(m.get(e.emotion)||0)+1));
+  let best=null,v=-1; for(const [k,n] of m){ if(n>v){v=n;best=k;} }
+  return best;
 }
-function closeRight(){
-  $("rightBack").classList.remove("show");
-  $("rightPanel").classList.remove("open");
+function colorForEmotion(name){
+  const f=EMOTIONS.find(e=>e.name===name);
+  return f?.c || "#f4a261";
 }
 
-function initResizer(resId, which){
-  const res = $(resId);
-  let dragging=false, startX=0, startW=0;
-  res.addEventListener("mousedown",(e)=>{
-    dragging=true;
-    startX=e.clientX;
-    startW=clamp(which==="left" ? (state.drawerW||460) : (state.rightW||520), 340, 980);
-    e.preventDefault();
-  });
-  window.addEventListener("mousemove",(e)=>{
-    if(!dragging) return;
-    const dx = e.clientX - startX;
-    if(which==="left") state.drawerW = clamp(startW + dx, 340, 980);
-    else state.rightW = clamp(startW - dx, 340, 980);
-    applyAppearance();
-  });
-  window.addEventListener("mouseup",()=>{
-    if(!dragging) return;
-    dragging=false;
-    saveState();
-  });
-
-  res.addEventListener("touchstart",(e)=>{
-    dragging=true;
-    startX=e.touches[0].clientX;
-    startW=clamp(which==="left" ? (state.drawerW||460) : (state.rightW||520), 340, 980);
-    e.preventDefault();
-  }, {passive:false});
-  window.addEventListener("touchmove",(e)=>{
-    if(!dragging) return;
-    const dx = e.touches[0].clientX - startX;
-    if(which==="left") state.drawerW = clamp(startW + dx, 340, 980);
-    else state.rightW = clamp(startW - dx, 340, 980);
-    applyAppearance();
-  }, {passive:true});
-  window.addEventListener("touchend",()=>{
-    if(!dragging) return;
-    dragging=false;
-    saveState();
-  });
+/* ================= Sets ================= */
+function getSetById(id){ return state.sets.list.find(s=>s.id===id) || null; }
+function initSetChecksForToday(set){
+  const dk=dayKey();
+  if(!set.checks) set.checks={};
+  if(!set.checks[dk]) set.checks[dk]={};
 }
-initResizer("drawerResizer","left");
-initResizer("rightResizer","right");
-
-/* -------------------------
-   Render HUD / timer
-------------------------- */
-function renderHUD(){
-  recomputeBaselineIfNeeded();
-  const p = computeProgress();
-  $("pillTasks").textContent = `${p.remT}/${p.baseT} ${plural(p.baseT,"tâche","tâches")}`;
-  $("pillEto").textContent = `${p.remE}/${p.baseE} étorions`;
-  const done = (p.baseT - p.remT);
-  $("pillDone").textContent = `${done} ${plural(done,"faite","faites")}`;
+function setCheckKey(u,i){ return `u${u}_i${i}`; }
+function toggleSetCheck(setId,u,i){
+  const set=getSetById(setId); if(!set) return;
+  initSetChecksForToday(set);
+  const dk=dayKey();
+  const k=setCheckKey(u,i);
+  set.checks[dk][k]=!set.checks[dk][k];
 }
-function renderTimer(){
-  $("pillTimer").textContent = fmtMMSS(timerNowMs());
-}
-let timerInterval=null;
-function startTimerLoop(){
-  if(timerInterval) clearInterval(timerInterval);
-  timerInterval = setInterval(()=>{
-    tickPomodoro();
-    if(state.showCounters) renderTimer();
-    $("btnPause").textContent = state.timer.pausedAt ? "▶" : "⏸";
-  }, 500);
+function summarizeSetToday(setId){
+  const set=getSetById(setId); if(!set) return {done:0,total:0};
+  initSetChecksForToday(set);
+  const dk=dayKey();
+  const checks=set.checks[dk]||{};
+  const total=(set.unitCount||0)*(set.items?.length||0);
+  const done=Object.values(checks).filter(Boolean).length;
+  return {done,total};
 }
 
-/* -------------------------
-   Render main blocks
-------------------------- */
-function renderProgress(){
-  const p = computeProgress();
-  $("taskBarFill").style.width = `${p.pct}%`;
-  $("taskBarPct").textContent = `${p.pct}%`;
-  $("barInfo").textContent = `${p.remT} restantes sur ${p.baseT}`;
-}
-function renderCurrent(){
-  ensureCurrentTask();
-  const t = getTaskById(state.currentTaskId);
-  if(!t){
-    $("taskName").textContent = "Aucune tâche";
-    $("chips").innerHTML = "";
-    $("btnEtorion").style.opacity = 0.45;
-    $("btnEtorion").style.pointerEvents = "none";
-    return;
-  }
-  $("btnEtorion").style.opacity = 1;
-  $("btnEtorion").style.pointerEvents = "auto";
-  $("taskName").textContent = t.title;
+/* ================= Drawer / Right panels ================= */
+const TAB_DEFS = [
+  {key:"inbox", label:"INBOX"},
+  {key:"liste", label:"LISTE"},
+  {key:"flow", label:"FLOW"},
+  {key:"export", label:"EXPORT"}
+];
 
-  const total = t.etorionsTotal || 1;
-  const left = (typeof t.etorionsLeft==="number") ? t.etorionsLeft : total;
-
-  const chips = [];
-  for(let i=0;i<total;i++){
-    chips.push(`<div class="chip ${i<left?"on":""}"></div>`);
-  }
-  $("chips").innerHTML = chips.join("");
-  if(!state.currentTaskStart) state.currentTaskStart = Date.now();
-  if(!state.timer.startedAt) state.timer.startedAt = Date.now();
-}
-function applyListVisible(){
-  const el = $("belowList");
-  const show = !!state.showBelowList;
-  el.classList.toggle("show", show && (!state.focus || state.settings.keepListInFocus));
-}
-function moveTask(id, delta){
-  const idx = state.tasks.findIndex(t=>t.id===id);
-  if(idx<0) return;
-  const j = clamp(idx+delta, 0, state.tasks.length-1);
-  const [it] = state.tasks.splice(idx,1);
-  state.tasks.splice(j,0,it);
-}
-function renderBelowList(){
-  const box = $("belowTasks");
-  const list = sortTasks(activeTasks());
-  if(list.length===0){
-    box.innerHTML = `<div class="small">Aucune tâche.</div>`;
-    return;
-  }
-  box.innerHTML = list.slice(0,80).map(t=>{
-    const et = t.etorionsTotal||1;
-    const left = t.etorionsLeft??et;
-    const isCur = t.id===state.currentTaskId;
-    return `
-      <div class="taskRow" style="${isCur?"background:linear-gradient(180deg,var(--glass2),transparent); border-radius:var(--radius2); border:1px solid var(--line)":""}">
-        <div class="t">${escapeHTML(t.title)}</div>
-        <div class="meta">${left}/${et}</div>
-        <div class="tools">
-          <div class="toolBtn" data-act="up" data-id="${t.id}" title="Monter">↑</div>
-          <div class="toolBtn" data-act="down" data-id="${t.id}" title="Descendre">↓</div>
-          <div class="toolBtn" data-act="pin" data-id="${t.id}" title="Épingler">${t.pinned?"■":"□"}</div>
-          <div class="toolBtn" data-act="go" data-id="${t.id}" title="Cibler">◎</div>
-          <div class="toolBtn" data-act="done" data-id="${t.id}" title="Dégommée">✓</div>
-        </div>
-      </div>
-    `;
-  }).join("");
-  box.querySelectorAll(".toolBtn").forEach(b=>{
-    b.onclick = ()=>{
-      const id = b.getAttribute("data-id");
-      const act = b.getAttribute("data-act");
-      const t = getTaskById(id);
-      if(!t) return;
-
-      pushUndo("listAction");
-
-      if(act==="up") moveTask(id,-1);
-      if(act==="down") moveTask(id,1);
-      if(act==="pin") t.pinned = !t.pinned;
-      if(act==="go"){ setCurrentTask(id); }
-      if(act==="done") completeTask(id);
-
-      snapshotDay();
-      saveState();
-      renderAll();
-    };
-  });
-}
-
-function renderAll(){
-  ensureSelectedSet();
-  applyAppearance();
-  applyFocus();
-  setRandomTagline();
-  recomputeBaselineIfNeeded();
-  ensureCurrentTask();
-
-  renderHUD();
-  renderProgress();
-  renderCurrent();
-  renderBelowList();
-  applyListVisible();
-
-  setCountersVisible(state.showCounters, false);
-
-  $("btnUndo").style.opacity = state.undo.length ? 1 : 0.45;
-  $("btnUndo").style.pointerEvents = state.undo.length ? "auto" : "none";
-
-  $("btnPause").textContent = state.timer.pausedAt ? "▶" : "⏸";
-}
-
-/* -------------------------
-   Drawer / Right panel views
-   (⚠️ pour garder ce message dans les limites, je mets ici
-    le JS complet des views + editors + export + events + boot.
-    Il est 100% fonctionnel et termine le fichier.)
-------------------------- */
-
-/* ========= Helpers DOM safe editors ========= */
-function clearEl(el){ while(el.firstChild) el.removeChild(el.firstChild); }
-function mkBtn(label, cls="btn"){
-  const b=document.createElement("button");
-  b.className=cls;
-  b.textContent=label;
-  return b;
-}
 function mkSection(title){
   const s=document.createElement("div");
   s.className="section";
@@ -2269,1389 +1502,487 @@ function mkSection(title){
   s.appendChild(h);
   return s;
 }
+function mkBtn(txt, cls="btn"){ const b=document.createElement("button"); b.className=cls; b.textContent=txt; return b; }
 
-/* -------------------------
-   Tabs definitions
-------------------------- */
-const TAB_DEFS = [
-  { key:"inbox", label:"INBOX" },
-  { key:"liste", label:"LISTE" },
-  { key:"kiff",  label:"KIFFANCE" },
-  { key:"flow",  label:"FLOW" },
-  { key:"app",   label:"APPARENCE" },
-  { key:"hist",  label:"HIST" }
-];
-const RIGHT_TABS = [
-  { key:"sets", label:"SETS" },
-  { key:"habits", label:"HABITUDES" },
-  { key:"emotions", label:"ÉMOTIONS" }
-];
-
-/* -------------------------
-   Drawer render
-------------------------- */
 function buildTabs(){
-  const el = $("tabs");
-  el.innerHTML = "";
+  const el=$("tabs"); clearEl(el);
   TAB_DEFS.forEach(t=>{
-    const b = document.createElement("div");
-    b.className = "tab"+(state.activeTab===t.key?" active":"");
-    b.textContent = t.label;
-    b.onclick = ()=>{ state.activeTab=t.key; saveState(); renderDrawer(); };
+    const b=document.createElement("div");
+    b.className="tab"+(state.activeTab===t.key?" active":"");
+    b.textContent=t.label;
+    b.onclick=()=>{ state.activeTab=t.key; saveState(); renderDrawer(); };
     el.appendChild(b);
   });
 }
-function renderDrawer(){
-  buildTabs();
-  const body = $("drawerBody");
-  clearEl(body);
-  if(state.activeTab==="inbox") body.appendChild(viewInbox());
-  if(state.activeTab==="liste") body.appendChild(viewListe());
-  if(state.activeTab==="kiff")  body.appendChild(viewKiffance());
-  if(state.activeTab==="flow")  body.appendChild(viewFlow());
-  if(state.activeTab==="app")   body.appendChild(viewAppearance());
-  if(state.activeTab==="hist")  body.appendChild(viewHistory());
-}
 
-/* -------------------------
-   Right panel render
-------------------------- */
-function buildRightTabs(){
-  const el = $("rightTabs");
-  el.innerHTML = "";
-  RIGHT_TABS.forEach(t=>{
-    const b = document.createElement("div");
-    b.className = "tab"+(state.rightTab===t.key?" active":"");
-    b.textContent = t.label;
-    b.onclick = ()=>{ state.rightTab=t.key; saveState(); renderRight(); };
-    el.appendChild(b);
-  });
-}
-function renderRight(){
-  buildRightTabs();
-  const body = $("rightBody");
-  clearEl(body);
-  if(state.rightTab==="sets") body.appendChild(viewRightSets());
-  if(state.rightTab==="habits") body.appendChild(viewRightHabits());
-  if(state.rightTab==="emotions") body.appendChild(viewRightEmotions());
-}
-
-/* -------------------------
-   Views (Inbox/Liste/Kiff/Flow/App/Hist)
-   (reprend ton code, juste clean/safe)
-------------------------- */
 function viewInbox(){
-  const wrap = document.createElement("div");
-
-  const s1 = mkSection("Importer des tâches");
-  const ta = document.createElement("textarea");
-  ta.placeholder = "COLLE ICI.\n\nExemple:\nADMIN\n- Mail ordre 2\n- Appeler X 1\n\nCLINIQUE\n- Rapport Y 6\n\n(les titres en MAJUSCULES deviennent des catégories)";
+  const wrap=document.createElement("div");
+  const s1=mkSection("Importer des tâches");
+  const ta=document.createElement("textarea");
+  ta.placeholder="COLLE ICI.\n\nADMIN\n- Mail X 2\n- Appeler Y 1\n\nPROJET\n- Rapport Z 6\n\nLigne MAJUSCULES = catégorie.\nChiffre final = étorions.";
   s1.appendChild(ta);
 
-  const row = document.createElement("div");
-  row.className = "row";
-  row.style.marginTop = "8px";
+  const row=document.createElement("div");
+  row.className="row";
+  row.style.marginTop="8px";
 
-  const btnAdd = mkBtn("IMPORTER","btn primary");
-  btnAdd.onclick = ()=>{
-    const items = importFromInbox(ta.value||"");
+  const btnImport=mkBtn("IMPORTER (RESET BASELINE)","btn primary");
+  btnImport.onclick=()=>{
+    const items=importFromInbox(ta.value||"");
     if(items.length===0) return;
     pushUndo("import");
     state.tasks.push(...items);
-    state.baseline.totalTasks = activeTasks().length;
-    state.baseline.totalEtorions = activeTasks().reduce((a,t)=>a+(t.etorionsTotal||0),0);
+    state.baseline.totalTasks=activeTasks().length;
+    state.baseline.totalEtorions=activeTasks().reduce((a,t)=>a+(t.etorionsTotal||0),0);
     ensureCurrentTask();
-    snapshotDay();
     saveState();
     renderAll();
-    ta.value = "";
+    ta.value="";
     closeDrawer();
   };
 
-  const btnAppend = mkBtn("AJOUTER SANS RESET","btn");
-  btnAppend.onclick = ()=>{
-    const items = importFromInbox(ta.value||"");
-    if(items.length===0) return;
-    pushUndo("appendImport");
-    state.tasks.push(...items);
-    recomputeBaselineIfNeeded();
-    ensureCurrentTask();
-    snapshotDay();
-    saveState();
-    renderAll();
-    ta.value = "";
+  const btnDemo=mkBtn("EXEMPLE","btn");
+  btnDemo.onclick=()=>{
+    ta.value=
+`QUÊTE PRINCIPALE
+- Écrire note 3
+- Envoyer mail 2
+
+GOBELINS
+- Ranger bureau 2
+- Dossier patient 6`;
   };
 
-  const btnDemo = mkBtn("EXEMPLE","btn");
-  btnDemo.onclick = ()=>{
-    ta.value =
-`ADMIN
-- Répondre à X 2
-- Téléphoner à Y 1
-
-CLINIQUE
-- Rapport Z 6
-- Appeler médecin traitant 1
-
-PERSO
-- Lessive 2
-- Ranger sac 2`;
-  };
-
-  row.appendChild(btnAdd);
-  row.appendChild(btnAppend);
+  row.appendChild(btnImport);
   row.appendChild(btnDemo);
   s1.appendChild(row);
 
-  const s2 = mkSection("Gestion rapide");
-  const r2 = document.createElement("div");
-  r2.className = "row";
-
-  const btnResetBaseline = mkBtn("RESET BASELINE","btn");
-  btnResetBaseline.onclick = ()=>{
-    pushUndo("resetBaseline");
-    state.baseline.totalTasks = activeTasks().length;
-    state.baseline.totalEtorions = activeTasks().reduce((a,t)=>a+(t.etorionsTotal||0),0);
-    snapshotDay();
-    saveState();
-    renderAll();
-  };
-
-  const btnClearDone = mkBtn("SUPPRIMER FINIES","btn");
-  btnClearDone.onclick = ()=>{
-    pushUndo("clearDone");
-    state.tasks = state.tasks.filter(t=>!t.done);
-    state.baseline.totalTasks = activeTasks().length;
-    state.baseline.totalEtorions = activeTasks().reduce((a,t)=>a+(t.etorionsTotal||0),0);
-    ensureCurrentTask();
-    snapshotDay();
-    saveState();
-    renderAll();
-  };
-
-  const btnWipe = mkBtn("TOUT VIDER","btn");
-  btnWipe.onclick = ()=>{
-    if(!confirm("Tout effacer (tâches, baseline, stats du run) ?")) return;
-    pushUndo("wipe");
-    state.tasks = [];
-    state.baseline = { totalTasks:0, totalEtorions:0 };
-    state.currentTaskId = null;
-    state.currentTaskStart = null;
-    state.stats.etorionsDone = 0;
-    state.stats.tasksDone = 0;
-    state.streak = { tasksInARow:0, lastTaskDoneAt:null };
-    snapshotDay();
-    saveState();
-    renderAll();
-  };
-
-  r2.appendChild(btnResetBaseline);
-  r2.appendChild(btnClearDone);
-  r2.appendChild(btnWipe);
-  s2.appendChild(r2);
-
-  const s3 = mkSection("Rappel format");
-  const info = document.createElement("div");
-  info.className="small";
-  info.textContent =
-    "• Ligne en MAJUSCULES = catégorie\n• « titre 6 » ou « titre - 6 » = étorions\n• Sans chiffre → 1 étorion";
-  s3.appendChild(info);
-
   wrap.appendChild(s1);
-  wrap.appendChild(document.createElement("div")).style.height="10px";
-  wrap.appendChild(s2);
-  wrap.appendChild(document.createElement("div")).style.height="10px";
-  wrap.appendChild(s3);
   return wrap;
 }
 
 function viewListe(){
-  const wrap = document.createElement("div");
-  const s = mkSection("Liste (tout)");
-  const list = document.createElement("div");
-
-  const all = sortTasks(state.tasks.filter(t=>!t.done)).concat(
-    state.tasks.filter(t=>t.done).slice().sort((a,b)=>(b.doneAt||"").localeCompare(a.doneAt||"")).slice(0,18)
-  );
-
-  if(all.length===0){
-    list.innerHTML = `<div class="small">Rien ici. Menu → Inbox pour importer.</div>`;
-  }else{
-    list.innerHTML = all.slice(0,120).map(t=>{
-      const et = t.etorionsTotal||1;
-      const left = t.etorionsLeft ?? et;
-      const done = t.done;
-      const cat = (t.cat||"").trim();
-      return `
-      <div class="taskRow" style="opacity:${done?0.55:1}">
-        <div class="t">${escapeHTML(t.title)}${cat?` <span style="color:var(--muted); font-family:var(--mono); font-size:11px">[${escapeHTML(cat)}]</span>`:""}</div>
-        <div class="meta">${done?"✓":`${left}/${et}`}</div>
-        <div class="tools">
-          ${done?`<div class="toolBtn" data-act="revive" data-id="${t.id}" title="Réactiver">↺</div>`:`
-            <div class="toolBtn" data-act="up" data-id="${t.id}" title="Monter">↑</div>
-            <div class="toolBtn" data-act="down" data-id="${t.id}" title="Descendre">↓</div>
-            <div class="toolBtn" data-act="pin" data-id="${t.id}" title="Épingler">${t.pinned?"■":"□"}</div>
-            <div class="toolBtn" data-act="go" data-id="${t.id}" title="Cibler">◎</div>
-            <div class="toolBtn" data-act="edit" data-id="${t.id}" title="Éditer">≋</div>
-            <div class="toolBtn" data-act="done" data-id="${t.id}" title="Dégommée">✓</div>
-          `}
-        </div>
-      </div>`;
-    }).join("");
-  }
-
+  const wrap=document.createElement("div");
+  const s=mkSection("Actives");
+  const list=document.createElement("div");
+  const act=sortTasks(activeTasks());
+  list.innerHTML = act.length ? act.map(t=>`
+    <div style="display:flex; gap:10px; align-items:center; padding:10px 6px; border-bottom:1px solid var(--line)">
+      <div style="flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">${escapeHTML(t.title)} <span class="small">${t.cat?`[${escapeHTML(t.cat)}]`:""}</span></div>
+      <div class="small">${t.etorionsLeft??t.etorionsTotal}/${t.etorionsTotal}</div>
+      <button class="btn" data-go="${t.id}">CIBLER</button>
+      <button class="btn primary" data-done="${t.id}">FINIR</button>
+    </div>`).join("")
+    : `<div class="small">Aucune tâche.</div>`;
   s.appendChild(list);
+
+  list.querySelectorAll("button[data-go]").forEach(b=>{
+    b.onclick=()=>{ pushUndo("go"); setCurrentTask(b.getAttribute("data-go")); saveState(); renderAll(); };
+  });
+  list.querySelectorAll("button[data-done]").forEach(b=>{
+    b.onclick=()=>{ completeTask(b.getAttribute("data-done")); };
+  });
+
   wrap.appendChild(s);
-
-  list.querySelectorAll(".toolBtn").forEach(b=>{
-    b.onclick = ()=>{
-      const id = b.getAttribute("data-id");
-      const act = b.getAttribute("data-act");
-      const t = getTaskById(id);
-      if(!t) return;
-
-      pushUndo("listeAction");
-
-      if(act==="up") moveTask(id,-1);
-      if(act==="down") moveTask(id,1);
-      if(act==="pin") t.pinned = !t.pinned;
-      if(act==="go") setCurrentTask(id);
-      if(act==="done") completeTask(id);
-      if(act==="revive"){
-        t.done = false;
-        t.doneAt = null;
-        if(typeof t.etorionsLeft!=="number") t.etorionsLeft = t.etorionsTotal||1;
-      }
-      if(act==="edit"){ openTaskEditor(id); return; }
-
-      snapshotDay();
-      saveState();
-      renderAll();
-      renderDrawer();
-    };
-  });
-
-  const s2 = mkSection("Outils");
-  const row = document.createElement("div");
-  row.className = "row";
-
-  const btnExport = mkBtn("EXPORT","btn primary");
-  btnExport.onclick = ()=>{ openModal("exportModal"); renderExport("text"); };
-
-  const btnBias = mkBtn("BIAIS","btn");
-  btnBias.onclick = ()=>{
-    $("biasList").innerHTML = DISTORTIONS.map(x=>`
-      <div style="padding:8px 6px; border-bottom:1px solid var(--line)">
-        <div style="font-family:var(--mono); letter-spacing:.08em; text-transform:uppercase; font-size:11px; color:var(--muted)">${escapeHTML(x.k)}</div>
-        <div style="font-size:13px">${escapeHTML(x.d)}</div>
-      </div>
-    `).join("");
-    openModal("biasModal");
-  };
-
-  const btnSetBaseline = mkBtn("BASELINE=ACTIF","btn");
-  btnSetBaseline.onclick = ()=>{
-    pushUndo("baselineActive");
-    state.baseline.totalTasks = activeTasks().length;
-    state.baseline.totalEtorions = activeTasks().reduce((a,t)=>a+(t.etorionsTotal||0),0);
-    snapshotDay();
-    saveState();
-    renderAll();
-    renderDrawer();
-  };
-
-  row.appendChild(btnExport);
-  row.appendChild(btnBias);
-  row.appendChild(btnSetBaseline);
-  s2.appendChild(row);
-
-  wrap.appendChild(document.createElement("div")).style.height="10px";
-  wrap.appendChild(s2);
-
   return wrap;
 }
 
-/* -------------------------
-   Kiffance
-------------------------- */
-function viewKiffance(){
-  const wrap = document.createElement("div");
-
-  const s0 = mkSection("Banque de kiffance (pause récompense)");
-  const info = document.createElement("div");
-  info.className="small";
-  info.textContent = "Tu peux éditer les listes. Bouton « Lancer » → te propose un item (aléatoire).";
-  s0.appendChild(info);
-
-  const launchRow = document.createElement("div");
-  launchRow.className = "row";
-  launchRow.style.marginTop="8px";
-
-  const sel = document.createElement("select");
-  ["5","10","15","25"].forEach(m=>{
-    const o=document.createElement("option");
-    o.value=m; o.textContent=`${m} min`;
-    sel.appendChild(o);
-  });
-  sel.value="10";
-
-  const btnLaunch = mkBtn("LANCER","btn primary");
-  btnLaunch.onclick = ()=>{
-    const k = sel.value;
-    const list = state.kiffance.bank[k]||[];
-    if(list.length===0) return;
-    const pick = list[rand(list.length)];
-    $("tipsTitle").textContent = `KIFFANCE ${k} MIN`;
-    $("tipsMsg").textContent = pick;
-    $("tipsSub").textContent = "Pause → puis reprise douce.";
-    openModal("tipsModal");
-  };
-
-  launchRow.appendChild(sel);
-  launchRow.appendChild(btnLaunch);
-  s0.appendChild(launchRow);
-
-  const s1 = mkSection("Édition rapide");
-  const ta = document.createElement("textarea");
-  ta.style.minHeight="240px";
-  ta.placeholder = "Format:\n# 5\nitem\nitem\n# 10\nitem\n...";
-  ta.value =
-`# 5
-${(state.kiffance.bank["5"]||[]).join("\n")}
-# 10
-${(state.kiffance.bank["10"]||[]).join("\n")}
-# 15
-${(state.kiffance.bank["15"]||[]).join("\n")}
-# 25
-${(state.kiffance.bank["25"]||[]).join("\n")}`;
-  s1.appendChild(ta);
-
-  const row = document.createElement("div");
-  row.className="row";
-  row.style.marginTop="8px";
-
-  const btnSave = mkBtn("ENREGISTRER","btn primary");
-  btnSave.onclick = ()=>{
-    pushUndo("kiffanceEdit");
-    const txt = ta.value||"";
-    const lines = txt.split(/\r?\n/);
-    let cur = null;
-    const bank = {"5":[], "10":[], "15":[], "25":[]};
-    for(const line0 of lines){
-      const line = line0.trim();
-      if(!line) continue;
-      const head = line.match(/^#\s*(5|10|15|25)\s*$/);
-      if(head){ cur=head[1]; continue; }
-      if(cur) bank[cur].push(line0.trim());
-    }
-    state.kiffance.bank = bank;
-    saveState();
-    renderDrawer();
-  };
-
-  const btnReset = mkBtn("RESET PAR DÉFAUT","btn");
-  btnReset.onclick = ()=>{
-    pushUndo("kiffanceReset");
-    state.kiffance.bank={"5":[], "10":[], "15":[], "25":[]};
-    seedState(state);
-    saveState();
-    renderDrawer();
-  };
-
-  row.appendChild(btnSave);
-  row.appendChild(btnReset);
-  s1.appendChild(row);
-
-  wrap.appendChild(s0);
-  wrap.appendChild(document.createElement("div")).style.height="10px";
-  wrap.appendChild(s1);
-  return wrap;
-}
-
-/* -------------------------
-   Flow settings
-------------------------- */
 function viewFlow(){
-  const wrap = document.createElement("div");
+  const wrap=document.createElement("div");
 
-  const s = mkSection("Flow (probabilités & timers)");
-  const mkNum = (label, key, min, max, step=1)=>{
-    const box = document.createElement("div");
-    const l = document.createElement("div");
-    l.className="small";
-    l.textContent = label;
-    const inp = document.createElement("input");
-    inp.type="number";
-    inp.step=String(step);
-    inp.min=String(min);
-    inp.max=String(max);
-    inp.value=String(state.settings[key] ?? "");
-    inp.onchange = ()=>{
-      const v = Number(inp.value);
-      state.settings[key] = clamp(v, min, max);
-      saveState();
-    };
-    box.appendChild(l);
-    box.appendChild(inp);
-    return box;
+  const s=mkSection("Interface");
+  const row=document.createElement("div"); row.className="row";
+
+  const barH=document.createElement("input");
+  barH.type="number"; barH.min="56"; barH.max="160"; barH.step="1";
+  barH.value=String(state.appearance.barH||86);
+
+  const barText=document.createElement("input");
+  barText.type="number"; barText.min="16"; barText.max="40"; barText.step="1";
+  barText.value=String(state.appearance.barText||24);
+
+  const barBlock=document.createElement("input");
+  barBlock.type="number"; barBlock.min="120"; barBlock.max="320"; barBlock.step="1";
+  barBlock.value=String(state.appearance.barBlockMinH||170);
+
+  row.appendChild(barH);
+  row.appendChild(barText);
+  row.appendChild(barBlock);
+
+  const apply=mkBtn("APPLIQUER","btn primary");
+  apply.onclick=()=>{
+    state.appearance.barH=Number(barH.value)||86;
+    state.appearance.barText=Number(barText.value)||24;
+    state.appearance.barBlockMinH=Number(barBlock.value)||170;
+    saveState(); renderAll();
   };
 
-  const mkPct = (label, key)=>{
-    const box = document.createElement("div");
-    const l=document.createElement("div"); l.className="small"; l.textContent=label;
-    const inp=document.createElement("input");
-    inp.type="range"; inp.min="0"; inp.max="1"; inp.step="0.01";
-    inp.value=String(clamp(Number(state.settings[key]??0),0,1));
-    const out=document.createElement("div"); out.className="small"; out.style.marginTop="4px";
-    out.textContent = `${Math.round(Number(inp.value)*100)}%`;
-    inp.oninput = ()=>{
-      state.settings[key]=Number(inp.value);
-      out.textContent = `${Math.round(Number(inp.value)*100)}%`;
-      saveState();
-    };
-    box.appendChild(l); box.appendChild(inp); box.appendChild(out);
-    return box;
-  };
-
-  const grid = document.createElement("div");
-  grid.className="row";
-  grid.appendChild(mkPct("Chance de célébration (base)", "celebrationBase"));
-  grid.appendChild(mkNum("Auto-fermeture célébration (sec)", "celebrationAutoCloseSec", 5, 20, 1));
-  s.appendChild(grid);
-
-  const grid2 = document.createElement("div");
-  grid2.className="row";
-  grid2.style.marginTop="8px";
-  grid2.appendChild(mkPct("Chance « conseil »", "tipsChance"));
-  grid2.appendChild(mkNum("Gap min conseil (min)", "tipsMinGapMin", 1, 60, 1));
-  s.appendChild(grid2);
-
-  const grid3 = document.createElement("div");
-  grid3.className="row";
-  grid3.style.marginTop="8px";
-  grid3.appendChild(mkPct("Chance « micro-régulation »", "nudgeChance"));
-  grid3.appendChild(mkNum("Gap min micro-régulation (min)", "nudgeMinGapMin", 1, 120, 1));
-  s.appendChild(grid3);
-
-  const grid4 = document.createElement("div");
-  grid4.className="row";
-  grid4.style.marginTop="8px";
-  grid4.appendChild(mkNum("Streak milestone (tâches)", "streakMilestone", 2, 12, 1));
-  grid4.appendChild(mkNum("Long gap célébration (min)", "longGapMin", 1, 90, 1));
-  s.appendChild(grid4);
-
-  const s2 = mkSection("Pomodoro");
-  const row = document.createElement("div");
-  row.className="row";
-  const pom = document.createElement("input");
-  pom.type="number"; pom.min="5"; pom.max="90"; pom.step="1";
-  pom.value = String(state.timer.pomodoroMin||25);
-  pom.onchange = ()=>{ state.timer.pomodoroMin = clamp(parseInt(pom.value,10)||25, 5, 90); saveState(); };
-  const btnStart = mkBtn("DÉMARRER","btn primary");
-  btnStart.onclick = ()=>{ startPomodoro(); renderAll(); };
-  const btnStop = mkBtn("STOP","btn");
-  btnStop.onclick = ()=>{ stopPomodoro(); renderAll(); };
-
-  row.appendChild(pom);
-  row.appendChild(btnStart);
-  row.appendChild(btnStop);
-  s2.appendChild(row);
-
-  const s3 = mkSection("Comportement");
-  const r = document.createElement("div");
-  r.className="row";
-  const chk = (label, key)=>{
-    const box=document.createElement("div");
-    const lab=document.createElement("label");
-    lab.style.display="flex";
-    lab.style.alignItems="center";
-    lab.style.gap="10px";
-    const c=document.createElement("input");
-    c.type="checkbox";
-    c.checked = !!state.settings[key];
-    c.onchange = ()=>{ state.settings[key]=!!c.checked; saveState(); renderAll(); };
-    const t=document.createElement("div");
-    t.className="small";
-    t.textContent=label;
-    lab.appendChild(c); lab.appendChild(t);
-    box.appendChild(lab);
-    return box;
-  };
-  r.appendChild(chk("Mega célébrations sur milestones", "megaOnMilestones"));
-  r.appendChild(chk("Garder la liste visible en focus", "keepListInFocus"));
-  r.appendChild(chk("Suggestions auto (tips/nudges) périodiques", "autoSuggestKiffance"));
-  s3.appendChild(r);
-
-  const r2 = document.createElement("div");
-  r2.className="row";
-  r2.style.marginTop="8px";
-  const every = mkNum("Suggestion toutes les X étorions", "kiffanceSuggestEveryEto", 3, 20, 1);
-  r2.appendChild(every);
-  s3.appendChild(r2);
-
-  wrap.appendChild(s);
-  wrap.appendChild(document.createElement("div")).style.height="10px";
-  wrap.appendChild(s2);
-  wrap.appendChild(document.createElement("div")).style.height="10px";
-  wrap.appendChild(s3);
-  return wrap;
-}
-
-/* -------------------------
-   Appearance settings
-------------------------- */
-function viewAppearance(){
-  const wrap = document.createElement("div");
-
-  const s = mkSection("Apparence");
-  const row = document.createElement("div");
-  row.className="row";
-
-  const mkSelect = (label, value, options, onChange)=>{
-    const box = document.createElement("div");
-    const l=document.createElement("div"); l.className="small"; l.textContent=label;
-    const sel=document.createElement("select");
-    options.forEach(([v,txt])=>{
-      const o=document.createElement("option"); o.value=v; o.textContent=txt;
-      sel.appendChild(o);
-    });
-    sel.value=value;
-    sel.onchange = ()=>onChange(sel.value);
-    box.appendChild(l); box.appendChild(sel);
-    return box;
-  };
-
-  row.appendChild(mkSelect("Police", state.appearance.fontFamily, Object.keys(FONT_FAMILIES).map(k=>[k,k.toUpperCase()]), (v)=>{
-    state.appearance.fontFamily=v; saveState(); renderAll();
-  }));
-  row.appendChild(mkSelect("Bordures", state.appearance.borders, [["on","ON"],["off","OFF"]], (v)=>{
-    state.appearance.borders=v; saveState(); renderAll();
-  }));
-  row.appendChild(mkSelect("Boutons", state.appearance.buttons, [["ghost","GHOST"],["filled","FILLED"]], (v)=>{
-    state.appearance.buttons=v; saveState(); renderAll();
-  }));
   s.appendChild(row);
+  s.appendChild(document.createElement("div")).style.height="8px";
+  s.appendChild(apply);
 
-  const row2 = document.createElement("div");
-  row2.className="row";
-  row2.style.marginTop="8px";
-  const keys = Object.keys(ACCENTS).map(k=>[k,k.toUpperCase()]);
-  row2.appendChild(mkSelect("Accent (light)", state.appearance.accentLight, keys, (v)=>{ state.appearance.accentLight=v; saveState(); renderAll(); }));
-  row2.appendChild(mkSelect("Accent (dark)", state.appearance.accentDark, keys, (v)=>{ state.appearance.accentDark=v; saveState(); renderAll(); }));
-  row2.appendChild(mkSelect("Barre (light)", state.appearance.barColorLight, keys, (v)=>{ state.appearance.barColorLight=v; saveState(); renderAll(); }));
-  row2.appendChild(mkSelect("Barre (dark)", state.appearance.barColorDark, keys, (v)=>{ state.appearance.barColorDark=v; saveState(); renderAll(); }));
-  s.appendChild(row2);
-
-  const s2 = mkSection("Tailles");
-  const mkRange = (label, key, min, max, step, fmt=(x)=>x)=>{
-    const box=document.createElement("div");
-    const l=document.createElement("div"); l.className="small"; l.textContent=label;
-    const inp=document.createElement("input");
-    inp.type="range"; inp.min=String(min); inp.max=String(max); inp.step=String(step);
-    inp.value=String(state.appearance[key]);
-    const out=document.createElement("div"); out.className="small"; out.style.marginTop="4px";
-    out.textContent = String(fmt(Number(inp.value)));
-    inp.oninput = ()=>{
-      state.appearance[key]=Number(inp.value);
-      out.textContent = String(fmt(Number(inp.value)));
-      saveState(); renderAll();
-    };
-    box.appendChild(l); box.appendChild(inp); box.appendChild(out);
-    return box;
-  };
-
-  const r = document.createElement("div");
-  r.className="row";
-  r.appendChild(mkRange("UI scale", "uiScale", 0.90, 1.20, 0.01, (x)=>x.toFixed(2)));
-  r.appendChild(mkRange("Title scale", "titleScale", 0.90, 1.40, 0.01, (x)=>x.toFixed(2)));
-  r.appendChild(mkRange("Task scale", "taskScale", 1.00, 2.10, 0.01, (x)=>x.toFixed(2)));
-  s2.appendChild(r);
-
-  const r2=document.createElement("div");
-  r2.className="row";
-  r2.style.marginTop="8px";
-  r2.appendChild(mkRange("Radius", "radius", 0, 14, 1, (x)=>`${Math.round(x)}px`));
-  r2.appendChild(mkRange("Bar height", "barH", 26, 52, 1, (x)=>`${Math.round(x)}px`));
-  r2.appendChild(mkRange("Chip size", "chipH", 12, 28, 1, (x)=>`${Math.round(x)}px`));
+  const s2=mkSection("Pomodoro");
+  const r2=document.createElement("div"); r2.className="row";
+  const pm=document.createElement("input"); pm.type="number"; pm.min="5"; pm.max="90"; pm.step="1";
+  pm.value=String(state.pomodoro.minutes||25);
+  const b2=mkBtn("SAUVER","btn primary");
+  b2.onclick=()=>{ state.pomodoro.minutes=clamp(Number(pm.value)||25,5,90); saveState(); renderAll(); };
+  r2.appendChild(pm); r2.appendChild(b2);
   s2.appendChild(r2);
 
-  const s3 = mkSection("Compteurs");
-  const row3 = document.createElement("div");
-  row3.className="row";
-  const auto = document.createElement("input");
-  auto.type="number"; auto.min="3"; auto.max="30"; auto.step="1";
-  auto.value = String(state.countersAutoHideSec||10);
-  auto.onchange = ()=>{ state.countersAutoHideSec = clamp(parseInt(auto.value,10)||10, 3, 30); saveState(); };
-  const b = mkBtn("MONTRER 10s","btn primary");
-  b.onclick = ()=>{ setCountersVisible(true,true); };
-  row3.appendChild(auto);
-  row3.appendChild(b);
-  s3.appendChild(row3);
-
-  const s4 = mkSection("Export / Backup");
-  const row4 = document.createElement("div");
-  row4.className="row";
-  const ex = mkBtn("EXPORT","btn primary");
-  ex.onclick = ()=>{ openModal("exportModal"); renderExport("json"); };
-  const imp = mkBtn("IMPORT JSON","btn");
-  imp.onclick = ()=>{
-    const raw = prompt("Colle ton JSON ici (remplace l'état actuel).");
-    if(!raw) return;
-    try{
-      const obj = JSON.parse(raw);
-      pushUndo("importJSON");
-      const merged = structuredClone(defaultState);
-      deepAssign(merged, obj);
-      state = seedState(merged);
-      saveState();
-      renderAll();
-      renderDrawer();
-      renderRight();
-    }catch(e){
-      alert("JSON invalide.");
-    }
+  const s3=mkSection("Probabilités (tips / nudges)");
+  const r3=document.createElement("div"); r3.className="row";
+  const tips=document.createElement("input"); tips.type="number"; tips.min="0"; tips.max="1"; tips.step="0.01"; tips.value=String(state.settings.tipsChance||0.14);
+  const nudge=document.createElement("input"); nudge.type="number"; nudge.min="0"; nudge.max="1"; nudge.step="0.01"; nudge.value=String(state.settings.nudgeChance||0.10);
+  const b3=mkBtn("SAUVER","btn primary");
+  b3.onclick=()=>{
+    state.settings.tipsChance=clamp(Number(tips.value)||0,0,1);
+    state.settings.nudgeChance=clamp(Number(nudge.value)||0,0,1);
+    saveState(); renderAll();
   };
-  row4.appendChild(ex);
-  row4.appendChild(imp);
-  s4.appendChild(row4);
+  r3.appendChild(tips); r3.appendChild(nudge); r3.appendChild(b3);
+  s3.appendChild(r3);
 
   wrap.appendChild(s);
   wrap.appendChild(document.createElement("div")).style.height="10px";
   wrap.appendChild(s2);
   wrap.appendChild(document.createElement("div")).style.height="10px";
   wrap.appendChild(s3);
-  wrap.appendChild(document.createElement("div")).style.height="10px";
-  wrap.appendChild(s4);
   return wrap;
 }
 
-/* -------------------------
-   History view
-------------------------- */
-function viewHistory(){
-  const wrap = document.createElement("div");
-  const s = mkSection("Historique (7 derniers jours)");
-  const list = document.createElement("div");
-
-  const items = (state.history||[]).slice().sort((a,b)=>b.day.localeCompare(a.day)).slice(0,7);
-  if(items.length===0){
-    list.innerHTML = `<div class="small">Pas encore de snapshot. (Il se met à jour à chaque action.)</div>`;
-  }else{
-    list.innerHTML = items.map(h=>{
-      const sets = (h.sets||[]).map(x=>`${escapeHTML(x.title)} ${x.done}/${x.total}`).join(" · ");
-      const habits = (h.habits||[]).map(x=>`${escapeHTML(x.name)} ${x.done}/${x.total}`).join(" · ");
-      const emo = h.emotions?.count ? `${h.emotions.count} entrées, avg ${h.emotions.avg}, top ${escapeHTML(h.emotions.top||"")}` : "—";
-      return `
-      <div style="padding:10px 8px; border-bottom:1px solid var(--line)">
-        <div style="display:flex; justify-content:space-between; gap:10px; align-items:baseline">
-          <div style="font-family:var(--mono); letter-spacing:.10em; text-transform:uppercase; font-size:11px; color:var(--muted)">${escapeHTML(h.day)}</div>
-          <div class="small">${h.doneTasks} done · ${h.remainingTasks} left · etos ${h.doneEtorions}/${h.baselineEtorions}</div>
-        </div>
-        <div class="small" style="margin-top:6px">SETS: ${sets||"—"}</div>
-        <div class="small" style="margin-top:6px">HABITS: ${habits||"—"}</div>
-        <div class="small" style="margin-top:6px">ÉMOTIONS: ${emo}</div>
-      </div>`;
-    }).join("");
-  }
-
-  s.appendChild(list);
-
-  const s2 = mkSection("Sparklines (tâches done)");
-  const bar = document.createElement("div");
-  bar.className="spark";
-  const fill = document.createElement("div");
-  fill.className="sparkFill";
-  const max = Math.max(1, ...items.map(i=>i.doneTasks||0));
-  const last = items[0]?.doneTasks||0;
-  fill.style.width = `${clamp(Math.round((last/max)*100), 5, 100)}%`;
-  bar.appendChild(fill);
-  s2.appendChild(bar);
-
+function viewExport(){
+  const wrap=document.createElement("div");
+  const s=mkSection("Export");
+  const b=mkBtn("OUVRIR EXPORT","btn primary");
+  b.onclick=()=>{ openModal("exportModal"); renderExport("text"); };
+  s.appendChild(b);
   wrap.appendChild(s);
-  wrap.appendChild(document.createElement("div")).style.height="10px";
-  wrap.appendChild(s2);
   return wrap;
 }
 
-/* -------------------------
-   Right panel: Sets
-------------------------- */
-function viewRightSets(){
-  const wrap = document.createElement("div");
-
-  const sTop = mkSection("Sets (checklist du jour)");
-  const row = document.createElement("div");
-  row.className="row";
-
-  const sel = document.createElement("select");
-  state.sets.list.forEach(set=>{
-    const o=document.createElement("option");
-    o.value=set.id; o.textContent=set.title;
-    sel.appendChild(o);
-  });
-  sel.value = state.sets.selectedId || (state.sets.list[0]?.id||"");
-  sel.onchange = ()=>{
-    state.sets.selectedId = sel.value;
-    saveState();
-    renderRight();
-  };
-
-  const btnAdd = mkBtn("NOUVEAU","btn primary");
-  btnAdd.onclick = ()=>{ pushUndo("addSet"); addSet(); saveState(); renderRight(); };
-
-  const btnEdit = mkBtn("ÉDITER","btn");
-  btnEdit.onclick = ()=>{
-    const set = selectedSet();
-    if(!set) return;
-    openSetEditor(set.id);
-  };
-
-  row.appendChild(sel);
-  row.appendChild(btnAdd);
-  row.appendChild(btnEdit);
-  sTop.appendChild(row);
-
-  const set = selectedSet();
-  if(!set){
-    wrap.appendChild(sTop);
-    return wrap;
-  }
-
-  initSetChecksForToday(set);
-  const sum = summarizeSetToday(set.id);
-  const sSum = document.createElement("div");
-  sSum.className="small";
-  sSum.style.marginTop="8px";
-  sSum.textContent = `${sum.done}/${sum.total} cochés aujourd’hui`;
-  sTop.appendChild(sSum);
-
-  const btnRow = document.createElement("div");
-  btnRow.className="row";
-  btnRow.style.marginTop="8px";
-  const btnReset = mkBtn("RESET JOUR","btn");
-  btnReset.onclick = ()=>{ pushUndo("resetSet"); resetSetToday(set.id); saveState(); renderRight(); };
-  const btnUp = mkBtn("↑","btn icon");
-  btnUp.onclick = ()=>{ pushUndo("setUp"); moveSet(set.id,-1); saveState(); renderRight(); };
-  const btnDown = mkBtn("↓","btn icon");
-  btnDown.onclick = ()=>{ pushUndo("setDown"); moveSet(set.id,1); saveState(); renderRight(); };
-  btnRow.appendChild(btnReset);
-  btnRow.appendChild(btnUp);
-  btnRow.appendChild(btnDown);
-  sTop.appendChild(btnRow);
-
-  const sGrid = mkSection("Grille");
-  const grid = document.createElement("div");
-  grid.style.display="flex";
-  grid.style.flexDirection="column";
-  grid.style.gap="10px";
-
-  const dk = dayKey();
-  const checks = set.checks[dk] || {};
-  const items = set.items||[];
-  const unitCount = clamp(parseInt(set.unitCount,10)||0, 0, 50);
-
-  for(let u=0; u<unitCount; u++){
-    const card = document.createElement("div");
-    card.className="section";
-    const h = document.createElement("h3");
-    h.textContent = `${set.unitName||"Item"} ${u+1}`;
-    card.appendChild(h);
-
-    const rowItems = document.createElement("div");
-    rowItems.style.display="grid";
-    rowItems.style.gridTemplateColumns = "repeat(2, minmax(0,1fr))";
-    rowItems.style.gap="8px";
-
-    items.forEach((it, i)=>{
-      const k = setCheckKey(u,i);
-      const on = !!checks[k];
-
-      const b = document.createElement("button");
-      b.className = "btn"+(on?" primary":"");
-      b.style.textTransform="none";
-      b.style.letterSpacing="0.02em";
-      b.style.fontSize="13px";
-      b.textContent = it;
-      b.onclick = ()=>{
-        pushUndo("toggleSetCheck");
-        toggleSetCheck(set.id,u,i);
-        snapshotDay();
-        saveState();
-        renderRight();
-      };
-      rowItems.appendChild(b);
-    });
-
-    card.appendChild(rowItems);
-    grid.appendChild(card);
-  }
-
-  sGrid.appendChild(grid);
-
-  wrap.appendChild(sTop);
-  wrap.appendChild(document.createElement("div")).style.height="10px";
-  wrap.appendChild(sGrid);
-  return wrap;
+function renderDrawer(){
+  buildTabs();
+  const body=$("drawerBody"); clearEl(body);
+  if(state.activeTab==="inbox") body.appendChild(viewInbox());
+  if(state.activeTab==="liste") body.appendChild(viewListe());
+  if(state.activeTab==="flow") body.appendChild(viewFlow());
+  if(state.activeTab==="export") body.appendChild(viewExport());
 }
 
-/* -------------------------
-   Right panel: Habits
-------------------------- */
-function viewRightHabits(){
-  const wrap = document.createElement("div");
+const RIGHT_TABS=[
+  {key:"emotions", label:"ÉMOTIONS"},
+  {key:"sets", label:"SETS"}
+];
 
-  const s = mkSection("Habitudes");
-  const row = document.createElement("div");
-  row.className="row";
-  const name = document.createElement("input");
-  name.placeholder = "Nom (ex: eau, sport, papier…)";
-  const slots = document.createElement("input");
-  slots.type="number"; slots.min="3"; slots.max="12"; slots.step="1";
-  slots.value="8";
-
-  const btn = mkBtn("AJOUTER","btn primary");
-  btn.onclick = ()=>{
-    const nm=(name.value||"").trim();
-    if(!nm) return;
-    pushUndo("addHabit");
-    addHabit(nm, slots.value);
-    name.value="";
-    snapshotDay();
-    saveState();
-    renderRight();
-  };
-
-  row.appendChild(name);
-  row.appendChild(slots);
-  row.appendChild(btn);
-  s.appendChild(row);
-
-  const list = mkSection("Aujourd’hui");
-  const body = document.createElement("div");
-
-  if((state.habits||[]).length===0){
-    body.innerHTML = `<div class="small">Ajoute une habitude. Puis coche.</div>`;
-  }else{
-    body.innerHTML = state.habits.slice(0,40).map(h=>{
-      const p = habitProgress(h);
-      const checks = h.checks.map((on,i)=>`<div class="chip ${on?"on":""}" data-h="${h.id}" data-i="${i}"></div>`).join("");
-      return `
-        <div style="padding:10px 8px; border-bottom:1px solid var(--line)">
-          <div style="display:flex; justify-content:space-between; gap:10px; align-items:baseline">
-            <div style="font-size:13px">${escapeHTML(h.name)}</div>
-            <div class="small">${p.done}/${p.tot} (${p.pct}%)</div>
-          </div>
-          <div class="chips" style="justify-content:flex-start; margin-top:8px">${checks}</div>
-          <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
-            <button class="btn" data-del="${h.id}">SUPPRIMER</button>
-            <button class="btn" data-reset="${h.id}">RESET</button>
-          </div>
-        </div>
-      `;
-    }).join("");
-  }
-
-  list.appendChild(body);
-  wrap.appendChild(s);
-  wrap.appendChild(document.createElement("div")).style.height="10px";
-  wrap.appendChild(list);
-
-  body.querySelectorAll(".chip").forEach(ch=>{
-    ch.onclick = ()=>{
-      const hId = ch.getAttribute("data-h");
-      const idx = parseInt(ch.getAttribute("data-i"),10);
-      pushUndo("habitToggle");
-      toggleHabitCheck(hId, idx);
-      snapshotDay();
-      saveState();
-      renderRight();
-    };
+function buildRightTabs(){
+  const el=$("rightTabs"); clearEl(el);
+  RIGHT_TABS.forEach(t=>{
+    const b=document.createElement("div");
+    b.className="tab"+(state.rightTab===t.key?" active":"");
+    b.textContent=t.label;
+    b.onclick=()=>{ state.rightTab=t.key; saveState(); renderRight(); };
+    el.appendChild(b);
   });
-  body.querySelectorAll("button[data-del]").forEach(b=>{
-    b.onclick = ()=>{
-      const id = b.getAttribute("data-del");
-      pushUndo("habitDel");
-      state.habits = state.habits.filter(x=>x.id!==id);
-      snapshotDay();
-      saveState();
-      renderRight();
-    };
-  });
-  body.querySelectorAll("button[data-reset]").forEach(b=>{
-    b.onclick = ()=>{
-      const id = b.getAttribute("data-reset");
-      const h = state.habits.find(x=>x.id===id);
-      if(!h) return;
-      pushUndo("habitReset");
-      h.checks = h.checks.map(()=>false);
-      snapshotDay();
-      saveState();
-      renderRight();
-    };
-  });
-
-  return wrap;
 }
 
-/* -------------------------
-   Right panel: Emotions
-------------------------- */
 function viewRightEmotions(){
-  const wrap = document.createElement("div");
+  const wrap=document.createElement("div");
+  const s=mkSection("Ajout rapide (1 clic)");
+  const grid=document.createElement("div");
+  grid.style.display="grid";
+  grid.style.gridTemplateColumns="repeat(2,minmax(0,1fr))";
+  grid.style.gap="8px";
 
-  const s = mkSection("Journal émotionnel (rapide)");
-  const row = document.createElement("div");
-  row.className="row";
+  EMOTIONS.forEach(e=>{
+    const b=mkBtn(`${e.name}`, "btn");
+    b.style.textTransform="none";
+    b.style.letterSpacing="0";
+    b.style.fontFamily="var(--mono)";
+    b.style.borderColor="var(--line)";
+    b.style.background=`radial-gradient(520px 160px at 20% 40%, ${e.c}33, transparent 62%)`;
+    b.onclick=()=> addEmotionQuick(e.name, 5);
+    grid.appendChild(b);
+  });
 
-  const emoSel = document.createElement("select");
-  EMOTIONS.forEach(x=>{ const o=document.createElement("option"); o.value=x; o.textContent=x; emoSel.appendChild(o); });
+  s.appendChild(grid);
 
-  const inten = document.createElement("input");
-  inten.type="range"; inten.min="0"; inten.max="10"; inten.step="1"; inten.value="5";
+  const s2=mkSection("Résumé du jour");
+  const list=emotionsToday();
+  const avg=avgIntensity(list);
+  const top=topEmotion(list);
+  const info=document.createElement("div");
+  info.className="small";
+  info.innerHTML = list.length
+    ? `Entrées: <b>${list.length}</b> · Intensité moyenne: <b>${avg}/10</b> · Dominante: <b>${escapeHTML(top||"—")}</b>`
+    : "Aucune entrée aujourd’hui.";
+  s2.appendChild(info);
 
-  const out = document.createElement("div");
-  out.className="small";
-  out.style.marginTop="4px";
-  out.textContent = "Intensité: 5/10";
-  inten.oninput = ()=>{ out.textContent = `Intensité: ${inten.value}/10`; };
-
-  const btnAdd = mkBtn("AJOUTER","btn primary");
-  btnAdd.onclick = ()=>{
-    pushUndo("emoAdd");
-    addEmotionEntry({
-      id: uid(),
-      day: dayKey(),
-      at: nowISO(),
-      emotion: emoSel.value,
-      intensity: Number(inten.value),
-      need: "",
-      block: "",
-      skill: "",
-      note: ""
-    });
-    snapshotDay();
-    saveState();
-    renderRight();
-  };
-
-  row.appendChild(emoSel);
-  row.appendChild(btnAdd);
-  s.appendChild(row);
-  s.appendChild(out);
-  s.appendChild(document.createElement("div")).style.height="8px";
-
-  const s2 = mkSection("Détail (aujourd’hui)");
-  const today = emotionsToday();
-
-  const list = document.createElement("div");
-  if(today.length===0){
-    list.innerHTML = `<div class="small">Aucune entrée aujourd’hui.</div>`;
-  }else{
-    list.innerHTML = today.slice(0,40).map(e=>{
-      const dt = new Date(e.at);
-      const stamp = dt.toLocaleTimeString("fr-BE",{hour:"2-digit",minute:"2-digit"});
-      return `
-        <div style="padding:10px 8px; border-bottom:1px solid var(--line)">
-          <div style="display:flex; justify-content:space-between; gap:10px">
-            <div style="font-size:13px">${escapeHTML(e.emotion)} <span class="small">(${e.intensity}/10)</span></div>
-            <div class="small">${stamp}</div>
-          </div>
-          <div class="small" style="margin-top:6px">Besoin: ${escapeHTML(e.need||"—")} · Blocage: ${escapeHTML(e.block||"—")}</div>
-          <div class="small" style="margin-top:6px">Skill: ${escapeHTML(e.skill||"—")}</div>
-          <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
-            <button class="btn" data-edit="${e.id}">ÉDITER</button>
-            <button class="btn" data-del="${e.id}">SUPPRIMER</button>
-          </div>
-        </div>
-      `;
-    }).join("");
-  }
-  s2.appendChild(list);
-
-  const s3 = mkSection("Stats du jour");
-  const stats = document.createElement("div");
-  const avg = avgIntensity(today);
-  const top = topEmotion(today);
-  stats.className="small";
-  stats.textContent = `Entrées: ${today.length} · Avg: ${avg}/10 · Top: ${top||"—"}`;
-  s3.appendChild(stats);
-
-  const s4 = mkSection("Outil: micro-régulation");
-  const row4 = document.createElement("div");
-  row4.className="row";
-  const btnN = mkBtn("NUDGE","btn primary");
-  btnN.onclick = showNudge;
-  const btnT = mkBtn("CONSEIL","btn");
-  btnT.onclick = showTip;
-  row4.appendChild(btnN);
-  row4.appendChild(btnT);
-  s4.appendChild(row4);
+  const s3=mkSection("Historique (aujourd’hui)");
+  const box=document.createElement("div");
+  box.innerHTML = list.length ? list.slice(0,30).map(x=>{
+    const c=colorForEmotion(x.emotion);
+    return `<div style="display:flex; gap:10px; align-items:center; padding:8px 6px; border-bottom:1px solid var(--line)">
+      <div style="width:10px;height:10px;border-radius:999px;background:${c}; border:1px solid var(--line)"></div>
+      <div style="flex:1; font-family:var(--mono); font-size:12px">${escapeHTML(x.emotion)}</div>
+      <div class="small">${escapeHTML(String(x.intensity))}/10</div>
+    </div>`;
+  }).join("") : `<div class="small">—</div>`;
+  s3.appendChild(box);
 
   wrap.appendChild(s);
   wrap.appendChild(document.createElement("div")).style.height="10px";
   wrap.appendChild(s2);
   wrap.appendChild(document.createElement("div")).style.height="10px";
   wrap.appendChild(s3);
-  wrap.appendChild(document.createElement("div")).style.height="10px";
-  wrap.appendChild(s4);
-
-  list.querySelectorAll("button[data-del]").forEach(b=>{
-    b.onclick = ()=>{
-      const id=b.getAttribute("data-del");
-      pushUndo("emoDel");
-      state.emotions.entries = state.emotions.entries.filter(x=>x.id!==id);
-      snapshotDay(); saveState(); renderRight();
-    };
-  });
-  list.querySelectorAll("button[data-edit]").forEach(b=>{
-    b.onclick = ()=>{
-      const id=b.getAttribute("data-edit");
-      openEmotionEditor(id);
-    };
-  });
-
   return wrap;
 }
 
-/* -------------------------
-   Safe editors (Task / Set / Emotion)
-------------------------- */
-function openTaskEditor(taskId){
-  const t = getTaskById(taskId);
-  if(!t) return;
+function viewRightSets(){
+  const wrap=document.createElement("div");
+  const s=mkSection("Info");
+  const info=document.createElement("div");
+  info.className="small";
+  info.textContent="Les sets sont affichés sur l’écran principal (dock). Ici on garde une vue complémentaire.";
+  s.appendChild(info);
+  wrap.appendChild(s);
+  return wrap;
+}
 
-  const root = $("setEditBody");
-  clearEl(root);
+function renderRight(){
+  buildRightTabs();
+  const body=$("rightBody"); clearEl(body);
+  if(state.rightTab==="emotions") body.appendChild(viewRightEmotions());
+  if(state.rightTab==="sets") body.appendChild(viewRightSets());
+}
 
-  const s = mkSection("Éditer tâche");
-  const title = document.createElement("input");
-  title.value = t.title || "";
-  const cat = document.createElement("input");
-  cat.value = t.cat || "";
-  cat.placeholder = "Catégorie (optionnel, ex: ADMIN)";
-
-  const etTotal = document.createElement("input");
-  etTotal.type="number"; etTotal.min="1"; etTotal.max="99"; etTotal.step="1";
-  etTotal.value = String(t.etorionsTotal||1);
-
-  const row = document.createElement("div");
-  row.className="row";
-
-  const pin = document.createElement("select");
-  [["0","Non épinglée"],["1","Épinglée"]].forEach(([v,txt])=>{
-    const o=document.createElement("option"); o.value=v; o.textContent=txt; pin.appendChild(o);
+/* ================= Export ================= */
+function tasksAsText(){
+  const act=sortTasks(activeTasks());
+  const lines=[];
+  lines.push(`ELIMINATOR — ${dayKey()}`);
+  act.forEach(t=>lines.push(`- ${t.title} — ${t.etorionsLeft??t.etorionsTotal}/${t.etorionsTotal} ${t.cat?`[${t.cat}]`:""}`));
+  return lines.join("\n");
+}
+function tasksAsCSV(){
+  const rows=[["title","cat","etorions_total","etorions_left","pinned","done","createdAt","doneAt"]];
+  state.tasks.forEach(t=>{
+    rows.push([t.title||"", t.cat||"", String(t.etorionsTotal||1), String(t.etorionsLeft??(t.etorionsTotal||1)), t.pinned?"1":"0", t.done?"1":"0", t.createdAt||"", t.doneAt||""]);
   });
-  pin.value = t.pinned ? "1":"0";
-
-  row.appendChild(etTotal);
-  row.appendChild(pin);
-
-  s.appendChild(document.createElement("div")).className="small";
-  s.lastChild.textContent = "Titre";
-  s.appendChild(title);
-
-  s.appendChild(document.createElement("div")).className="small";
-  s.lastChild.style.marginTop="8px";
-  s.lastChild.textContent = "Catégorie";
-  s.appendChild(cat);
-
-  s.appendChild(document.createElement("div")).className="small";
-  s.lastChild.style.marginTop="8px";
-  s.lastChild.textContent = "Étorions (total)";
-  s.appendChild(row);
-
-  const act = document.createElement("div");
-  act.className="row";
-  act.style.marginTop="8px";
-
-  const btnSave = mkBtn("ENREGISTRER","btn primary");
-  btnSave.onclick = ()=>{
-    pushUndo("taskEdit");
-    t.title = (title.value||"").trim() || t.title;
-    t.cat = (cat.value||"").trim().toUpperCase();
-    const nt = clamp(parseInt(etTotal.value,10)||1, 1, 99);
-    const oldTotal = t.etorionsTotal||1;
-    const oldLeft = (typeof t.etorionsLeft==="number") ? t.etorionsLeft : oldTotal;
-    t.etorionsTotal = nt;
-
-    // Ajustement "safe": conserve la proportion restante au max
-    t.etorionsLeft = clamp(oldLeft + (nt-oldTotal), 0, nt);
-
-    t.pinned = (pin.value==="1");
-    snapshotDay();
-    saveState();
-    renderAll();
-    renderDrawer();
-    closeAllModals();
-  };
-
-  const btnDel = mkBtn("SUPPRIMER","btn");
-  btnDel.onclick = ()=>{
-    if(!confirm("Supprimer cette tâche ?")) return;
-    pushUndo("taskDelete");
-    state.tasks = state.tasks.filter(x=>x.id!==t.id);
-    ensureCurrentTask();
-    snapshotDay();
-    saveState();
-    renderAll();
-    renderDrawer();
-    closeAllModals();
-  };
-
-  act.appendChild(btnSave);
-  act.appendChild(btnDel);
-  s.appendChild(act);
-
-  root.appendChild(s);
-  openModal("setEditModal");
+  return rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(",")).join("\n");
 }
-
-function openSetEditor(setId){
-  const set = getSetById(setId);
-  if(!set) return;
-
-  const root = $("setEditBody");
-  clearEl(root);
-
-  const s = mkSection("Éditer set");
-  const title = document.createElement("input");
-  title.value = set.title || "";
-
-  const unitName = document.createElement("input");
-  unitName.value = set.unitName || "Item";
-
-  const unitCount = document.createElement("input");
-  unitCount.type="number"; unitCount.min="1"; unitCount.max="50"; unitCount.step="1";
-  unitCount.value = String(set.unitCount||3);
-
-  const items = document.createElement("textarea");
-  items.style.minHeight="200px";
-  items.value = (set.items||[]).join("\n");
-
-  const cats = document.createElement("input");
-  cats.value = (set.categories||[]).join(", ");
-  cats.placeholder="Catégories (comma-separated)";
-
-  const mkLabel = (txt)=>{
-    const d=document.createElement("div");
-    d.className="small";
-    d.style.marginTop="8px";
-    d.textContent=txt;
-    return d;
-  };
-
-  s.appendChild(mkLabel("Titre"));
-  s.appendChild(title);
-
-  const row = document.createElement("div");
-  row.className="row";
-  row.style.marginTop="8px";
-  row.appendChild(unitName);
-  row.appendChild(unitCount);
-  s.appendChild(mkLabel("Unité + nombre"));
-  s.appendChild(row);
-
-  s.appendChild(mkLabel("Items (1 par ligne)"));
-  s.appendChild(items);
-
-  s.appendChild(mkLabel("Catégories"));
-  s.appendChild(cats);
-
-  const act = document.createElement("div");
-  act.className="row";
-  act.style.marginTop="8px";
-
-  const btnSave = mkBtn("ENREGISTRER","btn primary");
-  btnSave.onclick = ()=>{
-    pushUndo("setEdit");
-    set.title = (title.value||"").trim() || set.title;
-    set.unitName = (unitName.value||"").trim() || "Item";
-    set.unitCount = clamp(parseInt(unitCount.value,10)||3, 1, 50);
-    set.items = (items.value||"").split(/\r?\n/).map(x=>x.trim()).filter(Boolean).slice(1, 80).length
-      ? (items.value||"").split(/\r?\n/).map(x=>x.trim()).filter(Boolean).slice(0,80)
-      : ["Étape 1","Étape 2"];
-    set.categories = (cats.value||"").split(",").map(x=>x.trim()).filter(Boolean).slice(0,12);
-
-    snapshotDay();
-    saveState();
-    renderRight();
-    closeAllModals();
-  };
-
-  const btnDel = mkBtn("SUPPRIMER","btn");
-  btnDel.onclick = ()=>{
-    if(!confirm("Supprimer ce set ?")) return;
-    pushUndo("setDelete");
-    deleteSet(set.id);
-    snapshotDay();
-    saveState();
-    renderRight();
-    closeAllModals();
-  };
-
-  act.appendChild(btnSave);
-  act.appendChild(btnDel);
-  s.appendChild(act);
-
-  root.appendChild(s);
-  openModal("setEditModal");
-}
-
-function openEmotionEditor(entryId){
-  const e = state.emotions.entries.find(x=>x.id===entryId);
-  if(!e) return;
-
-  const root = $("setEditBody");
-  clearEl(root);
-
-  const s = mkSection("Éditer entrée émotion");
-  const emo = document.createElement("select");
-  EMOTIONS.forEach(x=>{ const o=document.createElement("option"); o.value=x; o.textContent=x; emo.appendChild(o); });
-  emo.value = e.emotion;
-
-  const inten = document.createElement("input");
-  inten.type="number"; inten.min="0"; inten.max="10"; inten.step="1";
-  inten.value = String(e.intensity||0);
-
-  const need = document.createElement("select");
-  NEEDS.forEach(x=>{ const o=document.createElement("option"); o.value=x; o.textContent=x; need.appendChild(o); });
-  const needEmpty=document.createElement("option"); needEmpty.value=""; needEmpty.textContent="—";
-  need.insertBefore(needEmpty, need.firstChild);
-  need.value = e.need || "";
-
-  const block = document.createElement("select");
-  BLOCKS.forEach(x=>{ const o=document.createElement("option"); o.value=x; o.textContent=x; block.appendChild(o); });
-  const blockEmpty=document.createElement("option"); blockEmpty.value=""; blockEmpty.textContent="—";
-  block.insertBefore(blockEmpty, block.firstChild);
-  block.value = e.block || "";
-
-  const skill = document.createElement("select");
-  SKILLS.forEach(x=>{ const o=document.createElement("option"); o.value=x; o.textContent=x; skill.appendChild(o); });
-  const skillEmpty=document.createElement("option"); skillEmpty.value=""; skillEmpty.textContent="—";
-  skill.insertBefore(skillEmpty, skill.firstChild);
-  skill.value = e.skill || "";
-
-  const note = document.createElement("textarea");
-  note.style.minHeight="140px";
-  note.value = e.note || "";
-  note.placeholder = "Note (optionnel)";
-
-  const mkL=(t)=>{
-    const d=document.createElement("div");
-    d.className="small";
-    d.style.marginTop="8px";
-    d.textContent=t;
-    return d;
-  };
-
-  s.appendChild(mkL("Émotion + intensité"));
-  const row1=document.createElement("div"); row1.className="row";
-  row1.appendChild(emo); row1.appendChild(inten);
-  s.appendChild(row1);
-
-  s.appendChild(mkL("Besoin / blocage / skill"));
-  const row2=document.createElement("div"); row2.className="row";
-  row2.appendChild(need); row2.appendChild(block); row2.appendChild(skill);
-  s.appendChild(row2);
-
-  s.appendChild(mkL("Note"));
-  s.appendChild(note);
-
-  const act = document.createElement("div");
-  act.className="row";
-  act.style.marginTop="8px";
-
-  const btnSave = mkBtn("ENREGISTRER","btn primary");
-  btnSave.onclick = ()=>{
-    pushUndo("emoEdit");
-    e.emotion = emo.value;
-    e.intensity = clamp(parseInt(inten.value,10)||0, 0, 10);
-    e.need = need.value || "";
-    e.block = block.value || "";
-    e.skill = skill.value || "";
-    e.note = (note.value||"").trim();
-    snapshotDay(); saveState(); renderRight(); closeAllModals();
-  };
-
-  const btnDel = mkBtn("SUPPRIMER","btn");
-  btnDel.onclick = ()=>{
-    if(!confirm("Supprimer cette entrée ?")) return;
-    pushUndo("emoDelete");
-    state.emotions.entries = state.emotions.entries.filter(x=>x.id!==e.id);
-    snapshotDay(); saveState(); renderRight(); closeAllModals();
-  };
-
-  act.appendChild(btnSave);
-  act.appendChild(btnDel);
-  s.appendChild(act);
-
-  root.appendChild(s);
-  openModal("setEditModal");
-}
-
-/* -------------------------
-   Export
-------------------------- */
-let exportMode="text";
 function renderExport(mode){
-  exportMode = mode;
-  const p = computeProgress();
-  const doneTasks = state.tasks.filter(t=>t.done);
-  const active = activeTasks();
+  let out="";
+  if(mode==="text") out=tasksAsText();
+  if(mode==="json") out=JSON.stringify({meta:{exportedAt:nowISO(), key:LS_KEY}, state}, null, 2);
+  if(mode==="csv") out=tasksAsCSV();
+  $("expOut").value=out;
+}
 
-  if(mode==="text"){
-    const lines = [];
-    lines.push(`ELIMINATOR — ${dayKey()}`);
-    lines.push(`Progress: ${p.remT}/${p.baseT} restantes · etorions ${p.remE}/${p.baseE}`);
-    lines.push(`Done tasks: ${doneTasks.length} · Done etorions: ${state.stats.etorionsDone||0}`);
-    lines.push("");
-    lines.push("== ACTIVES ==");
-    active.forEach(t=>lines.push(`- ${t.title} (${t.etorionsLeft??t.etorionsTotal}/${t.etorionsTotal})${t.cat?` [${t.cat}]`:""}`));
-    lines.push("");
-    lines.push("== DONE (last 20) ==");
-    doneTasks.slice().sort((a,b)=>(b.doneAt||"").localeCompare(a.doneAt||"")).slice(0,20)
-      .forEach(t=>lines.push(`- ${t.title}${t.cat?` [${t.cat}]`:""}`));
-    lines.push("");
-    lines.push("== SETS TODAY ==");
-    (state.sets.list||[]).forEach(s=>{
-      const sum = summarizeSetToday(s.id);
-      lines.push(`- ${s.title}: ${sum.done}/${sum.total}`);
-    });
-    lines.push("");
-    lines.push("== HABITS ==");
-    (state.habits||[]).forEach(h=>{
-      const pp = habitProgress(h);
-      lines.push(`- ${h.name}: ${pp.done}/${pp.tot}`);
-    });
-    lines.push("");
-    const emoToday = emotionsToday();
-    lines.push(`== EMOTIONS TODAY == (${emoToday.length}) avg ${avgIntensity(emoToday)}/10 top ${topEmotion(emoToday)||"—"}`);
-    $("expOut").value = lines.join("\n");
+/* ================= Renders ================= */
+function renderHUD(){
+  recomputeBaselineIfNeeded();
+  const p=computeProgress();
+  $("pillTasks").textContent = `${p.remT}/${p.baseT}`;
+  $("pillEto").textContent = `${p.remE}/${p.baseE}`;
+  $("pillDone").textContent = `${(p.baseT - p.remT)}`;
+}
+function renderProgress(){
+  const p=computeProgress();
+  $("taskBarFill").style.width = `${p.pct}%`;
+  $("taskBarPct").textContent = `${p.pct}%`;
+  $("barInfo").textContent = `${p.remT} restantes sur ${p.baseT} · ${p.remE} étorions`;
+}
+function renderCurrent(){
+  ensureCurrentTask();
+  const t=getTaskById(state.currentTaskId);
+  if(!t){
+    $("taskName").textContent="Aucune tâche";
+    $("chips").innerHTML="";
+    $("btnEtorion").style.opacity=0.45;
+    $("btnEtorion").style.pointerEvents="none";
+    return;
   }
+  $("btnEtorion").style.opacity=1;
+  $("btnEtorion").style.pointerEvents="auto";
+  $("taskName").textContent=t.title;
 
-  if(mode==="json"){
-    const obj = structuredClone(state);
-    $("expOut").value = JSON.stringify(obj, null, 2);
-  }
+  const total=t.etorionsTotal||1;
+  const left=(typeof t.etorionsLeft==="number") ? t.etorionsLeft : total;
+  const chips=[];
+  for(let i=0;i<total;i++) chips.push(`<div class="chip ${i<left?"on":""}"></div>`);
+  $("chips").innerHTML=chips.join("");
 
-  if(mode==="csv"){
-    const rows = [];
-    rows.push(["id","title","cat","etorionsTotal","etorionsLeft","pinned","done","createdAt","doneAt"].join(","));
-    state.tasks.forEach(t=>{
-      const vals = [
-        t.id, t.title, t.cat||"",
-        t.etorionsTotal||1, t.etorionsLeft??(t.etorionsTotal||1),
-        t.pinned?1:0, t.done?1:0, t.createdAt||"", t.doneAt||""
-      ].map(v=>`"${String(v).replace(/"/g,'""')}"`);
-      rows.push(vals.join(","));
-    });
-    $("expOut").value = rows.join("\n");
+  if(!state.timer.startedAt) state.timer.startedAt=Date.now();
+}
+
+function renderTimer(){
+  $("pillTimer").textContent = fmtMMSS(timerNowMs());
+  const rem=pomoRemainingMs();
+  if(rem===null){
+    $("pillPomo").textContent = `POMO ${state.pomodoro.minutes||25}m`;
+  }else{
+    $("pillPomo").textContent = `POMO ${fmtMMSS(rem)}`;
   }
 }
 
-/* -------------------------
-   Events / controls
-------------------------- */
+function renderBelowList(){
+  const box=$("belowTasks");
+  const list=sortTasks(activeTasks());
+  if(list.length===0){
+    box.innerHTML=`<div class="small">Aucune tâche. Menu ≡ → INBOX pour importer.</div>`;
+    return;
+  }
+  box.innerHTML = list.slice(0,60).map(t=>{
+    const et=t.etorionsTotal||1;
+    const left=t.etorionsLeft ?? et;
+    const isCur=t.id===state.currentTaskId;
+    return `
+      <div style="display:flex; gap:10px; align-items:center; padding:10px 6px; border-bottom:1px solid var(--line); ${isCur?"background:rgba(0,0,0,.02)":" "}">
+        <div style="flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">${escapeHTML(t.title)}</div>
+        <div class="small">${left}/${et}</div>
+        <button class="btn" data-go="${t.id}">◎</button>
+        <button class="btn primary" data-done="${t.id}">✓</button>
+      </div>
+    `;
+  }).join("");
+
+  box.querySelectorAll("button[data-go]").forEach(b=>{
+    b.onclick=()=>{ pushUndo("go"); setCurrentTask(b.getAttribute("data-go")); saveState(); renderAll(); };
+  });
+  box.querySelectorAll("button[data-done]").forEach(b=>{
+    b.onclick=()=>{ completeTask(b.getAttribute("data-done")); };
+  });
+}
+
+function applyListVisible(){
+  const show = !!state.showBelowList && (!state.focus || state.settings.keepListInFocus);
+  $("belowList").style.display = show ? "block" : "none";
+}
+
+function renderEmoDock(){
+  const dock=$("emoDock");
+  clearEl(dock);
+  const list=emotionsToday();
+  const avg=avgIntensity(list);
+  const top=topEmotion(list);
+
+  const chip1=document.createElement("div");
+  chip1.className="emoChip";
+  chip1.innerHTML=`<span class="emoDot" style="background:${colorForEmotion(top||"")};"></span> DOMINANTE: ${escapeHTML(top||"—")}`;
+  dock.appendChild(chip1);
+
+  const chip2=document.createElement("div");
+  chip2.className="emoChip";
+  chip2.innerHTML=`<span class="emoDot" style="background:var(--barAccent2)"></span> INTENSITÉ: ${avg}/10`;
+  dock.appendChild(chip2);
+
+  const chip3=document.createElement("div");
+  chip3.className="emoChip";
+  chip3.innerHTML=`<span class="emoDot" style="background:var(--accent2)"></span> ENTRÉES: ${list.length}`;
+  dock.appendChild(chip3);
+}
+
+/* Sets dock principal */
+function renderSetsDock(){
+  const dock=$("setsDock");
+  clearEl(dock);
+
+  const ids = state.sets.selectedIds || [];
+  const sets = ids.map(getSetById).filter(Boolean).slice(0,2);
+
+  sets.forEach(set=>{
+    initSetChecksForToday(set);
+    const sum=summarizeSetToday(set.id);
+
+    const card=document.createElement("div");
+    card.className="setCard";
+
+    const head=document.createElement("div");
+    head.className="setHead";
+    const t=document.createElement("div");
+    t.className="setTitle";
+    t.textContent=set.title;
+    const m=document.createElement("div");
+    m.className="setMeta";
+    m.textContent=`${sum.done}/${sum.total}`;
+    head.appendChild(t); head.appendChild(m);
+    card.appendChild(head);
+
+    const grid=document.createElement("div");
+    grid.className="setGrid";
+
+    // On affiche 2 unités par ligne (Patient 1..n)
+    for(let u=0; u<set.unitCount; u++){
+      const unit=document.createElement("div");
+      unit.className="setUnit";
+
+      const ut=document.createElement("div");
+      ut.className="setUnitTitle";
+      ut.textContent = `${set.unitName} ${u+1}`;
+      unit.appendChild(ut);
+
+      const btns=document.createElement("div");
+      btns.className="setBtns";
+
+      set.items.forEach((it,i)=>{
+        const k=setCheckKey(u,i);
+        const dk=dayKey();
+        const on=!!(set.checks?.[dk]?.[k]);
+        const b=document.createElement("button");
+        b.className="setBtn"+(on?" on":"");
+        b.textContent=it;
+        b.onclick=()=>{
+          pushUndo("setCheck");
+          toggleSetCheck(set.id,u,i);
+          saveState();
+          renderAll();
+        };
+        btns.appendChild(b);
+      });
+
+      unit.appendChild(btns);
+      grid.appendChild(unit);
+    }
+
+    card.appendChild(grid);
+    dock.appendChild(card);
+  });
+}
+
+/* ================= Counters toggle ================= */
+function setCountersVisible(on, autoHide=true){
+  state.showCounters=!!on;
+  const pills=["pillTasks","pillEto","pillDone"].map($);
+  pills.forEach(p=>p.classList.toggle("hidden", !state.showCounters));
+  saveState();
+
+  if(state._countersTimer) clearTimeout(state._countersTimer);
+  if(on && autoHide){
+    state._countersTimer=setTimeout(()=>{
+      state.showCounters=false;
+      pills.forEach(p=>p.classList.add("hidden"));
+      saveState();
+    }, clamp(state.countersAutoHideSec||10,3,30)*1000);
+  }
+}
+
+/* ================= Focus / Panels / Theme cycling ================= */
+function applyFocus(){
+  $("app").classList.toggle("focusOn", !!state.focus);
+}
+function cycleTheme(){
+  state.theme = state.theme==="light" ? "dark" : state.theme==="dark" ? "pastel" : "light";
+  saveState(); renderAll();
+}
+function toggleFocus(){ state.focus=!state.focus; saveState(); renderAll(); }
+
+function openDrawer(){ $("drawerBack").classList.add("show"); $("drawer").classList.add("open"); renderDrawer(); }
+function closeDrawer(){ $("drawerBack").classList.remove("show"); $("drawer").classList.remove("open"); }
+function openRight(){ $("rightBack").classList.add("show"); $("rightPanel").classList.add("open"); renderRight(); }
+function closeRight(){ $("rightBack").classList.remove("show"); $("rightPanel").classList.remove("open"); }
+
+/* ================= Wire events ================= */
 $("btnMenu").onclick = ()=> openDrawer();
 $("drawerClose").onclick = ()=> closeDrawer();
 $("drawerBack").onclick = ()=> closeDrawer();
@@ -3660,118 +1991,135 @@ $("btnRight").onclick = ()=> openRight();
 $("rightClose").onclick = ()=> closeRight();
 $("rightBack").onclick = ()=> closeRight();
 
-$("btnTheme").onclick = ()=> toggleTheme();
-
-$("btnFocus").onclick = ()=> toggleFocus();
+$("btnTheme").onclick = ()=> cycleTheme();
 
 $("btnCounters").onclick = ()=> setCountersVisible(!state.showCounters, true);
 
 $("btnListToggle").onclick = ()=>{
-  state.showBelowList = !state.showBelowList;
-  saveState();
-  renderAll();
+  state.showBelowList=!state.showBelowList;
+  saveState(); renderAll();
 };
 $("btnHideBelow").onclick = ()=>{
-  state.showBelowList = false;
-  saveState();
-  renderAll();
+  state.showBelowList=false;
+  saveState(); renderAll();
 };
 
+$("btnFocus").onclick = ()=> toggleFocus();
+
 $("btnRoulette").onclick = ()=>{
-  $("btnRoulette").classList.remove("rouletteSpin");
-  void $("btnRoulette").offsetWidth;
-  $("btnRoulette").classList.add("rouletteSpin");
-  const pick = roulettePick();
-  if(pick){
-    pushUndo("roulette");
-    setCurrentTask(pick.id);
-    saveState();
-    renderAll();
-  }
+  const btn=$("btnRoulette");
+  btn.classList.remove("rouletteSpin");
+  void btn.offsetWidth;
+  btn.classList.add("rouletteSpin");
+  const pick=roulettePick();
+  if(!pick) return;
+  pushUndo("roulette");
+  setCurrentTask(pick.id);
+  saveState();
+  renderAll();
 };
 
 $("btnEtorion").onclick = ()=> degommeEtorion();
-
-$("btnDoneTask").onclick = ()=>{
-  const t = getTaskById(state.currentTaskId);
-  if(!t) return;
-  completeTask(t.id);
-};
-
 $("btnUndo").onclick = ()=> undo();
 
+$("btnNotes").onclick = ()=>{ renderNotes(); openModal("notesModal"); };
+$("noteAdd").onclick = ()=>{ addNote($("noteInput").value); $("noteInput").value=""; saveState(); renderNotes(); };
+$("noteClear").onclick = ()=>{ if(confirm("Vider toutes les notes ?")){ state.notes=[]; saveState(); renderNotes(); } };
+
+$("btnDoneTask").onclick = ()=>{
+  const t=getTaskById(state.currentTaskId);
+  if(t) completeTask(t.id);
+};
 $("btnPause").onclick = ()=> togglePause();
 
-$("btnNotes").onclick = ()=>{
-  renderNotes();
-  openModal("notesModal");
+/* Pomodoro */
+$("btnPomo").onclick = ()=>{
+  $("pomoMin").value = String(state.pomodoro.minutes||25);
+  renderTimer();
+  $("pomoInfo").textContent = state.pomodoro.running ? `En cours : ${fmtMMSS(pomoRemainingMs()||0)}` : "Prêt. Lance quand tu veux.";
+  openModal("pomodoroModal");
 };
-$("noteAdd").onclick = ()=>{
-  addNote($("noteInput").value);
-  $("noteInput").value="";
-  saveState();
-  renderNotes();
+$("pomoStart").onclick = ()=>{
+  startPomodoro($("pomoMin").value);
+  $("pomoInfo").textContent = `En cours : ${fmtMMSS(pomoRemainingMs()||0)}`;
 };
-$("noteClear").onclick = ()=>{
-  if(!confirm("Vider les notes ?")) return;
-  state.notes = [];
-  saveState();
-  renderNotes();
-};
-
-$("btnEditTask").onclick = ()=>{
-  const t = getTaskById(state.currentTaskId);
-  if(!t) return;
-  openTaskEditor(t.id);
+$("pomoStop").onclick = ()=>{
+  stopPomodoro();
+  $("pomoInfo").textContent = "Stop. Le temps t’appartient à nouveau.";
 };
 
-/* Export modal buttons */
+/* Export */
 $("expText").onclick = ()=> renderExport("text");
 $("expJSON").onclick = ()=> renderExport("json");
 $("expCSV").onclick = ()=> renderExport("csv");
 $("expCopy").onclick = async ()=>{
-  try{
-    await navigator.clipboard.writeText($("expOut").value || "");
-  }catch(e){
-    alert("Copie impossible (clipboard).");
-  }
+  try{ await navigator.clipboard.writeText($("expOut").value||""); }
+  catch(e){ alert("Copie impossible (clipboard)."); }
 };
 
-/* Keyboard shortcuts */
 window.addEventListener("keydown",(e)=>{
-  if(e.key==="Escape"){
-    closeAllModals();
-    closeDrawer();
-    closeRight();
-  }
-  if(e.ctrlKey || e.metaKey){
-    if(e.key.toLowerCase()==="z"){ e.preventDefault(); undo(); }
-    if(e.key.toLowerCase()==="e"){ e.preventDefault(); const t=getTaskById(state.currentTaskId); if(t) openTaskEditor(t.id); }
-    if(e.key.toLowerCase()==="k"){ e.preventDefault(); openRight(); state.rightTab="sets"; saveState(); renderRight(); }
-  }
-  if(e.key===" " && !/input|textarea|select/i.test((document.activeElement?.tagName)||"")){
-    e.preventDefault();
-    degommeEtorion();
-  }
-  if(e.key.toLowerCase()==="r" && !/input|textarea|select/i.test((document.activeElement?.tagName)||"")){
-    const pick = roulettePick();
-    if(pick){ setCurrentTask(pick.id); saveState(); renderAll(); }
-  }
+  if(e.key==="Escape"){ closeAllModals(); closeDrawer(); closeRight(); }
 });
 
-/* -------------------------
-   Boot
-------------------------- */
-(function boot(){
+/* ================= Render all ================= */
+function renderAll(){
   applyAppearance();
-  setRandomTagline(true);
+  applyFocus();
+  setRandomTagline();
+
   recomputeBaselineIfNeeded();
   ensureCurrentTask();
-  snapshotDay();
+
+  renderHUD();
+  renderProgress();
+  renderCurrent();
+  renderEmoDock();
+  renderSetsDock();
+
+  applyListVisible();
+  if(state.showBelowList) renderBelowList();
+
+  // Timer + pomo visibles en permanence
+  renderTimer();
+
+  // Pomodoro fin
+  if(state.pomodoro.running){
+    const rem=pomoRemainingMs();
+    if(rem!==null && rem<=0){
+      state.pomodoro.running=false;
+      state.pomodoro.endsAt=null;
+      saveState();
+      confettiBurst(1.35);
+      // Kiffance (pas d'UI dédiée, mais petite punchline)
+      $("hintLine").textContent = randomKiffance();
+    }
+  }
+}
+
+/* ================= Timer loop ================= */
+let timerInterval=null;
+function startTimerLoop(){
+  if(timerInterval) clearInterval(timerInterval);
+  timerInterval=setInterval(()=> renderTimer(), 500);
+}
+
+/* ================= Boot ================= */
+(function boot(){
+  if(!state.activeTab) state.activeTab="inbox";
+  if(!state.rightTab) state.rightTab="emotions";
+
+  applyAppearance();
+  setRandomTagline(true);
+
+  // Démarre le timer si absent
+  if(!state.timer.startedAt) state.timer.startedAt=Date.now();
+
+  ensureCurrentTask();
   saveState();
   renderAll();
   startTimerLoop();
 })();
 </script>
+
 </body>
 </html>
