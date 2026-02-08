@@ -4,754 +4,241 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>ELIMINATOR</title>
-
   <style>
     :root{
-      --bg:#f4f6fb; --fg:#0d1321; --muted: rgba(13,19,33,.62);
-      --glass: rgba(255,255,255,.58); --glass2: rgba(255,255,255,.34);
-      --lineA: rgba(13,19,33,.14); --line: var(--lineA);
-      --shadow: 0 18px 60px rgba(0,0,0,.10);
-      --blur: 18px;
-
-      --accent: rgba(0,140,255,.16); --accent2: rgba(0,140,255,.32);
-      --barAccent: var(--accent); --barAccent2: var(--accent2);
-
-      --radius: 6px; --radius2: 4px;
-      --barH: 38px; --chipH: 18px;
-
-      --appW: min(1320px, 96vw);
-      --vpad: clamp(10px, 2.2vh, 18px);
-      --hpad: clamp(10px, 2.2vw, 18px);
-
-      --font: ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-
-      --uiScale: 1.00;
-      --titleScale: 1.18;
-      --taskScale: 1.50;
-
-      --btnFill: 0;
-      --drawerW: 460px;
-      --rightW: 520px;
+      --bg:#f4f6fb; --fg:#0d1321; --muted:rgba(13,19,33,.62);
+      --glass:rgba(255,255,255,.58); --glass2:rgba(255,255,255,.34);
+      --line:rgba(13,19,33,.14); --shadow:0 18px 60px rgba(0,0,0,.10); --blur:18px;
+      --accent:rgba(0,140,255,.16); --accent2:rgba(0,140,255,.32);
+      --radius:8px; --radius2:6px;
+      --appW:min(1220px,96vw);
+      --barH:38px;
+      --font:ui-sans-serif,system-ui,-apple-system,"SF Pro Display","Segoe UI",Roboto,Helvetica,Arial;
+      --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
     }
-
     [data-theme="dark"]{
-      --bg:#0b0f17; --fg:#eaf0ff; --muted: rgba(234,240,255,.62);
-      --glass: rgba(18,24,38,.60); --glass2: rgba(18,24,38,.36);
-      --lineA: rgba(234,240,255,.14);
-      --shadow: 0 18px 80px rgba(0,0,0,.36);
-      --blur: 20px;
-
-      --accent: rgba(0,255,140,.14); --accent2: rgba(0,255,140,.28);
-      --barAccent: var(--accent); --barAccent2: var(--accent2);
+      --bg:#0b0f17; --fg:#eaf0ff; --muted:rgba(234,240,255,.62);
+      --glass:rgba(18,24,38,.60); --glass2:rgba(18,24,38,.36);
+      --line:rgba(234,240,255,.14); --shadow:0 18px 80px rgba(0,0,0,.36); --blur:20px;
+      --accent:rgba(0,255,140,.14); --accent2:rgba(0,255,140,.28);
     }
-
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
+    *{box-sizing:border-box}
+    html,body{height:100%}
     body{
-      margin:0;
-      font-family: var(--font);
+      margin:0; font-family:var(--font); color:var(--fg);
       background:
         radial-gradient(1200px 700px at 25% 15%, rgba(255,255,255,.45), transparent 60%),
         radial-gradient(1000px 680px at 80% 30%, rgba(0,0,0,.06), transparent 60%),
         var(--bg);
-      color: var(--fg);
       overflow-x:hidden;
     }
-    [data-theme="dark"] body{
+    body[data-theme="dark"]{
       background:
         radial-gradient(1200px 700px at 25% 15%, rgba(0,255,140,.055), transparent 60%),
         radial-gradient(1100px 720px at 80% 30%, rgba(0,140,255,.045), transparent 60%),
         var(--bg);
     }
 
-    .wrap{
-      min-height:100%;
-      display:flex;
-      flex-direction:column;
-      gap: clamp(10px, 1.6vh, 14px);
-      padding: var(--vpad) var(--hpad) calc(var(--vpad) + 10px);
-      align-items:center;
-    }
-
+    .wrap{min-height:100%;display:flex;flex-direction:column;align-items:center;gap:14px;padding:14px 14px 22px}
     .topbar{
-      width: var(--appW);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      padding: 10px 10px;
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--glass);
-      backdrop-filter: blur(var(--blur));
-      box-shadow: var(--shadow);
-      position: sticky;
-      top: 8px;
-      z-index: 70;
+      width:var(--appW); display:flex; justify-content:space-between; align-items:center; gap:10px;
+      padding:10px; position:sticky; top:8px; z-index:50;
+      border:1px solid var(--line); border-radius:var(--radius);
+      background:var(--glass); backdrop-filter:blur(var(--blur)); box-shadow:var(--shadow);
     }
-    .topbar .left, .topbar .right{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      flex-wrap:wrap;
-      min-width:0;
-    }
-    .topbar .right{ justify-content:flex-end; }
-
+    .left,.right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
     .btn{
-      border:1px solid var(--line);
-      background: transparent;
-      color:var(--fg);
-      border-radius: var(--radius2);
-      padding: calc(8px * var(--uiScale)) calc(10px * var(--uiScale));
-      font-size: calc(12px * var(--uiScale));
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      cursor:pointer;
-      user-select:none;
+      border:1px solid var(--line); background:transparent; color:var(--fg);
+      border-radius:var(--radius2); padding:8px 10px; font-size:12px;
+      letter-spacing:.08em; text-transform:uppercase; cursor:pointer; user-select:none;
+      transition:transform 140ms ease, background 120ms ease;
       white-space:nowrap;
-      transition: transform 140ms ease, background 120ms ease, opacity 120ms ease;
     }
-    .btn:hover{ background: rgba(0,0,0,.04); }
-    [data-theme="dark"] .btn:hover{ background: rgba(255,255,255,.05); }
-    .btn:active{ transform: translateY(1px); }
-
-    .btn.icon{
-      width: calc(40px * var(--uiScale));
-      height: calc(36px * var(--uiScale));
-      display:grid;
-      place-items:center;
-      padding:0;
-      font-family: var(--mono);
-      letter-spacing:0;
-      text-transform:none;
-      font-size: calc(15px * var(--uiScale));
-    }
-
-    .btn.primary{
-      background:
-        linear-gradient(180deg,
-          rgba(255,255,255, calc(.30 * var(--btnFill))) ,
-          rgba(0,0,0,0)
-        );
-      box-shadow: inset 0 0 0 1px var(--line);
-    }
-    [data-theme="dark"] .btn.primary{
-      background:
-        linear-gradient(180deg,
-          rgba(255,255,255, calc(.12 * var(--btnFill))) ,
-          rgba(0,0,0,0)
-        );
-    }
+    .btn:hover{background:rgba(0,0,0,.04)}
+    body[data-theme="dark"] .btn:hover{background:rgba(255,255,255,.05)}
+    .btn:active{transform:translateY(1px)}
+    .btn.icon{width:40px;height:36px;display:grid;place-items:center;padding:0;font-family:var(--mono);letter-spacing:0;text-transform:none;font-size:15px}
 
     .pill{
-      padding: calc(6px * var(--uiScale)) calc(10px * var(--uiScale));
-      border-radius: 999px;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.03);
-      color: var(--muted);
-      font-size: calc(12px * var(--uiScale));
-      font-family: var(--mono);
-      white-space:nowrap;
-      user-select:none;
+      padding:6px 10px;border-radius:999px;border:1px solid var(--line);
+      background:rgba(0,0,0,.03);color:var(--muted);font-size:12px;font-family:var(--mono);
     }
-    [data-theme="dark"] .pill{ background: rgba(255,255,255,.04); }
-    .pill.hidden{ display:none; }
+    body[data-theme="dark"] .pill{background:rgba(255,255,255,.04)}
+    .pill.hidden{display:none}
 
-    .hero{
-      width: var(--appW);
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap: 8px;
-      padding: 2px 8px 0;
-    }
+    .hero{width:var(--appW);display:flex;flex-direction:column;align-items:center;gap:6px;padding:2px 8px 0}
     .title{
-      font-size: calc(clamp(54px, 5.8vw, 92px) * var(--titleScale));
-      letter-spacing: .22em;
-      text-transform:uppercase;
-      margin: 6px 0 0;
-      font-weight: 820;
-      line-height:1.02;
-      text-align:center;
+      font-size:clamp(46px,5.4vw,84px); letter-spacing:.22em; text-transform:uppercase;
+      margin:6px 0 0; font-weight:900; line-height:1.02; text-align:center;
     }
-    .tag{
-      font-size: 13px;
-      color: var(--muted);
-      text-align:center;
-      max-width: 78ch;
-      padding: 0 8px;
-      min-height: 18px;
+    .tag{font-size:13px;color:var(--muted);text-align:center;max-width:78ch;min-height:18px}
+
+    .main{width:var(--appW);display:flex;flex-direction:column;gap:16px;flex:1;justify-content:center}
+    .card{
+      border:1px solid var(--line); border-radius:var(--radius);
+      background:var(--glass); backdrop-filter:blur(var(--blur)); box-shadow:var(--shadow);
+      padding:16px;
     }
 
-    .main{
-      width: var(--appW);
-      display:flex;
-      flex-direction:column;
-      gap: clamp(12px, 2.2vh, 18px);
-      align-items:center;
-      flex:1;
-      justify-content:center;
-    }
+    .barWrap{display:flex;flex-direction:column;gap:10px}
+    .barRow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .barLabel{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-family:var(--mono)}
+    .bar{width:100%;height:var(--barH);border:1px solid var(--line);background:rgba(0,0,0,.03);border-radius:var(--radius2);position:relative;overflow:hidden}
+    body[data-theme="dark"] .bar{background:rgba(255,255,255,.04)}
+    .barFill{position:absolute;inset:0;width:100%;background:radial-gradient(800px 140px at 20% 50%, var(--accent2), transparent 55%),linear-gradient(90deg, var(--accent), transparent 70%);transition:width 220ms ease}
+    .barPct{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--mono);font-size:12px;opacity:.92;pointer-events:none}
 
-    .barWrap{
-      width:100%;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      padding: 18px 16px 18px;
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--glass);
-      backdrop-filter: blur(var(--blur));
-      box-shadow: var(--shadow);
-    }
-    .barRow{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
-    .barLabel{
-      font-size: 12px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color: var(--muted);
-      font-family: var(--mono);
-    }
-    .bar{
-      width:100%;
-      height: var(--barH);
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.03);
-      border-radius: var(--radius2);
-      position:relative;
-      overflow:hidden;
-    }
-    [data-theme="dark"] .bar{ background: rgba(255,255,255,.04); }
-    .barFill{
-      position:absolute; inset:0;
-      width:100%;
-      background:
-        radial-gradient(800px 140px at 20% 50%, var(--barAccent2), transparent 55%),
-        linear-gradient(90deg, var(--barAccent), transparent 70%);
-      transition: width 260ms ease;
-    }
-    .barPct{
-      position:absolute; inset:0;
-      display:grid;
-      place-items:center;
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--fg);
-      opacity:.92;
-      pointer-events:none;
-    }
-
-    .current{
-      width:100%;
-      padding: 16px 16px 14px;
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--glass);
-      backdrop-filter: blur(var(--blur));
-      box-shadow: var(--shadow);
-      display:flex;
-      flex-direction:column;
-      gap: 14px;
-    }
     .taskName{
-      font-size: calc(clamp(30px, 4.2vw, 62px) * var(--taskScale));
-      font-weight: 860;
-      letter-spacing:.01em;
-      text-align:center;
-      line-height:1.06;
-      padding: 4px 6px;
-      word-break: break-word;
+      font-size:clamp(34px,4.2vw,64px);font-weight:900;letter-spacing:.01em;
+      text-align:center;line-height:1.06;word-break:break-word;margin:6px 0 10px;
     }
-    .chips{
-      display:flex;
-      flex-wrap:wrap;
-      gap:6px;
-      justify-content:center;
-      padding: 0;
-    }
-    .chip{
-      width: var(--chipH);
-      height: var(--chipH);
-      border-radius: 2px;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.03);
-    }
-    [data-theme="dark"] .chip{ background: rgba(255,255,255,.04); }
-    .chip.on{ background: var(--barAccent2); }
+    .chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+    .chip{width:18px;height:18px;border-radius:4px;border:1px solid var(--line);background:rgba(0,0,0,.03)}
+    body[data-theme="dark"] .chip{background:rgba(255,255,255,.04)}
+    .chip.on{background:var(--accent2)}
 
-    .actions{
-      display:flex;
-      gap:12px;
-      justify-content:center;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-
+    .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;align-items:center;margin-top:12px}
     .roulette{
-      width: clamp(110px, 14vw, 170px);
-      height: clamp(110px, 14vw, 170px);
-      border-radius: 999px;
-      border:1px solid var(--line);
-      background:
-        radial-gradient(circle at 30% 30%, var(--glass2), transparent 60%),
-        linear-gradient(180deg, var(--glass2), transparent);
-      backdrop-filter: blur(var(--blur));
-      box-shadow: var(--shadow);
-      display:grid;
-      place-items:center;
-      cursor:pointer;
-      user-select:none;
-      transition: transform 140ms ease;
-      position:relative;
-      overflow:hidden;
+      width:150px;height:150px;border-radius:999px;border:1px solid var(--line);
+      background:radial-gradient(circle at 30% 30%, var(--glass2), transparent 60%),linear-gradient(180deg, var(--glass2), transparent);
+      backdrop-filter:blur(var(--blur));box-shadow:var(--shadow);
+      display:grid;place-items:center;cursor:pointer;user-select:none;position:relative;overflow:hidden;
+      transition:transform 140ms ease;
     }
-    .roulette:active{ transform: translateY(1px) scale(.99); }
-    .rouletteText{
-      font-size: 12px;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      color: var(--fg);
-      opacity:.92;
-      font-weight:820;
-      font-family: var(--mono);
-    }
-    .rouletteRing{
-      position:absolute; inset:10px;
-      border-radius:999px;
-      border:1px dashed var(--line);
-      opacity:.85;
-    }
-    .rouletteNeedle{
-      position:absolute; top: 10px; left: 50%;
-      width: 0; height: 0;
-      border-left: 8px solid transparent;
-      border-right: 8px solid transparent;
-      border-bottom: 14px solid rgba(0,0,0,.18);
-      transform: translateX(-50%);
-      opacity:.9;
-    }
-    [data-theme="dark"] .rouletteNeedle{ border-bottom-color: rgba(255,255,255,.18); }
-    .rouletteSpin{ animation: spin 860ms cubic-bezier(.08,.92,.20,1) 1; }
-    @keyframes spin{ 0%{ transform: rotate(0deg); } 100%{ transform: rotate(1080deg); } }
+    .roulette:active{transform:translateY(1px) scale(.99)}
+    .rouletteText{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:900;font-family:var(--mono);opacity:.92}
+    .rouletteRing{position:absolute;inset:10px;border-radius:999px;border:1px dashed var(--line);opacity:.85}
+    .rouletteNeedle{position:absolute;top:10px;left:50%;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:14px solid rgba(0,0,0,.18);transform:translateX(-50%);opacity:.9}
+    body[data-theme="dark"] .rouletteNeedle{border-bottom-color:rgba(255,255,255,.18)}
+    .rouletteSpin{animation:spin 860ms cubic-bezier(.08,.92,.20,1) 1}
+    @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(1080deg)}}
 
     .bomb{
-      min-width: clamp(180px, 26vw, 300px);
-      padding: 14px 16px;
-      border-radius: var(--radius2);
-      border:1px solid var(--line);
-      background: linear-gradient(180deg, var(--glass2), transparent);
-      cursor:pointer;
-      text-transform:uppercase;
-      letter-spacing:.10em;
-      font-size: 12px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:12px;
-      user-select:none;
-      box-shadow: var(--shadow);
-      transition: transform 140ms ease;
+      min-width:240px;padding:14px 16px;border-radius:var(--radius2);border:1px solid var(--line);
+      background:linear-gradient(180deg,var(--glass2),transparent);
+      cursor:pointer;text-transform:uppercase;letter-spacing:.10em;font-size:12px;
+      display:flex;align-items:center;justify-content:center;gap:12px;user-select:none;box-shadow:var(--shadow);
+      transition:transform 140ms ease;
     }
-    .bomb:hover{ background: rgba(0,0,0,.03); }
-    [data-theme="dark"] .bomb:hover{ background: rgba(255,255,255,.04); }
-    .bomb:active{ transform: translateY(1px) scale(.99); }
-    .bomb .em{ font-family: var(--mono); font-size: 16px; opacity:.92; }
-    .bomb .label{ display:flex; flex-direction:column; line-height:1.10; align-items:center; }
-    .bomb .label span{ font-size: 12px; font-family: var(--mono); }
-    .bomb .label small{
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      font-family: var(--mono);
-    }
+    .bomb:hover{background:rgba(0,0,0,.03)}
+    body[data-theme="dark"] .bomb:hover{background:rgba(255,255,255,.04)}
+    .bomb:active{transform:translateY(1px) scale(.99)}
+    .bomb .em{font-family:var(--mono);font-size:16px;opacity:.92}
+    .bomb .label{display:flex;flex-direction:column;line-height:1.10;align-items:center}
+    .bomb .label span{font-size:12px;font-family:var(--mono)}
+    .bomb .label small{font-size:10px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;font-family:var(--mono)}
 
-    .miniRow{ display:flex; gap:10px; justify-content:center; align-items:center; flex-wrap:wrap; }
+    .miniRow{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:12px}
     .miniIcon{
-      width:56px; height:56px;
-      border-radius: var(--radius2);
-      border:1px solid var(--line);
-      display:grid;
-      place-items:center;
-      cursor:pointer;
-      background: transparent;
-      box-shadow: var(--shadow);
-      font-family: var(--mono);
-      font-size: 15px;
-      user-select:none;
-      transition: transform 140ms ease, background 120ms ease;
-      letter-spacing:.06em;
+      width:56px;height:56px;border-radius:var(--radius2);border:1px solid var(--line);
+      display:grid;place-items:center;cursor:pointer;background:transparent;box-shadow:var(--shadow);
+      font-family:var(--mono);font-size:15px;user-select:none;transition:transform 140ms ease, background 120ms ease;
     }
-    .miniIcon:hover{ background: rgba(0,0,0,.03); }
-    [data-theme="dark"] .miniIcon:hover{ background: rgba(255,255,255,.04); }
-    .miniIcon:active{ transform: translateY(1px) scale(.99); }
-    .miniLabel{ width:auto; padding: 0 12px; font-size: 12px; text-transform:uppercase; }
+    .miniIcon:hover{background:rgba(0,0,0,.03)}
+    body[data-theme="dark"] .miniIcon:hover{background:rgba(255,255,255,.04)}
+    .miniIcon:active{transform:translateY(1px) scale(.99)}
+    .miniLabel{width:auto;padding:0 12px;font-size:12px;text-transform:uppercase}
 
-    .belowList{
-      width:100%;
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--glass);
-      backdrop-filter: blur(var(--blur));
-      box-shadow: var(--shadow);
-      padding: 10px;
-      display:none;
-    }
-    .belowList.show{ display:block; }
-    .belowHead{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      padding-bottom:8px;
-      border-bottom:1px solid var(--line);
-      margin-bottom:8px;
-    }
-    .belowHead .h{
-      font-size:12px; letter-spacing:.10em; text-transform:uppercase; color:var(--muted);
-      font-family: var(--mono);
-    }
-    .taskRow{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding: 8px 6px;
-      border-bottom:1px solid var(--line);
-    }
-    .taskRow:last-child{ border-bottom:none; }
-    .taskRow .t{
-      flex:1;
-      min-width:0;
-      font-size: 13px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      color: var(--fg);
-    }
-    .taskRow .meta{
-      font-size: 11px;
-      color: var(--muted);
-      font-family: var(--mono);
-      white-space:nowrap;
-    }
-    .taskRow .tools{ display:flex; gap:6px; align-items:center; }
-    .toolBtn{
-      width:36px; height:32px;
-      border-radius: var(--radius2);
-      border:1px solid var(--line);
-      display:grid;
-      place-items:center;
-      cursor:pointer;
-      background: transparent;
-      font-family: var(--mono);
-      font-size: 12px;
-      user-select:none;
-    }
-    .toolBtn:hover{ background: rgba(0,0,0,.03); }
-    [data-theme="dark"] .toolBtn:hover{ background: rgba(255,255,255,.04); }
+    /* panels */
+    .panelBack{position:fixed;inset:0;background:rgba(0,0,0,.20);backdrop-filter:blur(10px);display:none;z-index:80}
+    .panel{position:fixed;top:0;height:100%;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(var(--blur));box-shadow:var(--shadow);display:flex;flex-direction:column;z-index:90;transition:transform 220ms ease}
+    .panel.left{left:0;width:min(460px,94vw);transform:translateX(-105%);border-left:none}
+    .panel.right{right:0;width:min(520px,94vw);transform:translateX(105%);border-right:none}
+    .panel.open{transform:translateX(0)}
+    .panelTop{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line);gap:10px}
+    .panelTitle{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-family:var(--mono)}
+    .panelBody{padding:12px;overflow:auto}
+    .section{border:1px solid var(--line);border-radius:var(--radius);padding:10px;background:rgba(0,0,0,.02)}
+    body[data-theme="dark"] .section{background:rgba(255,255,255,.03)}
+    .section h3{margin:0 0 8px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-family:var(--mono);font-weight:900}
 
-    .small{ font-size:12px; color: var(--muted); font-family: var(--mono); }
+    textarea,input,select{
+      width:100%;border:1px solid var(--line);background:transparent;color:var(--fg);
+      border-radius:var(--radius2);padding:10px;outline:none;font-family:var(--font);font-size:13px
+    }
+    textarea{min-height:140px;resize:vertical}
+    .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .row>*{flex:1;min-width:140px}
 
-    .focusOn .topbar .btn:not(.keepFocus),
-    .focusOn .topbar .right{ display:none !important; }
-    .focusOn .topbar{ justify-content:center; }
-    .focusOn .topbar .left{ width:100%; justify-content:center; }
+    .taskRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 6px;border-bottom:1px solid var(--line)}
+    .taskRow:last-child{border-bottom:none}
+    .taskRow .t{flex:1;min-width:0;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .taskRow .meta{font-size:11px;color:var(--muted);font-family:var(--mono);white-space:nowrap}
+    .tools{display:flex;gap:6px;align-items:center}
+    .toolBtn{width:36px;height:32px;border-radius:var(--radius2);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;background:transparent;font-family:var(--mono);font-size:12px;user-select:none}
+    .toolBtn:hover{background:rgba(0,0,0,.03)}
+    body[data-theme="dark"] .toolBtn:hover{background:rgba(255,255,255,.04)}
+    .small{font-size:12px;color:var(--muted);font-family:var(--mono)}
 
-    .drawerBack, .rightBack, .modalBack{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.22);
-      backdrop-filter: blur(10px);
-      display:none;
-      z-index:80;
-    }
-    .drawer, .rightPanel{
-      position:fixed; top:0;
-      height:100%;
-      background: var(--glass);
-      backdrop-filter: blur(var(--blur));
-      box-shadow: var(--shadow);
-      transition: transform 220ms ease;
-      z-index:90;
-      display:flex;
-      flex-direction:column;
-    }
-    .drawer{
-      left:0;
-      width: min(var(--drawerW), 94vw);
-      border-right:1px solid var(--line);
-      transform: translateX(-105%);
-    }
-    .rightPanel{
-      right:0;
-      width: min(var(--rightW), 94vw);
-      border-left:1px solid var(--line);
-      transform: translateX(105%);
-      z-index:85;
-    }
-    .drawer.open{ transform: translateX(0); }
-    .rightPanel.open{ transform: translateX(0); }
-    .drawerBack.show, .rightBack.show{ display:block; }
-
-    .drawerTop, .rightTop{
-      display:flex; justify-content:space-between; align-items:center;
-      padding: 10px 12px;
-      border-bottom:1px solid var(--line);
-      gap:10px;
-    }
-    .drawerTitle, .rightTitle{
-      font-size: 12px;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      color: var(--muted);
-      font-family: var(--mono);
-    }
-    .tabs, .rightTabs{
-      display:flex; gap:8px; padding: 10px 12px 6px; flex-wrap:wrap;
-    }
-    .tab{
-      padding: 7px 9px;
-      border-radius: var(--radius2);
-      border:1px solid var(--line);
-      cursor:pointer;
-      font-size: 11px;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      color: var(--muted);
-      user-select:none;
-      font-family: var(--mono);
-    }
-    .tab.active{
-      color: var(--fg);
-      background: linear-gradient(180deg, var(--glass2), transparent);
-      box-shadow: inset 0 0 0 1px var(--line);
-    }
-    .drawerBody, .rightBody{ padding: 10px 12px 18px; overflow:auto; }
-
-    .section{
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 10px;
-      background: rgba(0,0,0,.02);
-    }
-    [data-theme="dark"] .section{ background: rgba(255,255,255,.03); }
-    .section h3{
-      margin: 0 0 8px;
-      font-size: 11px;
-      letter-spacing:.14em;
-      text-transform:uppercase;
-      color: var(--muted);
-      font-family: var(--mono);
-      font-weight:820;
-    }
-
-    textarea, input, select{
-      width:100%;
-      border:1px solid var(--line);
-      background: transparent;
-      color: var(--fg);
-      border-radius: var(--radius2);
-      padding: 10px;
-      outline:none;
-      font-family: var(--font);
-      font-size: 13px;
-    }
-    textarea{ min-height: 120px; resize:vertical; }
-    .row{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-    .row > *{ flex:1; min-width: 120px; }
-
-    .modal{
-      position:fixed; inset:0;
-      display:none;
-      z-index:120;
-      padding: 18px;
-      align-items:center;
-      justify-content:center;
-    }
-    .modalCard{
-      width:min(980px, 96vw);
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--glass);
-      backdrop-filter: blur(var(--blur));
-      box-shadow: var(--shadow);
-      padding: 12px;
-      position:relative;
-      max-height: 86vh;
-      overflow:auto;
-    }
-    .modalHead{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      padding: 6px 6px 10px;
-      border-bottom:1px solid var(--line);
-      margin-bottom:10px;
-    }
-    .modalHead .mh{
-      font-size: 12px; letter-spacing:.14em; text-transform:uppercase; color: var(--muted);
-      font-family: var(--mono);
-    }
-
-    #confetti{
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      z-index:140;
-    }
-
-    [data-borders="off"]{ --line: rgba(0,0,0,0); }
-    [data-buttons="filled"]{ --btnFill: 1; }
-
-    @media (max-width: 560px){
-      .btn{ font-size: 11px; padding: 8px 9px; }
-      .btn.icon{ width: 38px; height: 34px; }
-      .pill{ font-size: 11px; }
-      .bomb{ min-width: 170px; }
-      .miniIcon{ width: 52px; height: 52px; }
-    }
+    /* confetti */
+    #confetti{position:fixed;inset:0;pointer-events:none;z-index:140}
   </style>
 </head>
 
-<body data-theme="light" data-borders="on" data-buttons="ghost">
+<body data-theme="light">
   <canvas id="confetti"></canvas>
 
-  <div class="drawerBack" id="drawerBack"></div>
-  <div class="drawer" id="drawer">
-    <div class="drawerTop">
-      <div class="drawerTitle">MENU</div>
-      <button class="btn" id="drawerClose">FERMER</button>
+  <!-- LEFT PANEL -->
+  <div class="panelBack" id="leftBack"></div>
+  <div class="panel left" id="leftPanel">
+    <div class="panelTop">
+      <div class="panelTitle">MENU</div>
+      <button class="btn" id="leftClose">FERMER</button>
     </div>
-    <div class="tabs" id="tabs"></div>
-    <div class="drawerBody" id="drawerBody"></div>
+    <div class="panelBody" id="leftBody"></div>
   </div>
 
-  <div class="rightBack" id="rightBack"></div>
-  <div class="rightPanel" id="rightPanel">
-    <div class="rightTop">
-      <div class="rightTitle" id="rightTitle">PANNEAU DROIT</div>
+  <!-- RIGHT PANEL -->
+  <div class="panelBack" id="rightBack"></div>
+  <div class="panel right" id="rightPanel">
+    <div class="panelTop">
+      <div class="panelTitle">PANNEAU DROIT</div>
       <button class="btn" id="rightClose">FERMER</button>
     </div>
-    <div class="rightTabs" id="rightTabs"></div>
-    <div class="rightBody" id="rightBody"></div>
-  </div>
-
-  <div class="modalBack" id="modalBack"></div>
-
-  <div class="modal" id="notesModal">
-    <div class="modalCard" onclick="event.stopPropagation()">
-      <div class="modalHead">
-        <div class="mh">NOTES</div>
-        <div class="small">Clique hors de la carte pour fermer</div>
-      </div>
-      <div class="section">
-        <h3>Ajouter une note</h3>
-        <textarea id="noteInput" placeholder="Écris ici. Sortie de RAM."></textarea>
-        <div class="row" style="margin-top:8px">
-          <button class="btn primary" id="noteAdd">AJOUTER</button>
-          <button class="btn" id="noteClear">VIDER</button>
-        </div>
-      </div>
-      <div style="height:10px"></div>
-      <div class="section">
-        <h3>Historique</h3>
-        <div id="notesList" class="small"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="tipsModal">
-    <div class="modalCard" onclick="event.stopPropagation()">
-      <div class="modalHead">
-        <div class="mh">CONSEIL FLOW</div>
-        <div class="small">Clique hors de la carte pour fermer</div>
-      </div>
-      <div style="font-size:clamp(18px,2.4vw,28px); letter-spacing:.08em; text-transform:uppercase; font-weight:900; text-align:center" id="tipsTitle"></div>
-      <div style="font-size:clamp(13px,1.6vw,18px); text-align:center; line-height:1.55; margin-top:10px" id="tipsMsg"></div>
-      <div class="celeSub small" style="text-align:center; margin-top:10px" id="tipsSub"></div>
-    </div>
-  </div>
-
-  <div class="modal" id="emoNudgeModal">
-    <div class="modalCard" onclick="event.stopPropagation()">
-      <div class="modalHead">
-        <div class="mh">MICRO-RÉGULATION</div>
-        <div class="small">Clique hors de la carte pour fermer</div>
-      </div>
-      <div style="font-size:clamp(18px,2.4vw,28px); letter-spacing:.10em; text-transform:uppercase; font-weight:900; text-align:center" id="emoNudgeTitle"></div>
-      <div style="font-size:clamp(13px,1.6vw,18px); text-align:center; line-height:1.55; margin-top:10px" id="emoNudgeMsg"></div>
-      <div class="celeSub small" style="text-align:center; margin-top:10px" id="emoNudgeSub"></div>
-    </div>
-  </div>
-
-  <div class="modal" id="exportModal">
-    <div class="modalCard" onclick="event.stopPropagation()">
-      <div class="modalHead">
-        <div class="mh">EXPORT</div>
-        <div class="small">Clique hors de la carte pour fermer</div>
-      </div>
-      <div class="section">
-        <h3>Texte / JSON / CSV</h3>
-        <div class="row" style="margin-bottom:8px">
-          <button class="btn primary" id="expText">TEXTE</button>
-          <button class="btn" id="expJSON">JSON</button>
-          <button class="btn" id="expCSV">CSV</button>
-          <button class="btn" id="expCopy">COPIER</button>
-        </div>
-        <textarea id="expOut" style="min-height:260px"></textarea>
-      </div>
-    </div>
+    <div class="panelBody" id="rightBody"></div>
   </div>
 
   <div class="wrap" id="app">
     <div class="topbar">
       <div class="left">
-        <button class="btn icon keepFocus" id="btnMenu" title="Menu gauche">≡</button>
-        <button class="btn keepFocus" id="btnTheme" title="Thème"><span id="themeLabel">THÈME CLAIR</span></button>
-
-        <button class="btn keepFocus" id="btnCounters" title="Afficher/masquer compteurs">COMPTEURS</button>
+        <button class="btn icon" id="btnMenu" title="Menu">≡</button>
+        <button class="btn" id="btnTheme"><span id="themeLabel">THÈME CLAIR</span></button>
+        <button class="btn" id="btnCounters">COMPTEURS</button>
         <span class="pill hidden" id="pillTasks">0/0 tâches</span>
         <span class="pill hidden" id="pillEto">0/0 étorions</span>
         <span class="pill hidden" id="pillDone">0 faites</span>
         <span class="pill hidden" id="pillTimer">00:00</span>
-
-        <button class="btn keepFocus" id="btnListToggle" title="Afficher/masquer la liste sur l'écran">LISTE</button>
-        <button class="btn keepFocus" id="btnFocus" title="Mode focus">FOCUS</button>
       </div>
       <div class="right">
-        <button class="btn icon keepFocus" id="btnRight" title="Panneau droit">▦</button>
+        <button class="btn icon" id="btnRight" title="Panneau droit">▦</button>
       </div>
     </div>
 
     <div class="hero">
-      <div class="title" id="appTitle">ELIMINATOR</div>
+      <div class="title">ELIMINATOR</div>
       <div class="tag" id="tagline"></div>
     </div>
 
     <div class="main">
-      <div class="barWrap">
+      <div class="card barWrap">
         <div class="barRow">
           <div class="barLabel">progression tâches</div>
           <div class="barLabel" id="barInfo">—</div>
         </div>
-        <div class="bar" title="La barre commence à 100% et diminue">
+        <div class="bar">
           <div class="barFill" id="taskBarFill" style="width:100%"></div>
           <div class="barPct" id="taskBarPct">100%</div>
         </div>
       </div>
 
-      <div class="current">
+      <div class="card">
         <div class="taskName" id="taskName">Aucune tâche</div>
         <div class="chips" id="chips"></div>
 
         <div class="actions">
           <div class="roulette" id="btnRoulette" title="Roulette">
-            <div class="rouletteRing" aria-hidden="true"></div>
-            <div class="rouletteNeedle" aria-hidden="true"></div>
+            <div class="rouletteRing"></div>
+            <div class="rouletteNeedle"></div>
             <div class="rouletteText">ROULETTE</div>
           </div>
 
@@ -766,1149 +253,849 @@
 
         <div class="miniRow">
           <div class="miniIcon" id="btnUndo" title="Annuler">↶</div>
-          <div class="miniIcon miniLabel" id="btnNotes" title="Notes">NOTES</div>
-          <div class="miniIcon" id="btnDoneTask" title="Tâche dégommée">✓</div>
-          <div class="miniIcon" id="btnEditTask" title="Éditer">≋</div>
-          <div class="miniIcon" id="btnPause" title="Pause compteur">⏸</div>
+          <div class="miniIcon miniLabel" id="btnShowList" title="Liste">LISTE</div>
+          <div class="miniIcon" id="btnDoneTask" title="Finir tâche">✓</div>
+          <div class="miniIcon" id="btnPause" title="Pause timer">⏸</div>
         </div>
 
-        <div class="belowList" id="belowList">
-          <div class="belowHead">
-            <div class="h">LISTE EN COURS</div>
-            <button class="btn" id="btnHideBelow">MASQUER</button>
-          </div>
-          <div id="belowTasks"></div>
-        </div>
-
-        <div class="small" id="hintLine" style="text-align:center">
+        <div class="small" style="text-align:center;margin-top:10px">
           Une cible. Une action. Zéro tribunal intérieur.
         </div>
       </div>
+
+      <div class="card" id="belowList" style="display:none">
+        <div class="barRow" style="margin-bottom:8px">
+          <div class="barLabel">liste en cours</div>
+          <button class="btn" id="btnHideList">MASQUER</button>
+        </div>
+        <div id="belowTasks"></div>
+      </div>
     </div>
   </div>
-<script>
-"use strict";
 
-/* ========= Utils ========= */
-const $ = (id)=>document.getElementById(id);
-const clamp = (n,a,b)=>Math.max(a, Math.min(b,n));
-const uid = ()=>Math.random().toString(36).slice(2,10)+"_"+Date.now().toString(36);
-const nowISO = ()=>new Date().toISOString();
-function dayKey(d=new Date()){
-  const y=d.getFullYear();
-  const m=String(d.getMonth()+1).padStart(2,"0");
-  const da=String(d.getDate()).padStart(2,"0");
-  return `${y}-${m}-${da}`;
-}
-function fmtMMSS(ms){
-  const s=Math.floor(ms/1000);
-  const mm=String(Math.floor(s/60)).padStart(2,"0");
-  const ss=String(s%60).padStart(2,"0");
-  return `${mm}:${ss}`;
-}
-function plural(n, one, many){ return (n===1)?one:many; }
-function rand(n){ return Math.floor(Math.random()*n); }
-function escapeHTML(s){
-  return (s||"").replace(/[&<>"']/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[c]));
-}
-function clearEl(el){ while(el.firstChild) el.removeChild(el.firstChild); }
-function mkBtn(txt, cls="btn"){ const b=document.createElement("button"); b.className=cls; b.textContent=txt; return b; }
-function structuredCloneSafe(o){
-  if(typeof structuredClone==="function") return structuredClone(o);
-  return JSON.parse(JSON.stringify(o));
-}
+  <script>
+  /* =========================
+     ELIMINATOR — version robuste (compat Safari)
+     - pas de structuredClone / ?? / ||= / ?.
+     - SET = to-do list éditable
+  ========================= */
 
-/* ========= Storage ========= */
-const LS_KEY = "eliminator_unified_fixed_v1";
-
-/* ========= Appearance catalogs ========= */
-const ACCENTS = {
-  cyan:{a:"rgba(0,140,255,.16)",a2:"rgba(0,140,255,.32)"},
-  violet:{a:"rgba(140,80,255,.16)",a2:"rgba(140,80,255,.32)"},
-  lime:{a:"rgba(0,255,140,.14)",a2:"rgba(0,255,140,.30)"},
-  amber:{a:"rgba(255,180,0,.14)",a2:"rgba(255,180,0,.28)"},
-  steel:{a:"rgba(180,200,255,.12)",a2:"rgba(180,200,255,.24)"},
-  rose:{a:"rgba(255,120,180,.12)",a2:"rgba(255,120,180,.24)"},
-  ice:{a:"rgba(120,220,255,.12)",a2:"rgba(120,220,255,.24)"},
-};
-const FONT_FAMILIES = {
-  system:'ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial',
-  elegant:'"SF Pro Display", -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial',
-  neutral:'system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial',
-  serif:'ui-serif, "New York", "Iowan Old Style", Georgia, serif'
-};
-
-/* ========= Default state ========= */
-const defaultState = {
-  theme:"light",
-  focus:false,
-  showBelowList:false,
-  showCounters:false,
-  countersAutoHideSec:10,
-  drawerW:460,
-  rightW:520,
-  activeTab:"inbox",
-  rightTab:"sets",
-  appearance:{
-    accentLight:"cyan", accentDark:"lime",
-    barColorLight:"cyan", barColorDark:"lime",
-    fontFamily:"elegant",
-    uiScale:1.0, titleScale:1.18, taskScale:1.5,
-    borders:"on", buttons:"ghost",
-    radius:6, barH:38, chipH:18
-  },
-  settings:{
-    celebrationBase:0.18,
-    celebrationAutoCloseSec:11,
-    tipsChance:0.14,
-    tipsMinGapMin:6,
-    nudgeChance:0.10,
-    nudgeMinGapMin:10,
-    streakMilestone:3,
-    longGapMin:10,
-    megaOnMilestones:true,
-    keepListInFocus:true
-  },
-  timer:{
-    running:true,
-    startedAt:null,
-    pausedAt:null,
-    pausedTotal:0,
-    pomodoroMin:25,
-    pomodoroRunning:false,
-    pomodoroEndsAt:null
-  },
-  tasks:[],
-  baseline:{ totalTasks:0, totalEtorions:0 },
-  currentTaskId:null,
-  currentTaskStart:null,
-  notes:[],
-  habits:[],
-  history:[],
-  kiffance:{ bank: {"5":[], "10":[], "15":[], "25":[]} },
-  sets:{ list:[], selectedId:null },
-  emotions:{ entries:[] },
-  stats:{ etorionsDone:0, tasksDone:0 },
-  streak:{ tasksInARow:0, lastTaskDoneAt:null },
-  lastCelebrationAt:null,
-  lastTipAt:null,
-  lastNudgeAt:null,
-  undo:[]
-};
-
-function deepAssign(target, src){
-  for(const k in src){
-    if(src[k] && typeof src[k]==="object" && !Array.isArray(src[k]) && target[k]){
-      deepAssign(target[k], src[k]);
-    }else target[k]=src[k];
+  function $(id){ return document.getElementById(id); }
+  function clamp(n,a,b){ return Math.max(a, Math.min(b,n)); }
+  function rand(n){ return Math.floor(Math.random()*n); }
+  function uid(){
+    return Math.random().toString(36).slice(2,10) + "_" + Date.now().toString(36);
   }
-}
-
-function seedState(s){
-  const bank = s.kiffance?.bank || (s.kiffance={bank:{"5":[], "10":[], "15":[], "25":[]}}).bank;
-  const emptyAll = ["5","10","15","25"].every(k=>Array.isArray(bank[k]) && bank[k].length===0);
-  if(emptyAll){
-    bank["5"]  = ["Bois un verre d’eau.","Respire 5 cycles lents.","Micro-marche 60s.","Étire nuque/épaules 45s.","Nettoie une surface 30s."];
-    bank["10"] = ["Mini-reset: eau + toilette + retour.","Décharge mentale: 8 lignes.","Rangement éclair: 10 objets.","Fenêtre 2 minutes.","Étirements 4 minutes."];
-    bank["15"] = ["Pause active: marche 10 + eau 5.","Snack simple sans écran.","Visage / mains + retour."];
-    bank["25"] = ["Vraie pause: 20 min hors écran + reprise.","Petite marche + retour focus.","Micro-sieste 15–20 min."];
+  function nowISO(){ return new Date().toISOString(); }
+  function dayKey(d){
+    d = d || new Date();
+    var y=d.getFullYear();
+    var m=("0"+(d.getMonth()+1)).slice(-2);
+    var da=("0"+d.getDate()).slice(-2);
+    return y+"-"+m+"-"+da;
   }
-
-  if(!s.sets || !Array.isArray(s.sets.list)) s.sets={list:[], selectedId:null};
-  if(s.sets.list.length===0){
-    const mkSet = (title, unitName, unitCount, items)=>({
-      id: uid(), title, unitName, unitCount, items,
-      categories:[], checks:{}, pinned:false, order:Date.now()+Math.random()
-    });
-    const hosp = mkSet("HOSPITALIER","Patient",4,["Voir patient","Note","Traitement","Dossier"]);
-    const consult = mkSet("CONSULTATION","Patient",6,["Voir patient","Note","Ordonnance","Dossier"]);
-    s.sets.list=[hosp, consult];
-    s.sets.selectedId=hosp.id;
-  }else{
-    if(!s.sets.selectedId) s.sets.selectedId=s.sets.list[0]?.id || null;
+  function fmtMMSS(ms){
+    var s = Math.floor(ms/1000);
+    var mm = ("0"+Math.floor(s/60)).slice(-2);
+    var ss = ("0"+(s%60)).slice(-2);
+    return mm+":"+ss;
   }
-
-  if(!s.undo) s.undo=[];
-  if(!s.timer) s.timer=structuredCloneSafe(defaultState.timer);
-  return s;
-}
-
-function loadState(){
-  try{
-    const raw = localStorage.getItem(LS_KEY);
-    if(!raw) return seedState(structuredCloneSafe(defaultState));
-    const parsed = JSON.parse(raw);
-    const merged = structuredCloneSafe(defaultState);
-    deepAssign(merged, parsed);
-    return seedState(merged);
-  }catch(e){
-    return seedState(structuredCloneSafe(defaultState));
-  }
-}
-let state = loadState();
-function saveState(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
-
-/* ========= Appearance apply ========= */
-function applyAppearance(){
-  document.body.setAttribute("data-theme", state.theme);
-  document.body.setAttribute("data-borders", state.appearance.borders || "on");
-  document.body.setAttribute("data-buttons", state.appearance.buttons || "ghost");
-
-  document.documentElement.style.setProperty("--uiScale", String(state.appearance.uiScale ?? 1));
-  document.documentElement.style.setProperty("--titleScale", String(state.appearance.titleScale ?? 1.18));
-  document.documentElement.style.setProperty("--taskScale", String(state.appearance.taskScale ?? 1.5));
-  document.documentElement.style.setProperty("--radius", `${clamp(state.appearance.radius ?? 6,0,14)}px`);
-  document.documentElement.style.setProperty("--barH", `${clamp(state.appearance.barH ?? 38,26,52)}px`);
-  document.documentElement.style.setProperty("--chipH", `${clamp(state.appearance.chipH ?? 18,12,28)}px`);
-  document.documentElement.style.setProperty("--drawerW", `${clamp(state.drawerW||460,340,920)}px`);
-  document.documentElement.style.setProperty("--rightW", `${clamp(state.rightW||520,340,980)}px`);
-
-  const ff = FONT_FAMILIES[state.appearance.fontFamily] || FONT_FAMILIES.elegant;
-  document.documentElement.style.setProperty("--font", ff);
-
-  const accentKey = (state.theme==="light") ? (state.appearance.accentLight||"cyan") : (state.appearance.accentDark||"lime");
-  const a = ACCENTS[accentKey] || ACCENTS.cyan;
-  document.documentElement.style.setProperty("--accent", a.a);
-  document.documentElement.style.setProperty("--accent2", a.a2);
-
-  const barKey = (state.theme==="light") ? (state.appearance.barColorLight||accentKey) : (state.appearance.barColorDark||accentKey);
-  const b = ACCENTS[barKey] || a;
-  document.documentElement.style.setProperty("--barAccent", b.a);
-  document.documentElement.style.setProperty("--barAccent2", b.a2);
-
-  $("themeLabel").textContent = state.theme==="light" ? "THÈME CLAIR" : "THÈME SOMBRE";
-}
-
-/* ========= Pools ========= */
-const TAGLINE_POOL = [
-  "Quête principale: active. Quêtes secondaires: muselées.",
-  "Un étorion. Une incision nette. Hémostase du bazar.",
-  "Mode ninja: silencieux. Précis. Irréprochable.",
-  "Le chaos recule quand tu avances."
-];
-const TIPS_POOL = [
-  {t:"RÈGLE DU LASER", m:"Une seule cible. Pas de multi-onglets."},
-  {t:"ANTI-FRICTION", m:"Enlève un obstacle matériel maintenant."},
-  {t:"MICRO-CONTRAT", m:"Fais 1 étorion. Ensuite tu renégocies (non)."}
-];
-const EMO_NUDGES = [
-  {t:"STOP (30s)", m:"Je remarque l’émotion. 3 respirations lentes. Puis reprise."},
-  {t:"ANCRAGE 5-4-3-2-1", m:"5 vues, 4 touchées, 3 entendues, 2 senties, 1 goûtée."},
-  {t:"DÉFUSION", m:"« J’ai la pensée que… » au lieu de « je suis… »."}
-];
-
-function setRandomTagline(force=false){
-  const el=$("tagline");
-  if(force || !el.textContent.trim() || Math.random()<0.25){
-    el.textContent = TAGLINE_POOL[rand(TAGLINE_POOL.length)];
-  }
-}
-
-/* ========= Tasks parsing ========= */
-function isAllCapsLine(line){
-  const t=line.trim(); if(!t) return false;
-  const hasLetters=/[A-Za-zÀ-ÖØ-öø-ÿ]/.test(t);
-  if(!hasLetters) return false;
-  return t===t.toUpperCase() && t.length<=90;
-}
-function parseTaskLine(line){
-  const raw=line.trim(); if(!raw) return null;
-  const cleaned=raw.replace(/^[-*•\s]+/,"").trim();
-  if(!cleaned) return null;
-
-  let et=null, title=cleaned;
-  const m=cleaned.match(/^(.*?)(?:\s*[-–—]\s*|\s+)(\d+)\s*$/);
-  if(m){ title=m[1].trim(); et=parseInt(m[2],10); }
-  title=title.replace(/\s+/g," ").trim();
-  if(!title) return null;
-  if(et!==null) et=clamp(et,1,99);
-  return {title, etorions: et};
-}
-function importFromInbox(text){
-  const lines=text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
-  let cat="INBOX";
-  const out=[];
-  for(const line of lines){
-    if(isAllCapsLine(line)){ cat=line.trim().toUpperCase(); continue; }
-    const p=parseTaskLine(line); if(!p) continue;
-    out.push({
-      id: uid(),
-      title: p.title,
-      cat,
-      etorionsTotal: p.etorions ?? 1,
-      etorionsLeft: p.etorions ?? 1,
-      pinned:false,
-      done:false,
-      createdAt: nowISO(),
-      doneAt:null
+  function escapeHTML(s){
+    s = s || "";
+    return s.replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c];
     });
   }
-  return out;
-}
-
-/* ========= Tasks core ========= */
-function activeTasks(){ return state.tasks.filter(t=>!t.done); }
-function getTaskById(id){ return state.tasks.find(t=>t.id===id) || null; }
-function setCurrentTask(id){
-  state.currentTaskId=id;
-  state.currentTaskStart=Date.now();
-  if(!state.timer.startedAt) state.timer.startedAt=Date.now();
-}
-function sortTasks(list){
-  return [...list].sort((a,b)=>{
-    if(a.pinned && !b.pinned) return -1;
-    if(!a.pinned && b.pinned) return 1;
-    return (a.createdAt||"").localeCompare(b.createdAt||"");
-  });
-}
-function roulettePick(){
-  const list=sortTasks(activeTasks());
-  if(list.length===0) return null;
-  const pinned=list.filter(t=>t.pinned);
-  const pool=pinned.length?pinned:list;
-  return pool[rand(pool.length)];
-}
-function ensureCurrentTask(){
-  const list=activeTasks();
-  if(list.length===0){ state.currentTaskId=null; state.currentTaskStart=null; return; }
-  const cur=getTaskById(state.currentTaskId);
-  if(!cur || cur.done){
-    const pinned=list.find(t=>t.pinned);
-    setCurrentTask((pinned||list[0]).id);
+  function deepClone(obj){
+    return JSON.parse(JSON.stringify(obj));
   }
-}
 
-/* ========= Baseline + progress ========= */
-function recomputeBaselineIfNeeded(){
-  if(state.baseline.totalTasks===0 && state.baseline.totalEtorions===0 && state.tasks.length>0){
-    const all=activeTasks();
-    state.baseline.totalTasks=all.length;
-    state.baseline.totalEtorions=all.reduce((a,t)=>a+(t.etorionsTotal||0),0);
-  }
-}
-function computeProgress(){
-  const baseT=state.baseline.totalTasks||0;
-  const baseE=state.baseline.totalEtorions||0;
-  const rem=activeTasks();
-  const remT=rem.length;
-  const remE=rem.reduce((a,t)=>a+(t.etorionsLeft||0),0);
-  const pct=(baseT<=0)?100:clamp(Math.round((remT/baseT)*100),0,100);
-  return {baseT,baseE,remT,remE,pct};
-}
+  var LS_KEY = "eliminator_v1_robust_set_todo";
+  var TAGLINES = [
+    "Quête principale: active. Quêtes secondaires: muselées.",
+    "Un étorion. Une incision nette. Hémostase du bazar.",
+    "Mode ninja: silencieux. Précis. Irréprochable.",
+    "Tu poses des balises dans le temps. Le temps obéit."
+  ];
 
-/* ========= Undo ========= */
-function pushUndo(label){
-  state.undo.unshift({
-    label, at:Date.now(),
-    tasks: structuredCloneSafe(state.tasks),
-    baseline: structuredCloneSafe(state.baseline),
-    currentTaskId: state.currentTaskId,
-    currentTaskStart: state.currentTaskStart,
-    stats: structuredCloneSafe(state.stats),
-    streak: structuredCloneSafe(state.streak)
-  });
-  state.undo = state.undo.slice(0,12);
-}
-function undo(){
-  const snap=state.undo.shift();
-  if(!snap) return;
-  state.tasks=snap.tasks;
-  state.baseline=snap.baseline;
-  state.currentTaskId=snap.currentTaskId;
-  state.currentTaskStart=snap.currentTaskStart;
-  state.stats=snap.stats;
-  state.streak=snap.streak;
-  saveState();
-  renderAll();
-}
+  var defaultState = {
+    theme:"light",
+    showCounters:false,
+    showList:false,
 
-/* ========= Notes ========= */
-function addNote(text){
-  const t=(text||"").trim(); if(!t) return;
-  state.notes.unshift({id:uid(), text:t, at:nowISO()});
-}
-function renderNotes(){
-  const list=state.notes||[];
-  if(list.length===0){ $("notesList").innerHTML="<div class='small'>Aucune note.</div>"; return; }
-  $("notesList").innerHTML = list.slice(0,80).map(n=>{
-    const dt=new Date(n.at);
-    const stamp=dt.toLocaleString("fr-BE",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit"});
-    return `<div style="padding:8px 6px; border-bottom:1px solid var(--line)">
-      <div style="font-family:var(--mono); color:var(--muted); font-size:11px">${stamp}</div>
-      <div style="white-space:pre-wrap; font-size:13px">${escapeHTML(n.text)}</div>
-    </div>`;
-  }).join("");
-}
+    timer:{ running:true, startedAt:null, pausedAt:null, pausedTotal:0 },
 
-/* ========= Sets (minimal) ========= */
-function getSetById(id){ return state.sets.list.find(s=>s.id===id) || null; }
-function selectedSet(){ return getSetById(state.sets.selectedId) || state.sets.list[0] || null; }
-function ensureSelectedSet(){
-  if(state.sets.list.length===0) return;
-  if(!state.sets.selectedId || !getSetById(state.sets.selectedId)) state.sets.selectedId=state.sets.list[0].id;
-}
-function initSetChecksForToday(set){
-  const dk=dayKey();
-  if(!set.checks) set.checks={};
-  if(!set.checks[dk]) set.checks[dk]={};
-}
-function setCheckKey(u,i){ return `u${u}_i${i}`; }
-function toggleSetCheck(setId,u,i){
-  const set=getSetById(setId); if(!set) return;
-  initSetChecksForToday(set);
-  const dk=dayKey();
-  const k=setCheckKey(u,i);
-  set.checks[dk][k]=!set.checks[dk][k];
-}
-function summarizeSetToday(setId){
-  const set=getSetById(setId); if(!set) return {done:0,total:0};
-  initSetChecksForToday(set);
-  const dk=dayKey();
-  const checks=set.checks[dk]||{};
-  const total=(set.unitCount||0)*(set.items?.length||0);
-  const done=Object.values(checks).filter(Boolean).length;
-  return {done,total};
-}
-function addSet(){
-  const s={ id:uid(), title:"NOUVEAU SET", unitName:"Item", unitCount:3, items:["Étape 1","Étape 2"], categories:[], checks:{}, pinned:false, order:Date.now() };
-  state.sets.list.push(s);
-  state.sets.selectedId=s.id;
-}
-function deleteSet(id){
-  state.sets.list=state.sets.list.filter(s=>s.id!==id);
-  ensureSelectedSet();
-}
+    tasks:[],
+    baseline:{ totalTasks:0, totalEtorions:0 },
+    currentTaskId:null,
+    stats:{ etorionsDone:0, tasksDone:0 },
 
-/* ========= Emotions (minimal) ========= */
-const EMOTIONS=["Anxiété","Colère","Tristesse","Honte","Culpabilité","Stress","Frustration","Soulagement","Joie","Fatigue"];
-function addEmotionEntry(e){ state.emotions.entries.unshift(e); }
-function emotionsToday(){ const dk=dayKey(); return (state.emotions.entries||[]).filter(e=>e.day===dk); }
-function avgIntensity(list){ if(!list?.length) return 0; return Math.round(list.reduce((a,b)=>a+(Number(b.intensity)||0),0)/list.length); }
-function topEmotion(list){
-  if(!list?.length) return null;
-  const m=new Map();
-  list.forEach(e=>m.set(e.emotion,(m.get(e.emotion)||0)+1));
-  let best=null,v=-1; for(const [k,n] of m){ if(n>v){v=n;best=k;} }
-  return best;
-}
+    // ✅ SET = to-do list éditable
+    setTodo:{
+      title:"SET",
+      items:[ /* {id,text,done,doneAt} */ ]
+    },
 
-/* ========= Snapshot day ========= */
-function snapshotDay(){
-  const dk=dayKey();
-  const doneToday=state.tasks.filter(t=>t.done && t.doneAt && t.doneAt.startsWith(dk));
-  const active=activeTasks();
-  const baseE=state.baseline.totalEtorions||0;
-  const doneE=state.stats.etorionsDone||0;
-
-  const setSummary=(state.sets.list||[]).map(s=>{
-    const sum=summarizeSetToday(s.id);
-    return { id:s.id, title:s.title, done:sum.done, total:sum.total };
-  });
-
-  const emoToday=emotionsToday();
-  const entry={
-    day:dk,
-    doneTasks:doneToday.length,
-    remainingTasks:active.length,
-    doneEtorions:doneE,
-    baselineEtorions:baseE,
-    sets:setSummary,
-    emotions:{ count:emoToday.length, avg:avgIntensity(emoToday), top:topEmotion(emoToday) }
+    undo:[]
   };
 
-  const idx=state.history.findIndex(x=>x.day===dk);
-  if(idx>=0) state.history[idx]=entry;
-  else state.history.unshift(entry);
-}
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(LS_KEY);
+      if(!raw) return deepClone(defaultState);
+      var s = JSON.parse(raw);
 
-/* ========= Confetti (simple) ========= */
-const conf=$("confetti");
-const ctx=conf.getContext("2d");
-let confettiPieces=[];
-function resizeCanvas(){
-  conf.width=window.innerWidth*devicePixelRatio;
-  conf.height=window.innerHeight*devicePixelRatio;
-  conf.style.width=window.innerWidth+"px";
-  conf.style.height=window.innerHeight+"px";
-  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-}
-window.addEventListener("resize", resizeCanvas);
-resizeCanvas();
-let confettiRAF=null;
-function confettiBurst(strength=1){
-  const w=window.innerWidth, h=window.innerHeight;
-  const n=Math.floor(120*strength);
-  const cx=w/2, cy=h/3;
-  for(let i=0;i<n;i++){
-    confettiPieces.push({
-      x:cx,y:cy,
-      vx:(Math.random()-0.5)*10*strength,
-      vy:(Math.random()-0.85)*14*strength,
-      g:0.35+Math.random()*0.2,
-      r:2+Math.random()*3*strength,
-      life:70+Math.random()*50,
-      rot:Math.random()*Math.PI,
-      vr:(Math.random()-0.5)*0.35
+      // merge simple
+      var base = deepClone(defaultState);
+      for(var k in s){ base[k] = s[k]; }
+      if(!base.timer) base.timer = deepClone(defaultState.timer);
+      if(!base.baseline) base.baseline = deepClone(defaultState.baseline);
+      if(!base.stats) base.stats = deepClone(defaultState.stats);
+      if(!base.setTodo) base.setTodo = deepClone(defaultState.setTodo);
+      if(!base.setTodo.items) base.setTodo.items = [];
+      if(!base.undo) base.undo = [];
+      return base;
+    }catch(e){
+      return deepClone(defaultState);
+    }
+  }
+  function saveState(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+
+  var state = loadState();
+
+  function activeTasks(){
+    var out=[];
+    for(var i=0;i<state.tasks.length;i++){
+      if(!state.tasks[i].done) out.push(state.tasks[i]);
+    }
+    return out;
+  }
+  function getTask(id){
+    for(var i=0;i<state.tasks.length;i++){
+      if(state.tasks[i].id===id) return state.tasks[i];
+    }
+    return null;
+  }
+  function sortTasks(list){
+    return list.slice().sort(function(a,b){
+      if(a.pinned && !b.pinned) return -1;
+      if(!a.pinned && b.pinned) return 1;
+      return String(a.createdAt||"").localeCompare(String(b.createdAt||""));
     });
   }
-  if(!confettiRAF) confettiRAF=requestAnimationFrame(confettiStep);
-}
-function confettiStep(){
-  ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
-  confettiPieces=confettiPieces.filter(p=>p.life>0);
-  for(const p of confettiPieces){
-    p.vy+=p.g; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; p.life-=1;
-    ctx.save();
-    ctx.translate(p.x,p.y);
-    ctx.rotate(p.rot);
-    ctx.globalAlpha=0.84;
-    ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue("--fg");
-    ctx.fillRect(-p.r,-p.r,p.r*2,p.r*2);
-    ctx.restore();
+  function ensureBaseline(){
+    if(state.baseline.totalTasks===0 && activeTasks().length>0){
+      var a = activeTasks();
+      state.baseline.totalTasks = a.length;
+      var sum=0;
+      for(var i=0;i<a.length;i++) sum += (a[i].etorionsTotal||1);
+      state.baseline.totalEtorions = sum;
+    }
   }
-  if(confettiPieces.length>0) confettiRAF=requestAnimationFrame(confettiStep);
-  else { cancelAnimationFrame(confettiRAF); confettiRAF=null; ctx.clearRect(0,0,window.innerWidth,window.innerHeight); }
-}
-
-/* ========= Modals ========= */
-let countersTimer=null;
-function openModal(id){
-  $("modalBack").style.display="block";
-  $(id).style.display="flex";
-}
-function closeAllModals(){
-  ["notesModal","tipsModal","emoNudgeModal","exportModal"].forEach(id=>{ const el=$(id); if(el) el.style.display="none"; });
-  $("modalBack").style.display="none";
-}
-$("modalBack").addEventListener("click", closeAllModals);
-
-/* ========= Tips/Nudge ========= */
-function minutesSince(ts){ if(!ts) return 9999; return (Date.now()-ts)/60000; }
-function showTip(){
-  const pick=TIPS_POOL[rand(TIPS_POOL.length)];
-  $("tipsTitle").textContent=pick.t;
-  $("tipsMsg").textContent=pick.m;
-  $("tipsSub").textContent="Conseil bref → retour au flow.";
-  openModal("tipsModal");
-  state.lastTipAt=Date.now(); saveState();
-}
-function showNudge(){
-  const pick=EMO_NUDGES[rand(EMO_NUDGES.length)];
-  $("emoNudgeTitle").textContent=pick.t;
-  $("emoNudgeMsg").textContent=pick.m;
-  $("emoNudgeSub").textContent="Micro-régulation → puis reprise.";
-  openModal("emoNudgeModal");
-  state.lastNudgeAt=Date.now(); saveState();
-}
-function maybeTip(){
-  const chance=clamp(Number(state.settings.tipsChance)||0.14,0,1);
-  if(minutesSince(state.lastTipAt) < (state.settings.tipsMinGapMin||6)) return;
-  if(Math.random()<chance) showTip();
-}
-function maybeNudge(){
-  const chance=clamp(Number(state.settings.nudgeChance)||0.10,0,1);
-  if(minutesSince(state.lastNudgeAt) < (state.settings.nudgeMinGapMin||10)) return;
-  if(Math.random()<chance) showNudge();
-}
-
-/* ========= Timer ========= */
-function timerNowMs(){
-  if(!state.timer.startedAt) return 0;
-  const now=Date.now();
-  const paused=state.timer.pausedTotal||0;
-  const extra=state.timer.pausedAt ? (now - state.timer.pausedAt) : 0;
-  return Math.max(0, now - state.timer.startedAt - paused - extra);
-}
-function togglePause(){
-  if(!state.timer.startedAt) state.timer.startedAt=Date.now();
-  if(state.timer.pausedAt){
-    state.timer.pausedTotal=(state.timer.pausedTotal||0) + (Date.now()-state.timer.pausedAt);
-    state.timer.pausedAt=null; state.timer.running=true;
-  }else{
-    state.timer.pausedAt=Date.now(); state.timer.running=false;
+  function progress(){
+    ensureBaseline();
+    var baseT = state.baseline.totalTasks || 0;
+    var baseE = state.baseline.totalEtorions || 0;
+    var rem = activeTasks();
+    var remT = rem.length;
+    var remE = 0;
+    for(var i=0;i<rem.length;i++) remE += (typeof rem[i].etorionsLeft==="number"? rem[i].etorionsLeft : (rem[i].etorionsTotal||1));
+    var pct = baseT<=0 ? 100 : clamp(Math.round((remT/baseT)*100),0,100);
+    return {baseT:baseT, baseE:baseE, remT:remT, remE:remE, pct:pct};
   }
-  saveState(); renderAll();
-}
 
-/* ========= Completing ========= */
-function completeTask(taskId){
-  const t=getTaskById(taskId);
-  if(!t || t.done) return;
-
-  pushUndo("taskComplete");
-  t.done=true; t.doneAt=nowISO();
-  state.stats.tasksDone=(state.stats.tasksDone||0)+1;
-
-  const now=Date.now();
-  const last=state.streak.lastTaskDoneAt;
-  if(last && (now-last)<=20*60*1000) state.streak.tasksInARow=(state.streak.tasksInARow||0)+1;
-  else state.streak.tasksInARow=1;
-  state.streak.lastTaskDoneAt=now;
-
-  confettiBurst(1.15);
-
-  snapshotDay();
-  ensureCurrentTask();
-  saveState();
-  renderAll();
-
-  maybeTip();
-  maybeNudge();
-}
-
-function degommeEtorion(){
-  const t=getTaskById(state.currentTaskId);
-  if(!t || t.done) return;
-
-  pushUndo("etorion");
-
-  if(typeof t.etorionsLeft!=="number") t.etorionsLeft=t.etorionsTotal||1;
-  t.etorionsLeft = clamp(t.etorionsLeft-1, 0, 99);
-  state.stats.etorionsDone=(state.stats.etorionsDone||0)+1;
-
-  if(t.etorionsLeft<=0){ completeTask(t.id); return; }
-
-  snapshotDay();
-  saveState();
-  renderAll();
-}
-
-/* ========= Counters ========= */
-function setCountersVisible(on, autoHide=true){
-  state.showCounters=!!on;
-  const pills=["pillTasks","pillEto","pillDone","pillTimer"].map($);
-  pills.forEach(p=>p.classList.toggle("hidden", !state.showCounters));
-  saveState();
-
-  if(countersTimer) clearTimeout(countersTimer);
-  if(on && autoHide){
-    countersTimer=setTimeout(()=>{
-      state.showCounters=false;
-      pills.forEach(p=>p.classList.add("hidden"));
-      saveState();
-    }, clamp(state.countersAutoHideSec||10,3,30)*1000);
+  function setCurrentTask(id){
+    state.currentTaskId = id;
+    if(!state.timer.startedAt) state.timer.startedAt = Date.now();
   }
-}
-
-/* ========= Focus / panels ========= */
-function applyFocus(){
-  const app=$("app");
-  app.classList.toggle("focusOn", !!state.focus);
-}
-function toggleTheme(){
-  state.theme = state.theme==="light" ? "dark" : "light";
-  saveState(); renderAll();
-}
-function toggleFocus(){
-  state.focus=!state.focus;
-  saveState(); renderAll();
-}
-function openDrawer(){ $("drawerBack").classList.add("show"); $("drawer").classList.add("open"); renderDrawer(); }
-function closeDrawer(){ $("drawerBack").classList.remove("show"); $("drawer").classList.remove("open"); }
-function openRight(){ $("rightBack").classList.add("show"); $("rightPanel").classList.add("open"); renderRight(); }
-function closeRight(){ $("rightBack").classList.remove("show"); $("rightPanel").classList.remove("open"); }
-
-/* ========= Renders ========= */
-function renderHUD(){
-  recomputeBaselineIfNeeded();
-  const p=computeProgress();
-  $("pillTasks").textContent = `${p.remT}/${p.baseT} ${plural(p.baseT,"tâche","tâches")}`;
-  $("pillEto").textContent = `${p.remE}/${p.baseE} étorions`;
-  const done=(p.baseT - p.remT);
-  $("pillDone").textContent = `${done} ${plural(done,"faite","faites")}`;
-}
-function renderTimer(){
-  $("pillTimer").textContent = fmtMMSS(timerNowMs());
-}
-function renderProgress(){
-  const p=computeProgress();
-  $("taskBarFill").style.width = `${p.pct}%`;
-  $("taskBarPct").textContent = `${p.pct}%`;
-  $("barInfo").textContent = `${p.remT} restantes sur ${p.baseT}`;
-}
-function renderCurrent(){
-  ensureCurrentTask();
-  const t=getTaskById(state.currentTaskId);
-  if(!t){
-    $("taskName").textContent="Aucune tâche";
-    $("chips").innerHTML="";
-    $("btnEtorion").style.opacity=0.45;
-    $("btnEtorion").style.pointerEvents="none";
-    return;
+  function ensureCurrentTask(){
+    var a = sortTasks(activeTasks());
+    if(a.length===0){ state.currentTaskId=null; return; }
+    var cur = getTask(state.currentTaskId);
+    if(!cur || cur.done){
+      var pinned=null;
+      for(var i=0;i<a.length;i++){ if(a[i].pinned){ pinned=a[i]; break; } }
+      setCurrentTask((pinned||a[0]).id);
+    }
   }
-  $("btnEtorion").style.opacity=1;
-  $("btnEtorion").style.pointerEvents="auto";
-  $("taskName").textContent=t.title;
 
-  const total=t.etorionsTotal||1;
-  const left=(typeof t.etorionsLeft==="number") ? t.etorionsLeft : total;
-  const chips=[];
-  for(let i=0;i<total;i++) chips.push(`<div class="chip ${i<left?"on":""}"></div>`);
-  $("chips").innerHTML=chips.join("");
-
-  if(!state.timer.startedAt) state.timer.startedAt=Date.now();
-}
-function applyListVisible(){
-  const show=!!state.showBelowList;
-  $("belowList").classList.toggle("show", show && (!state.focus || state.settings.keepListInFocus));
-}
-function renderBelowList(){
-  const box=$("belowTasks");
-  const list=sortTasks(activeTasks());
-  if(list.length===0){ box.innerHTML=`<div class="small">Aucune tâche. Ouvre MENU ≡ → INBOX pour importer.</div>`; return; }
-
-  box.innerHTML = list.slice(0,80).map(t=>{
-    const et=t.etorionsTotal||1;
-    const left=t.etorionsLeft ?? et;
-    const isCur=t.id===state.currentTaskId;
-    return `
-      <div class="taskRow" style="${isCur?"background:linear-gradient(180deg,var(--glass2),transparent); border-radius:var(--radius2); border:1px solid var(--line)":""}">
-        <div class="t">${escapeHTML(t.title)}</div>
-        <div class="meta">${left}/${et}</div>
-        <div class="tools">
-          <div class="toolBtn" data-act="pin" data-id="${t.id}" title="Épingler">${t.pinned?"■":"□"}</div>
-          <div class="toolBtn" data-act="go" data-id="${t.id}" title="Cibler">◎</div>
-          <div class="toolBtn" data-act="done" data-id="${t.id}" title="Finir">✓</div>
-        </div>
-      </div>
-    `;
-  }).join("");
-
-  box.querySelectorAll(".toolBtn").forEach(b=>{
-    b.onclick=()=>{
-      const id=b.getAttribute("data-id");
-      const act=b.getAttribute("data-act");
-      const t=getTaskById(id); if(!t) return;
-
-      pushUndo("listAction");
-      if(act==="pin") t.pinned=!t.pinned;
-      if(act==="go") setCurrentTask(id);
-      if(act==="done") completeTask(id);
-
-      snapshotDay(); saveState(); renderAll();
-    };
-  });
-}
-
-/* ========= Drawer / Right views (super minimal mais fonctionnel) ========= */
-const TAB_DEFS = [
-  {key:"inbox", label:"INBOX"},
-  {key:"liste", label:"LISTE"},
-  {key:"hist", label:"HIST"},
-];
-
-function mkSection(title){
-  const s=document.createElement("div");
-  s.className="section";
-  const h=document.createElement("h3");
-  h.textContent=title;
-  s.appendChild(h);
-  return s;
-}
-
-function buildTabs(){
-  const el=$("tabs"); clearEl(el);
-  TAB_DEFS.forEach(t=>{
-    const b=document.createElement("div");
-    b.className="tab"+(state.activeTab===t.key?" active":"");
-    b.textContent=t.label;
-    b.onclick=()=>{ state.activeTab=t.key; saveState(); renderDrawer(); };
-    el.appendChild(b);
-  });
-}
-
-function viewInbox(){
-  const wrap=document.createElement("div");
-
-  const s1=mkSection("Importer des tâches");
-  const ta=document.createElement("textarea");
-  ta.placeholder="COLLE ICI.\n\nADMIN\n- Mail X 2\n- Appeler Y 1\n\nCLINIQUE\n- Rapport Z 6\n\nLigne MAJUSCULES = catégorie.\nChiffre final = étorions.";
-  s1.appendChild(ta);
-
-  const row=document.createElement("div");
-  row.className="row";
-  row.style.marginTop="8px";
-
-  const btnImport=mkBtn("IMPORTER (RESET BASELINE)","btn primary");
-  btnImport.onclick=()=>{
-    const items=importFromInbox(ta.value||"");
-    if(items.length===0) return;
-    pushUndo("import");
-    state.tasks.push(...items);
-    state.baseline.totalTasks=activeTasks().length;
-    state.baseline.totalEtorions=activeTasks().reduce((a,t)=>a+(t.etorionsTotal||0),0);
-    ensureCurrentTask();
-    snapshotDay();
+  function pushUndo(label){
+    state.undo.unshift({
+      label:label,
+      at:Date.now(),
+      snapshot: deepClone({
+        tasks:state.tasks,
+        baseline:state.baseline,
+        currentTaskId:state.currentTaskId,
+        stats:state.stats,
+        setTodo:state.setTodo
+      })
+    });
+    state.undo = state.undo.slice(0,12);
+  }
+  function undo(){
+    var u = state.undo.shift();
+    if(!u) return;
+    state.tasks = u.snapshot.tasks;
+    state.baseline = u.snapshot.baseline;
+    state.currentTaskId = u.snapshot.currentTaskId;
+    state.stats = u.snapshot.stats;
+    state.setTodo = u.snapshot.setTodo;
     saveState();
     renderAll();
-    ta.value="";
-    closeDrawer();
-  };
-
-  const btnDemo=mkBtn("EXEMPLE","btn");
-  btnDemo.onclick=()=>{
-    ta.value=
-`ADMIN
-- Répondre à X 2
-- Téléphoner à Y 1
-
-CLINIQUE
-- Rapport Z 6
-
-PERSO
-- Lessive 2`;
-  };
-
-  row.appendChild(btnImport);
-  row.appendChild(btnDemo);
-  s1.appendChild(row);
-
-  wrap.appendChild(s1);
-  return wrap;
-}
-
-function viewListe(){
-  const wrap=document.createElement("div");
-  const s=mkSection("Actives");
-  const list=document.createElement("div");
-  const act=sortTasks(activeTasks());
-  list.innerHTML = act.length ? act.map(t=>`
-    <div class="taskRow">
-      <div class="t">${escapeHTML(t.title)} <span class="small">${t.cat?`[${escapeHTML(t.cat)}]`:""}</span></div>
-      <div class="meta">${t.etorionsLeft??t.etorionsTotal}/${t.etorionsTotal}</div>
-      <div class="tools">
-        <div class="toolBtn" data-go="${t.id}">◎</div>
-        <div class="toolBtn" data-edit="${t.id}">≋</div>
-      </div>
-    </div>`).join("")
-    : `<div class="small">Aucune tâche.</div>`;
-  s.appendChild(list);
-
-  list.querySelectorAll(".toolBtn[data-go]").forEach(b=>{
-    b.onclick=()=>{ setCurrentTask(b.getAttribute("data-go")); saveState(); renderAll(); };
-  });
-  list.querySelectorAll(".toolBtn[data-edit]").forEach(b=>{
-    b.onclick=()=>{ alert("Édition avancée retirée ici (version minimale). Modifie via réimport si besoin."); };
-  });
-
-  const tools=mkSection("Outils");
-  const row=document.createElement("div");
-  row.className="row";
-  const exp=mkBtn("EXPORT","btn primary");
-  exp.onclick=()=>{ openModal("exportModal"); renderExport("text"); };
-  const wipe=mkBtn("TOUT VIDER","btn");
-  wipe.onclick=()=>{
-    if(!confirm("Tout effacer ?")) return;
-    pushUndo("wipe");
-    state.tasks=[];
-    state.baseline={totalTasks:0,totalEtorions:0};
-    state.currentTaskId=null;
-    state.stats={etorionsDone:0,tasksDone:0};
-    snapshotDay(); saveState(); renderAll();
-  };
-  row.appendChild(exp); row.appendChild(wipe);
-  tools.appendChild(row);
-
-  wrap.appendChild(s);
-  wrap.appendChild(document.createElement("div")).style.height="10px";
-  wrap.appendChild(tools);
-  return wrap;
-}
-
-function viewHistory(){
-  const wrap=document.createElement("div");
-  const s=mkSection("7 jours");
-  snapshotDay();
-  const days=(state.history||[]).slice(0,7);
-  const list=document.createElement("div");
-  list.innerHTML = days.length ? days.map(d=>`
-    <div style="padding:10px 6px; border-bottom:1px solid var(--line)">
-      <div class="small">${escapeHTML(d.day)} · done ${d.doneTasks} · left ${d.remainingTasks} · etos ${d.doneEtorions}/${d.baselineEtorions}</div>
-      <div class="small">émotions: ${d.emotions?.count||0} (avg ${d.emotions?.avg||0}/10)</div>
-    </div>`).join("")
-    : `<div class="small">Aucun historique.</div>`;
-  s.appendChild(list);
-  wrap.appendChild(s);
-  return wrap;
-}
-
-function renderDrawer(){
-  buildTabs();
-  const body=$("drawerBody"); clearEl(body);
-  if(state.activeTab==="inbox") body.appendChild(viewInbox());
-  if(state.activeTab==="liste") body.appendChild(viewListe());
-  if(state.activeTab==="hist") body.appendChild(viewHistory());
-}
-
-const RIGHT_TABS=[
-  {key:"sets", label:"SETS"},
-  {key:"emotions", label:"ÉMOTIONS"}
-];
-
-function buildRightTabs(){
-  const el=$("rightTabs"); clearEl(el);
-  RIGHT_TABS.forEach(t=>{
-    const b=document.createElement("div");
-    b.className="tab"+(state.rightTab===t.key?" active":"");
-    b.textContent=t.label;
-    b.onclick=()=>{ state.rightTab=t.key; saveState(); renderRight(); };
-    el.appendChild(b);
-  });
-}
-
-function viewRightSets(){
-  const wrap=document.createElement("div");
-  ensureSelectedSet();
-
-  const sTop=mkSection("Sets");
-  const row=document.createElement("div"); row.className="row";
-
-  const sel=document.createElement("select");
-  state.sets.list.forEach(s=>{
-    const o=document.createElement("option");
-    o.value=s.id; o.textContent=s.title;
-    sel.appendChild(o);
-  });
-  sel.value=state.sets.selectedId;
-  sel.onchange=()=>{ state.sets.selectedId=sel.value; saveState(); renderRight(); };
-
-  const btnAdd=mkBtn("NOUVEAU","btn primary");
-  btnAdd.onclick=()=>{ pushUndo("addSet"); addSet(); saveState(); renderRight(); };
-
-  const btnDel=mkBtn("SUPPRIMER","btn");
-  btnDel.onclick=()=>{
-    const set=selectedSet(); if(!set) return;
-    if(!confirm("Supprimer ce set ?")) return;
-    pushUndo("delSet");
-    deleteSet(set.id);
-    saveState(); renderRight();
-  };
-
-  row.appendChild(sel); row.appendChild(btnAdd); row.appendChild(btnDel);
-  sTop.appendChild(row);
-
-  const set=selectedSet();
-  if(!set){ wrap.appendChild(sTop); return wrap; }
-
-  initSetChecksForToday(set);
-  const sum=summarizeSetToday(set.id);
-  const meta=document.createElement("div"); meta.className="small"; meta.style.marginTop="8px";
-  meta.textContent=`${sum.done}/${sum.total} cochés aujourd’hui`;
-  sTop.appendChild(meta);
-
-  const sGrid=mkSection("Checklist");
-  const dk=dayKey();
-  const checks=set.checks[dk]||{};
-  for(let u=0; u<set.unitCount; u++){
-    const box=mkSection(`${set.unitName} ${u+1}`);
-    const g=document.createElement("div");
-    g.style.display="grid";
-    g.style.gridTemplateColumns="repeat(2,minmax(0,1fr))";
-    g.style.gap="8px";
-
-    set.items.forEach((it,i)=>{
-      const k=setCheckKey(u,i);
-      const on=!!checks[k];
-      const b=mkBtn(it, "btn"+(on?" primary":""));
-      b.style.textTransform="none";
-      b.style.letterSpacing="0";
-      b.onclick=()=>{
-        pushUndo("setCheck");
-        toggleSetCheck(set.id,u,i);
-        snapshotDay(); saveState(); renderRight();
-      };
-      g.appendChild(b);
-    });
-    box.appendChild(g);
-    sGrid.appendChild(box);
   }
 
-  wrap.appendChild(sTop);
-  wrap.appendChild(document.createElement("div")).style.height="10px";
-  wrap.appendChild(sGrid);
-  return wrap;
-}
+  function importTasks(text){
+    var lines = String(text||"").split(/\r?\n/);
+    var cat = "INBOX";
+    var out=[];
+    for(var i=0;i<lines.length;i++){
+      var line = lines[i].trim();
+      if(!line) continue;
 
-function viewRightEmotions(){
-  const wrap=document.createElement("div");
-  const s=mkSection("Émotions (rapide)");
-  const row=document.createElement("div"); row.className="row";
+      // category = ALL CAPS line (simple)
+      var hasLetter = /[A-Za-zÀ-ÖØ-öø-ÿ]/.test(line);
+      if(hasLetter && line === line.toUpperCase() && line.length<=90){
+        cat = line;
+        continue;
+      }
 
-  const emo=document.createElement("select");
-  EMOTIONS.forEach(e=>{ const o=document.createElement("option"); o.value=e; o.textContent=e; emo.appendChild(o); });
+      // parse "title 6" or "title - 6"
+      line = line.replace(/^[-*•\s]+/, "").trim();
+      if(!line) continue;
 
-  const inten=document.createElement("input");
-  inten.type="number"; inten.min="0"; inten.max="10"; inten.step="1"; inten.value="5";
+      var et = 1;
+      var m = line.match(/^(.*?)(?:\s*[-–—]\s*|\s+)(\d+)\s*$/);
+      var title = line;
+      if(m){
+        title = m[1].trim();
+        et = clamp(parseInt(m[2],10)||1,1,99);
+      }
+      out.push({
+        id:uid(),
+        title:title,
+        cat:cat,
+        etorionsTotal:et,
+        etorionsLeft:et,
+        pinned:false,
+        done:false,
+        createdAt:nowISO(),
+        doneAt:null
+      });
+    }
+    return out;
+  }
 
-  const btn=mkBtn("AJOUTER","btn primary");
-  btn.onclick=()=>{
-    pushUndo("emoAdd");
-    addEmotionEntry({ id:uid(), day:dayKey(), at:nowISO(), emotion:emo.value, intensity:clamp(parseInt(inten.value,10)||0,0,10) });
-    snapshotDay(); saveState(); renderRight();
+  /* --------- confetti minimal --------- */
+  var conf = $("confetti");
+  var ctx = conf.getContext("2d");
+  var pieces = [];
+  var raf = null;
+
+  function resizeCanvas(){
+    var dpr = window.devicePixelRatio || 1;
+    conf.width = Math.floor(window.innerWidth * dpr);
+    conf.height = Math.floor(window.innerHeight * dpr);
+    conf.style.width = window.innerWidth+"px";
+    conf.style.height = window.innerHeight+"px";
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  window.addEventListener("resize", resizeCanvas);
+  resizeCanvas();
+
+  function confettiBurst(strength){
+    strength = strength || 1;
+    var n = Math.floor(150*strength);
+    var cx = window.innerWidth/2;
+    var cy = window.innerHeight/3;
+
+    for(var i=0;i<n;i++){
+      pieces.push({
+        x:cx, y:cy,
+        vx:(Math.random()-0.5)*12*strength,
+        vy:(Math.random()-0.85)*16*strength,
+        g:(0.33 + Math.random()*0.25),
+        r:2 + Math.random()*4*strength,
+        life:80 + Math.random()*70,
+        rot:Math.random()*Math.PI,
+        vr:(Math.random()-0.5)*0.35
+      });
+    }
+    animateConfetti();
+  }
+
+  function animateConfetti(){
+    if(raf) return;
+    raf = requestAnimationFrame(function step(){
+      ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+      var alive=[];
+      for(var i=0;i<pieces.length;i++){
+        var p = pieces[i];
+        p.vy += p.g;
+        p.x += p.vx; p.y += p.vy;
+        p.rot += p.vr;
+        p.life -= 1;
+        if(p.life>0) alive.push(p);
+
+        ctx.save();
+        ctx.translate(p.x,p.y);
+        ctx.rotate(p.rot);
+        ctx.globalAlpha = 0.84;
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--fg");
+        ctx.fillRect(-p.r, -p.r, p.r*2, p.r*2);
+        ctx.restore();
+      }
+      pieces = alive;
+      if(pieces.length){
+        raf = requestAnimationFrame(step);
+      }else{
+        cancelAnimationFrame(raf);
+        raf = null;
+        ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+      }
+    });
+  }
+
+  /* --------- timer --------- */
+  function timerMs(){
+    if(!state.timer.startedAt) return 0;
+    var now = Date.now();
+    var paused = state.timer.pausedTotal || 0;
+    var extra = state.timer.pausedAt ? (now - state.timer.pausedAt) : 0;
+    return Math.max(0, now - state.timer.startedAt - paused - extra);
+  }
+  function togglePause(){
+    if(!state.timer.startedAt) state.timer.startedAt = Date.now();
+    if(state.timer.pausedAt){
+      state.timer.pausedTotal = (state.timer.pausedTotal||0) + (Date.now() - state.timer.pausedAt);
+      state.timer.pausedAt = null;
+      state.timer.running = true;
+    }else{
+      state.timer.pausedAt = Date.now();
+      state.timer.running = false;
+    }
+    saveState();
+    renderAll();
+  }
+
+  /* --------- actions --------- */
+  function roulettePick(){
+    var list = sortTasks(activeTasks());
+    if(!list.length) return null;
+    var pinned=[];
+    for(var i=0;i<list.length;i++) if(list[i].pinned) pinned.push(list[i]);
+    var pool = pinned.length ? pinned : list;
+    return pool[rand(pool.length)];
+  }
+
+  function completeTask(id){
+    var t = getTask(id);
+    if(!t || t.done) return;
+    pushUndo("taskComplete");
+    t.done=true;
+    t.doneAt=nowISO();
+    state.stats.tasksDone = (state.stats.tasksDone||0) + 1;
+    confettiBurst(1.15);
+    ensureCurrentTask();
+    saveState();
+    renderAll();
+  }
+
+  function degommeEtorion(){
+    ensureCurrentTask();
+    var t = getTask(state.currentTaskId);
+    if(!t || t.done) return;
+
+    pushUndo("etorion");
+    if(typeof t.etorionsLeft!=="number") t.etorionsLeft = t.etorionsTotal||1;
+    t.etorionsLeft = clamp(t.etorionsLeft-1,0,99);
+    state.stats.etorionsDone = (state.stats.etorionsDone||0) + 1;
+
+    if(t.etorionsLeft<=0){
+      completeTask(t.id);
+      return;
+    }
+    saveState();
+    renderAll();
+  }
+
+  /* =========================
+     ✅ SET TODO LIST (éditable)
+  ========================= */
+  function setAddItem(text){
+    text = String(text||"").trim();
+    if(!text) return;
+    pushUndo("setAdd");
+    state.setTodo.items.unshift({ id:uid(), text:text, done:false, doneAt:null });
+    saveState();
+    renderRight();
+  }
+  function setToggle(id){
+    for(var i=0;i<state.setTodo.items.length;i++){
+      var it = state.setTodo.items[i];
+      if(it.id===id){
+        pushUndo("setToggle");
+        it.done = !it.done;
+        it.doneAt = it.done ? nowISO() : null;
+        saveState();
+        renderRight();
+        return;
+      }
+    }
+  }
+  function setDelete(id){
+    pushUndo("setDelete");
+    var out=[];
+    for(var i=0;i<state.setTodo.items.length;i++){
+      if(state.setTodo.items[i].id!==id) out.push(state.setTodo.items[i]);
+    }
+    state.setTodo.items = out;
+    saveState();
+    renderRight();
+  }
+  function setEdit(id,newText){
+    newText = String(newText||"").trim();
+    if(!newText) return;
+    for(var i=0;i<state.setTodo.items.length;i++){
+      var it = state.setTodo.items[i];
+      if(it.id===id){
+        pushUndo("setEdit");
+        it.text = newText;
+        saveState();
+        renderRight();
+        return;
+      }
+    }
+  }
+  function setClearDone(){
+    pushUndo("setClearDone");
+    var out=[];
+    for(var i=0;i<state.setTodo.items.length;i++){
+      if(!state.setTodo.items[i].done) out.push(state.setTodo.items[i]);
+    }
+    state.setTodo.items = out;
+    saveState();
+    renderRight();
+  }
+
+  /* --------- UI panels --------- */
+  function openLeft(){
+    $("leftBack").style.display="block";
+    $("leftPanel").classList.add("open");
+    renderLeft();
+  }
+  function closeLeft(){
+    $("leftBack").style.display="none";
+    $("leftPanel").classList.remove("open");
+  }
+  function openRight(){
+    $("rightBack").style.display="block";
+    $("rightPanel").classList.add("open");
+    renderRight();
+  }
+  function closeRight(){
+    $("rightBack").style.display="none";
+    $("rightPanel").classList.remove("open");
+  }
+
+  function mkSection(title){
+    var s=document.createElement("div");
+    s.className="section";
+    var h=document.createElement("h3");
+    h.textContent=title;
+    s.appendChild(h);
+    return s;
+  }
+
+  function renderLeft(){
+    var body = $("leftBody");
+    body.innerHTML="";
+
+    var s1 = mkSection("Importer des tâches");
+    var ta = document.createElement("textarea");
+    ta.placeholder = "COLLE ICI.\n\nADMIN\n- Mail X 2\n- Appeler Y 1\n\nCLINIQUE\n- Rapport Z 6";
+    s1.appendChild(ta);
+
+    var row=document.createElement("div");
+    row.className="row";
+    row.style.marginTop="8px";
+
+    var bImp=document.createElement("button");
+    bImp.className="btn";
+    bImp.textContent="IMPORT + RESET BASELINE";
+    bImp.onclick=function(){
+      var items = importTasks(ta.value);
+      if(!items.length) return;
+      pushUndo("import");
+      state.tasks = state.tasks.concat(items);
+      // reset baseline
+      var a = activeTasks();
+      state.baseline.totalTasks = a.length;
+      var sum=0; for(var i=0;i<a.length;i++) sum += (a[i].etorionsTotal||1);
+      state.baseline.totalEtorions = sum;
+      ensureCurrentTask();
+      saveState();
+      renderAll();
+      ta.value="";
+      closeLeft();
+    };
+
+    var bAdd=document.createElement("button");
+    bAdd.className="btn";
+    bAdd.textContent="AJOUTER SANS RESET";
+    bAdd.onclick=function(){
+      var items = importTasks(ta.value);
+      if(!items.length) return;
+      pushUndo("append");
+      state.tasks = state.tasks.concat(items);
+      ensureBaseline();
+      ensureCurrentTask();
+      saveState();
+      renderAll();
+      ta.value="";
+    };
+
+    row.appendChild(bImp);
+    row.appendChild(bAdd);
+    s1.appendChild(row);
+    body.appendChild(s1);
+
+    body.appendChild(document.createElement("div")).style.height="10px";
+
+    var s2 = mkSection("Outils");
+    var r2=document.createElement("div"); r2.className="row";
+
+    var bBaseline=document.createElement("button");
+    bBaseline.className="btn";
+    bBaseline.textContent="BASELINE = ACTIF";
+    bBaseline.onclick=function(){
+      pushUndo("baselineActive");
+      var a=activeTasks();
+      state.baseline.totalTasks=a.length;
+      var sum=0; for(var i=0;i<a.length;i++) sum += (a[i].etorionsTotal||1);
+      state.baseline.totalEtorions=sum;
+      saveState(); renderAll();
+    };
+
+    var bClearDone=document.createElement("button");
+    bClearDone.className="btn";
+    bClearDone.textContent="SUPPRIMER FINIES";
+    bClearDone.onclick=function(){
+      pushUndo("clearDone");
+      var out=[];
+      for(var i=0;i<state.tasks.length;i++) if(!state.tasks[i].done) out.push(state.tasks[i]);
+      state.tasks=out;
+      // baseline recalibrée
+      var a=activeTasks();
+      state.baseline.totalTasks=a.length;
+      var sum=0; for(var i=0;i<a.length;i++) sum += (a[i].etorionsTotal||1);
+      state.baseline.totalEtorions=sum;
+      ensureCurrentTask();
+      saveState(); renderAll();
+    };
+
+    r2.appendChild(bBaseline);
+    r2.appendChild(bClearDone);
+    s2.appendChild(r2);
+    body.appendChild(s2);
+
+    body.appendChild(document.createElement("div")).style.height="10px";
+
+    var s3 = mkSection("Format");
+    var info=document.createElement("div");
+    info.className="small";
+    info.textContent = "• Ligne MAJUSCULES = catégorie · « titre 6 » = étorions · sans chiffre = 1";
+    s3.appendChild(info);
+    body.appendChild(s3);
+  }
+
+  function renderRight(){
+    var body = $("rightBody");
+    body.innerHTML="";
+
+    // ✅ Set todo list
+    var s = mkSection("SET (to-do list éditable)");
+    var row=document.createElement("div"); row.className="row";
+
+    var inp=document.createElement("input");
+    inp.placeholder="Ajouter un item…";
+    var btn=document.createElement("button");
+    btn.className="btn";
+    btn.textContent="AJOUTER";
+    btn.onclick=function(){ setAddItem(inp.value); inp.value=""; };
+
+    row.appendChild(inp);
+    row.appendChild(btn);
+    s.appendChild(row);
+
+    var tools=document.createElement("div");
+    tools.className="row";
+    tools.style.marginTop="8px";
+
+    var clear=document.createElement("button");
+    clear.className="btn";
+    clear.textContent="SUPPRIMER COCHÉS";
+    clear.onclick=setClearDone;
+
+    tools.appendChild(clear);
+    s.appendChild(tools);
+
+    var list=document.createElement("div");
+    list.style.marginTop="10px";
+
+    var items = state.setTodo.items || [];
+    if(!items.length){
+      list.innerHTML = "<div class='small'>Aucun item dans le set.</div>";
+    }else{
+      var html=[];
+      for(var i=0;i<items.length;i++){
+        var it=items[i];
+        html.push(
+          "<div class='taskRow' style='opacity:"+(it.done?0.55:1)+"'>"+
+            "<div class='t'>"+escapeHTML(it.text)+"</div>"+
+            "<div class='meta'>"+(it.done?"✓":"")+"</div>"+
+            "<div class='tools'>"+
+              "<div class='toolBtn' data-act='toggle' data-id='"+it.id+"' title='Cocher'>"+(it.done?"↺":"✓")+"</div>"+
+              "<div class='toolBtn' data-act='edit' data-id='"+it.id+"' title='Éditer'>≋</div>"+
+              "<div class='toolBtn' data-act='del' data-id='"+it.id+"' title='Supprimer'>✕</div>"+
+            "</div>"+
+          "</div>"
+        );
+      }
+      list.innerHTML = html.join("");
+    }
+    s.appendChild(list);
+    body.appendChild(s);
+
+    // handlers
+    var btns = body.querySelectorAll(".toolBtn");
+    for(var j=0;j<btns.length;j++){
+      btns[j].onclick = function(){
+        var act = this.getAttribute("data-act");
+        var id = this.getAttribute("data-id");
+        if(act==="toggle") return setToggle(id);
+        if(act==="del") return setDelete(id);
+        if(act==="edit"){
+          var newText = prompt("Modifier item :", "");
+          if(newText===null) return;
+          return setEdit(id, newText);
+        }
+      };
+    }
+
+    body.appendChild(document.createElement("div")).style.height="10px";
+
+    // mini stats set
+    var done=0;
+    for(var k=0;k<items.length;k++) if(items[k].done) done++;
+    var s2 = mkSection("Résumé");
+    var sm=document.createElement("div");
+    sm.className="small";
+    sm.textContent = done+"/"+items.length+" cochés aujourd’hui ("+dayKey()+")";
+    s2.appendChild(sm);
+    body.appendChild(s2);
+  }
+
+  /* --------- render main --------- */
+  function setTagline(){
+    var el=$("tagline");
+    if(!el.textContent) el.textContent = TAGLINES[rand(TAGLINES.length)];
+    if(Math.random()<0.20) el.textContent = TAGLINES[rand(TAGLINES.length)];
+  }
+
+  function renderHUD(){
+    var p = progress();
+    $("pillTasks").textContent = p.remT + "/" + p.baseT + " tâches";
+    $("pillEto").textContent = p.remE + "/" + p.baseE + " étorions";
+    var done = (p.baseT - p.remT);
+    $("pillDone").textContent = done + " faites";
+    $("pillTimer").textContent = fmtMMSS(timerMs());
+  }
+
+  function renderProgress(){
+    var p = progress();
+    $("taskBarFill").style.width = p.pct + "%";
+    $("taskBarPct").textContent = p.pct + "%";
+    $("barInfo").textContent = p.remT + " restantes sur " + p.baseT;
+  }
+
+  function renderCurrent(){
+    ensureCurrentTask();
+    var t = getTask(state.currentTaskId);
+    if(!t){
+      $("taskName").textContent="Aucune tâche";
+      $("chips").innerHTML="";
+      $("btnEtorion").style.opacity=0.45;
+      $("btnEtorion").style.pointerEvents="none";
+      return;
+    }
+    $("btnEtorion").style.opacity=1;
+    $("btnEtorion").style.pointerEvents="auto";
+    $("taskName").textContent = t.title;
+
+    var total = t.etorionsTotal || 1;
+    var left = (typeof t.etorionsLeft==="number") ? t.etorionsLeft : total;
+
+    var chips=[];
+    for(var i=0;i<total;i++){
+      chips.push("<div class='chip "+(i<left?"on":"")+"'></div>");
+    }
+    $("chips").innerHTML = chips.join("");
+    if(!state.timer.startedAt) state.timer.startedAt = Date.now();
+  }
+
+  function renderList(){
+    var box = $("belowTasks");
+    var list = sortTasks(activeTasks());
+    if(!list.length){
+      box.innerHTML = "<div class='small'>Aucune tâche.</div>";
+      return;
+    }
+    var html=[];
+    for(var i=0;i<list.length;i++){
+      var t=list[i];
+      var et=t.etorionsTotal||1;
+      var left=(typeof t.etorionsLeft==="number")?t.etorionsLeft:et;
+      var isCur = (t.id===state.currentTaskId);
+      html.push(
+        "<div class='taskRow' style='"+(isCur?"background:linear-gradient(180deg,var(--glass2),transparent);border-radius:var(--radius2);border:1px solid var(--line)":"")+"'>"+
+          "<div class='t'>"+escapeHTML(t.title)+"</div>"+
+          "<div class='meta'>"+left+"/"+et+"</div>"+
+          "<div class='tools'>"+
+            "<div class='toolBtn' data-act='pin' data-id='"+t.id+"' title='Épingler'>"+(t.pinned?"■":"□")+"</div>"+
+            "<div class='toolBtn' data-act='go' data-id='"+t.id+"' title='Cibler'>◎</div>"+
+            "<div class='toolBtn' data-act='done' data-id='"+t.id+"' title='Finir'>✓</div>"+
+          "</div>"+
+        "</div>"
+      );
+    }
+    box.innerHTML = html.join("");
+
+    var btns = box.querySelectorAll(".toolBtn");
+    for(var j=0;j<btns.length;j++){
+      btns[j].onclick = function(){
+        var act=this.getAttribute("data-act");
+        var id=this.getAttribute("data-id");
+        var t=getTask(id);
+        if(!t) return;
+        pushUndo("listAction");
+        if(act==="pin"){ t.pinned=!t.pinned; }
+        if(act==="go"){ setCurrentTask(id); }
+        if(act==="done"){ completeTask(id); return; }
+        saveState();
+        renderAll();
+      };
+    }
+  }
+
+  function applyTheme(){
+    document.body.setAttribute("data-theme", state.theme);
+    $("themeLabel").textContent = (state.theme==="light") ? "THÈME CLAIR" : "THÈME SOMBRE";
+  }
+
+  function setCountersVisible(on){
+    state.showCounters = !!on;
+    var ids=["pillTasks","pillEto","pillDone","pillTimer"];
+    for(var i=0;i<ids.length;i++){
+      $(ids[i]).classList.toggle("hidden", !state.showCounters);
+    }
+    saveState();
+  }
+
+  function renderAll(){
+    applyTheme();
+    setTagline();
+    ensureBaseline();
+    ensureCurrentTask();
+    renderHUD();
+    renderProgress();
+    renderCurrent();
+    if(state.showList){
+      $("belowList").style.display="block";
+      renderList();
+    }else{
+      $("belowList").style.display="none";
+    }
+    $("btnUndo").style.opacity = state.undo.length ? 1 : 0.45;
+    $("btnUndo").style.pointerEvents = state.undo.length ? "auto" : "none";
+    $("btnPause").textContent = state.timer.pausedAt ? "▶" : "⏸";
+  }
+
+  /* --------- events --------- */
+  $("btnMenu").onclick=function(){ openLeft(); };
+  $("leftClose").onclick=function(){ closeLeft(); };
+  $("leftBack").onclick=function(){ closeLeft(); };
+
+  $("btnRight").onclick=function(){ openRight(); };
+  $("rightClose").onclick=function(){ closeRight(); };
+  $("rightBack").onclick=function(){ closeRight(); };
+
+  $("btnTheme").onclick=function(){
+    state.theme = (state.theme==="light") ? "dark" : "light";
+    saveState();
+    renderAll();
   };
 
-  row.appendChild(emo); row.appendChild(inten); row.appendChild(btn);
-  s.appendChild(row);
+  $("btnCounters").onclick=function(){
+    setCountersVisible(!state.showCounters);
+    renderAll();
+  };
 
-  const today=emotionsToday();
-  const s2=mkSection("Aujourd’hui");
-  const info=document.createElement("div"); info.className="small";
-  info.textContent = today.length ? `${today.length} entrées · avg ${avgIntensity(today)}/10 · top ${topEmotion(today)}` : "Aucune entrée.";
-  s2.appendChild(info);
+  $("btnShowList").onclick=function(){
+    state.showList = !state.showList;
+    saveState();
+    renderAll();
+  };
+  $("btnHideList").onclick=function(){
+    state.showList=false;
+    saveState();
+    renderAll();
+  };
 
-  wrap.appendChild(s);
-  wrap.appendChild(document.createElement("div")).style.height="10px";
-  wrap.appendChild(s2);
+  $("btnRoulette").onclick=function(){
+    var btn=$("btnRoulette");
+    btn.classList.remove("rouletteSpin");
+    void btn.offsetWidth;
+    btn.classList.add("rouletteSpin");
 
-  const tools=mkSection("Outils");
-  const r=document.createElement("div"); r.className="row";
-  const b1=mkBtn("NUDGE","btn primary"); b1.onclick=showNudge;
-  const b2=mkBtn("CONSEIL","btn"); b2.onclick=showTip;
-  r.appendChild(b1); r.appendChild(b2);
-  tools.appendChild(r);
-  wrap.appendChild(document.createElement("div")).style.height="10px";
-  wrap.appendChild(tools);
+    var pick = roulettePick();
+    if(!pick) return;
+    setTimeout(function(){
+      setCurrentTask(pick.id);
+      saveState();
+      renderAll();
+    }, 520);
+  };
 
-  return wrap;
-}
+  $("btnEtorion").onclick=degommeEtorion;
+  $("btnDoneTask").onclick=function(){
+    ensureCurrentTask();
+    if(state.currentTaskId) completeTask(state.currentTaskId);
+  };
 
-function renderRight(){
-  buildRightTabs();
-  const body=$("rightBody"); clearEl(body);
-  if(state.rightTab==="sets") body.appendChild(viewRightSets());
-  if(state.rightTab==="emotions") body.appendChild(viewRightEmotions());
-}
+  $("btnUndo").onclick=function(){ undo(); };
+  $("btnPause").onclick=function(){ togglePause(); };
 
-/* ========= Export ========= */
-function tasksAsText(){
-  const act=sortTasks(activeTasks());
-  const lines=[];
-  lines.push(`ELIMINATOR — ${dayKey()}`);
-  act.forEach(t=>lines.push(`- ${t.title} — ${t.etorionsLeft??t.etorionsTotal}/${t.etorionsTotal} ${t.cat?`[${t.cat}]`:""}`));
-  return lines.join("\n");
-}
-function tasksAsCSV(){
-  const rows=[["title","cat","etorions_total","etorions_left","pinned","done","createdAt","doneAt"]];
-  state.tasks.forEach(t=>{
-    rows.push([t.title||"", t.cat||"", String(t.etorionsTotal||1), String(t.etorionsLeft??(t.etorionsTotal||1)), t.pinned?"1":"0", t.done?"1":"0", t.createdAt||"", t.doneAt||""]);
+  document.addEventListener("keydown", function(e){
+    if(e.key==="Escape"){ closeLeft(); closeRight(); }
+    var tag = (document.activeElement && document.activeElement.tagName || "").toLowerCase();
+    if(e.code==="Space" && ["input","textarea","select"].indexOf(tag)===-1){
+      e.preventDefault();
+      togglePause();
+    }
   });
-  return rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(",")).join("\n");
-}
-function renderExport(mode){
-  let out="";
-  if(mode==="text") out=tasksAsText();
-  if(mode==="json") out=JSON.stringify({meta:{exportedAt:nowISO(), key:LS_KEY}, state}, null, 2);
-  if(mode==="csv") out=tasksAsCSV();
-  $("expOut").value=out;
-}
 
-/* ========= Global render ========= */
-function renderAll(){
-  ensureSelectedSet();
-  applyAppearance();
-  applyFocus();
-  setRandomTagline();
-  recomputeBaselineIfNeeded();
-  ensureCurrentTask();
+  /* --------- boot --------- */
+  (function boot(){
+    applyTheme();
+    if(state.timer.running && !state.timer.startedAt) state.timer.startedAt = Date.now();
+    renderAll();
+    setInterval(function(){
+      if(state.showCounters) $("pillTimer").textContent = fmtMMSS(timerMs());
+      $("btnPause").textContent = state.timer.pausedAt ? "▶" : "⏸";
+    }, 500);
+  })();
 
-  renderHUD();
-  renderProgress();
-  renderCurrent();
-  renderBelowList();
-  applyListVisible();
-
-  setCountersVisible(state.showCounters, false);
-
-  $("btnUndo").style.opacity = state.undo.length ? 1 : 0.45;
-  $("btnUndo").style.pointerEvents = state.undo.length ? "auto" : "none";
-
-  $("btnPause").textContent = state.timer.pausedAt ? "▶" : "⏸";
-}
-
-/* ========= Timer loop ========= */
-let timerInterval=null;
-function startTimerLoop(){
-  if(timerInterval) clearInterval(timerInterval);
-  timerInterval=setInterval(()=>{
-    if(state.showCounters) renderTimer();
-    $("btnPause").textContent = state.timer.pausedAt ? "▶" : "⏸";
-  }, 500);
-}
-
-/* ========= Wire events ========= */
-$("btnMenu").onclick = ()=> openDrawer();
-$("drawerClose").onclick = ()=> closeDrawer();
-$("drawerBack").onclick = ()=> closeDrawer();
-
-$("btnRight").onclick = ()=> openRight();
-$("rightClose").onclick = ()=> closeRight();
-$("rightBack").onclick = ()=> closeRight();
-
-$("btnTheme").onclick = ()=> toggleTheme();
-
-$("btnCounters").onclick = ()=> setCountersVisible(!state.showCounters, true);
-
-$("btnListToggle").onclick = ()=>{
-  state.showBelowList=!state.showBelowList;
-  saveState(); renderAll();
-};
-$("btnHideBelow").onclick = ()=>{
-  state.showBelowList=false;
-  saveState(); renderAll();
-};
-
-$("btnFocus").onclick = ()=> toggleFocus();
-
-$("btnRoulette").onclick = ()=>{
-  const btn=$("btnRoulette");
-  btn.classList.remove("rouletteSpin");
-  void btn.offsetWidth;
-  btn.classList.add("rouletteSpin");
-  const pick=roulettePick();
-  if(!pick) return;
-  pushUndo("roulette");
-  setCurrentTask(pick.id);
-  saveState();
-  renderAll();
-};
-
-$("btnEtorion").onclick = ()=> degommeEtorion();
-$("btnUndo").onclick = ()=> undo();
-$("btnNotes").onclick = ()=>{ renderNotes(); openModal("notesModal"); };
-$("btnDoneTask").onclick = ()=>{
-  const t=getTaskById(state.currentTaskId);
-  if(t) completeTask(t.id);
-};
-$("btnEditTask").onclick = ()=> alert("Édition avancée retirée dans cette version minimale (mais stable).");
-$("btnPause").onclick = ()=> togglePause();
-
-$("noteAdd").onclick = ()=>{ addNote($("noteInput").value); $("noteInput").value=""; saveState(); renderNotes(); };
-$("noteClear").onclick = ()=>{ if(confirm("Vider toutes les notes ?")){ state.notes=[]; saveState(); renderNotes(); } };
-
-$("expText").onclick = ()=> renderExport("text");
-$("expJSON").onclick = ()=> renderExport("json");
-$("expCSV").onclick = ()=> renderExport("csv");
-$("expCopy").onclick = async ()=>{
-  try{ await navigator.clipboard.writeText($("expOut").value||""); }
-  catch(e){ alert("Copie impossible (clipboard)."); }
-};
-
-window.addEventListener("keydown",(e)=>{
-  if(e.key==="Escape"){ closeAllModals(); closeDrawer(); closeRight(); }
-});
-
-/* ========= Boot ========= */
-(function boot(){
-  applyAppearance();
-  setRandomTagline(true);
-  if(state.timer.running && !state.timer.startedAt) state.timer.startedAt=Date.now();
-  ensureSelectedSet();
-  ensureCurrentTask();
-  snapshotDay();
-  saveState();
-  renderAll();
-  startTimerLoop();
-})();
-</script>
+  </script>
 </body>
 </html>
